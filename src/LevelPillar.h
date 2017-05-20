@@ -9,71 +9,64 @@
 #ifndef LEVEL_PILLAR_H
 #define LEVEL_PILLAR_H
 
-// Std Lib Includes
-#include <vector>
-#include <memory>
-
-// SDL Includes
-#include <SDL.h>
+// Qt Includes
+#include <QVector>
 
 // QtD1 Includes
-#include "JustInTimeImage.h"
+#include "LevelObject.h"
 
 namespace QtD1{
 
 //! The level pillar class
-class LevelPillar
+class LevelPillar : public LevelObject
 {
 
 public:
-
-  //! Constructor
-  LevelPillar( const std::vector<std::shared_ptr<JustInTimeImage> >& level_images,
-               const std::vector<uint32_t>& level_image_indices,
-               const int lower_left_x_pos_wrt_global,
-               const int lower_left_y_pos_wrt_global );
 
   //! Destructor
   virtual ~LevelPillar()
   { /* ... */ }
 
-  //! Get the pillar width
-  int getWidth() const;
+  //! Check if the image assets have been loaded
+  bool imageAssetsLoaded() const override;
 
-  //! Get the pillar height
-  int getHeight() const;
+  //! Load the image asset
+  void loadImageAsset( const QString& image_asset_name,
+                       const QVector<QPixmap>& image_asset_frames ) override;
 
-  //! Check if the pillar is colliding with the bounding box
-  virtual bool isColliding( const SDL_Rect& bounding_box ) const = 0;
+  //! Dump the image assets
+  void dumpImageAssets() override;
 
-  //! Check if the pillar is hiding the bounding box
-  virtual bool isHiding( const SDL_Rect& bounding_box ) const = 0;
+  //! Get the bounding rect of the pillar
+  QRectF boundingRect() const override;
 
-  //! Check if the pillar is colliding with a projectile bounding box
-  virtual bool isProjectileColliding( const SDL_Rect& bounding_box ) const = 0;
+  //! Get the shape of the pillar
+  QPainterPath shape() const override;
 
-  //! Intersect the pillar with a view port
-  virtual void intersectWithViewport( std::vector<SDL_Color>& viewport_image,
-                                      const SDL_Rect& viewport ) const = 0;
+  //! Paint the level pillar
+  void paint( QPainter* painter,
+              const QStyleOptionGraphicsItem* option,
+              QWidget* widget ) override;
 
-  //! Render the part of the pillar that intersects the viewport
-  virtual void renderInViewport( const SDL_Rect& viewport,
-                                 SDL_Renderer* renderer ) const = 0;
+protected:
+
+//! Constructor
+LevelPillar( const QVector<int>& level_image_frame_indices,
+             const QRectF bounding_rect );
 
 private:
 
-  // The width of the pillar
-  static int s_width = 64;
-
-  // The height of the pillar
-  int d_height;
+  // The level image frame indices
+  QVector<int> d_level_image_frame_indices;
   
   // The just-in-time images that make up this pillar
-  std::vector<std::shared_ptr<JustInTimeImage> > d_images;
+  QPixmap d_pillar_image;
 
-  // The lower left corner of the pillar w.r.t. global coordinate system
-  int d_lower_left_x_pos_wrt_global;
-  int d_lower_left_y_pos_wrt_global;
+  // The pillar bounding rect
+  QRectF d_pillar_bounding_rect;
+
+  // The pillar shape
+  QPainterPath d_pillar_shape;
 };
   
 } // end QtD1 namespace
