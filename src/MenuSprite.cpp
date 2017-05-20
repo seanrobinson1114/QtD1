@@ -11,6 +11,7 @@
 
 // Qt Includes
 #include <QPainter>
+#include <QEventLoop>
 
 // QtD1 Includes
 #include "MenuSprite.h"
@@ -232,8 +233,6 @@ void MenuSprite::loadSync()
     d_frame_loader->loadFramesSync();
   else
     d_frame_loader->loadFramesSync( d_displayed_frame_indices );
-
-  this->handleLoadingFinished();
 }
 
 // Initialize the frame loader
@@ -315,7 +314,13 @@ void MenuSprite::handleLoadingFinished()
 // Wait for load to finish
 void MenuSprite::waitForLoadToFinish()
 {
-  d_frame_loader->waitForLoadToFinish();
+  if( d_frame_loader )
+  {
+    QEventLoop wait_loop;
+    QObject::connect( d_frame_loader.get(), SIGNAL(sourceLoaded(QString)),
+                      &wait_loop, SLOT(quit()) );
+    wait_loop.exec();
+  }
 }
 
 // Dump the frames

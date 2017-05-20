@@ -204,7 +204,7 @@ void createWithCheck_multiple()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Check that there is a header
   QByteArray buffer( archived_file->size(), 0 );
@@ -218,7 +218,7 @@ void createWithCheck_multiple()
   QCOMPARE( header[0].start_location, 0ll );
   QCOMPARE( header[1].filename, QString("levels/towndata/town.pal") );
   QCOMPARE( header[1].start_location, 2176004ll );
-  QCOMPARE( data_start_index, 144ll );
+  QCOMPARE( data_start_index, 136ll );
 
   delete archived_file;
 
@@ -231,7 +231,7 @@ void createWithCheck_multiple()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Check that there is a header
   buffer.fill( 0, archived_file->size() );
@@ -243,7 +243,7 @@ void createWithCheck_multiple()
   QCOMPARE( header[0].start_location, 0ll );
   QCOMPARE( header[1].filename, QString("levels/towndata/town.pal") );
   QCOMPARE( header[1].start_location, 2176004ll );
-  QCOMPARE( data_start_index, 144ll );
+  QCOMPARE( data_start_index, 136ll );
 
   delete archived_file;
 
@@ -256,7 +256,7 @@ void createWithCheck_multiple()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Check that there is a header
   buffer.fill( 0, archived_file->size() );
@@ -268,7 +268,7 @@ void createWithCheck_multiple()
   QCOMPARE( header[0].start_location, 0ll );
   QCOMPARE( header[1].filename, QString("levels/towndata/town.pal") );
   QCOMPARE( header[1].start_location, 2176004ll );
-  QCOMPARE( data_start_index, 144ll );
+  QCOMPARE( data_start_index, 136ll );
 
   delete archived_file;
 
@@ -281,7 +281,7 @@ void createWithCheck_multiple()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Check that there is a header
   buffer.fill( 0, archived_file->size() );
@@ -293,7 +293,7 @@ void createWithCheck_multiple()
   QCOMPARE( header[0].start_location, 0ll );
   QCOMPARE( header[1].filename, QString("levels/towndata/town.pal") );
   QCOMPARE( header[1].start_location, 2176004ll );
-  QCOMPARE( data_start_index, 144ll );
+  QCOMPARE( data_start_index, 136ll );
 
   delete archived_file;
 
@@ -306,7 +306,7 @@ void createWithCheck_multiple()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Check that there is a header
   buffer.fill( 0, archived_file->size() );
@@ -318,7 +318,7 @@ void createWithCheck_multiple()
   QCOMPARE( header[0].start_location, 0ll );
   QCOMPARE( header[1].filename, QString("levels/towndata/town.pal") );
   QCOMPARE( header[1].start_location, 2176004ll );
-  QCOMPARE( data_start_index, 144ll );
+  QCOMPARE( data_start_index, 136ll );
 
   delete archived_file;
 
@@ -365,7 +365,7 @@ void create()
 
   archived_file = mpq_handler->create( "levels/towndata/town.cel+levels/towndata/town.pal" );
   QVERIFY( archived_file != NULL );
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Failure to create an engine should result in a null pointer return
   archived_file = mpq_handler->create( "dummy" );
@@ -400,7 +400,7 @@ void createSafeWithCheck()
     QFAIL( "The abstract file engine could not be created!" );
   }
   
-  QCOMPARE( archived_file->size(), 2176916ll );
+  QCOMPARE( archived_file->size(), 2176908ll );
 
   // Failure to create an engine should result in an exception
   bool exception_thrown = false;

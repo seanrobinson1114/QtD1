@@ -129,7 +129,7 @@ void double_mpq_file()
   QVERIFY( file.isOpen() );
   QVERIFY( file.isReadable() );
   QVERIFY( !file.isSequential() );
-  QCOMPARE( file.size(), 2176916ll );
+  QCOMPARE( file.size(), 2176908ll );
 
   std::vector<char> byte_buffer( file.size() );
   qint64 bytes_read;
@@ -154,7 +154,7 @@ void double_mpq_file()
   }
   
   QCOMPARE( bytes_read, (qint64)byte_buffer.size() );
-  QCOMPARE( file.pos(), 2176916ll );
+  QCOMPARE( file.pos(), 2176908ll );
   
   QVERIFY( file.seek( 0 ) );
   QCOMPARE( file.pos(), 0ll );

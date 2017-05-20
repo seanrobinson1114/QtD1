@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // Qt Includes
 #include <QtConcurrentRun>
 
@@ -72,12 +75,16 @@ void FrameLoader::loadFramesSync( const QList<int>& frame_indices )
 // Wait for load to finish
 void FrameLoader::waitForLoadToFinish()
 {
-  d_frame_load_future.waitForFinished();
+  if( d_frame_load_future.isRunning() )
+    d_frame_load_future.waitForFinished();
 }
 
 // Handle asynchronous frame loading finished
 void FrameLoader::handleAsyncFrameLoadingFinished()
-{ /* ... */ }
+{ 
+  d_frame_load_future = QFuture<void>();
+  d_frame_load_future_watcher.setFuture( d_frame_load_future );
+}
 
 // Load the frames from the source implementation
 void FrameLoader::loadAllFramesImpl( FrameLoader* obj )

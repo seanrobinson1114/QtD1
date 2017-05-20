@@ -59,8 +59,8 @@ void addToBuffer()
 
   qint64 data_start_index = header.addToBuffer( buffer );
 
-  QCOMPARE( buffer.size(), 172 );
-  QCOMPARE( data_start_index, 152ll );
+  QCOMPARE( buffer.size(), 164 );
+  QCOMPARE( data_start_index, 144ll );
 }
 
 //---------------------------------------------------------------------------//

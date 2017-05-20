@@ -48,6 +48,7 @@ void createSprite_pcx()
   QCOMPARE( sprite.getSource(), QString( "" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a menu sprites source can be set
 void setSource_pcx()
 {
@@ -56,6 +57,7 @@ void setSource_pcx()
   sprite.setSource( "/ui_art/heros.pcx" );
 }
 
+//---------------------------------------------------------------------------//
 // Check that source can be returned
 void getSource()
 {
@@ -64,6 +66,7 @@ void getSource()
   QCOMPARE( sprite.getSource(), QString( "/ui_art/heros.pcx" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a display policy can be set
 void setDisplayPolicy()
 {
@@ -72,6 +75,7 @@ void setDisplayPolicy()
   sprite.setDisplayPolicy( QtD1::Viewport::StretchToFit );
 }
 
+//---------------------------------------------------------------------------//
 // Check that display policy can be returned
 void getDisplayPolicy()
 {
@@ -80,6 +84,7 @@ void getDisplayPolicy()
   QCOMPARE( sprite.getDisplayPolicy(), QtD1::Viewport::StretchToFit );
 }
 
+//---------------------------------------------------------------------------//
 // Check that background color can be set
 void setBackgroundColor()
 {
@@ -88,6 +93,7 @@ void setBackgroundColor()
   sprite.setBackgroundColor( QColor( "black" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the background color can be returned
 void getBackgroundColor()
 {
@@ -96,6 +102,7 @@ void getBackgroundColor()
   QCOMPARE( sprite.getBackgroundColor(), QColor( "black" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that number of rows can be set
 void setNumberOfRows()
 {
@@ -104,6 +111,7 @@ void setNumberOfRows()
   sprite.setNumberOfRows( 4 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that number of rows can be returned
 void getNumberOfRows()
 {
@@ -112,6 +120,7 @@ void getNumberOfRows()
   QCOMPARE( sprite.getNumberOfRows(), quint32( 4 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the number of columns can be setDisplayedFrameIndices
 void setNumberofColumns()
 {
@@ -120,6 +129,7 @@ void setNumberofColumns()
   sprite.setNumberOfCols( 23 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the number of columns can be retrieved
 void getNumberOfColumns()
 {
@@ -128,6 +138,7 @@ void getNumberOfColumns()
   QCOMPARE( sprite.getNumberOfCols(), quint32( 3443 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the indices of frames to display can be set
 void setIndicesOfDisplayFrames()
 {
@@ -138,6 +149,7 @@ void setIndicesOfDisplayFrames()
   sprite.setDisplayedFrameIndices( list );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the indices of frames to display can be returned
 void getIndicesOfDisplayFrames()
 {
@@ -147,6 +159,7 @@ void getIndicesOfDisplayFrames()
   // sprite.setDisplayedFrameIndices( list );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the starting frame cant be set
 void setStartFrame()
 {
@@ -155,6 +168,7 @@ void setStartFrame()
   sprite.setStartingFrameIndex( quint32( 1 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the starting frame can be retrieved
 void getStartFrame()
 {
@@ -163,6 +177,7 @@ void getStartFrame()
   QCOMPARE( sprite.getStartingFrameIndex(), quint32( 1 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the frame can be setCurrentFrameIndex
 void setFrame()
 {
@@ -174,6 +189,7 @@ void setFrame()
   QCOMPARE( frame_changed_spy[0][0].toInt(), 10 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the frame can be retrieved
 void getFrame()
 {
@@ -182,6 +198,7 @@ void getFrame()
   QCOMPARE( sprite.getCurrentFrameIndex(), quint32( 10 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a pcx image can be loaded synchronously
 void loadImage_pcx()
 {
@@ -191,19 +208,26 @@ void loadImage_pcx()
 
   sprite.setSource( "/ui_art/heros.pcx" );
   sprite.loadSync();
+  QCOMPARE( source_loaded_spy.size(), 1 );
   QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/ui_art/heros.pcx" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a pcx image can be loaded asynchronously
 void loadImageAsync_pcx()
 {
   QtD1::MenuSprite sprite;
 
+  QSignalSpy source_loaded_spy( &sprite, SIGNAL( sourceLoaded( QString ) ) );
+  
   sprite.setSource( "/ui_art/heros.pcx" );
   sprite.load();
   sprite.waitForLoadToFinish();
+  QCOMPARE( source_loaded_spy.size(), 1 );
+  QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/ui_art/heros.pcx" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a cel image can be loaded synchronously
 void loadImage_cel()
 {
@@ -213,19 +237,26 @@ void loadImage_cel()
 
   sprite.setSource( "/data/char.cel+levels/towndata/town.pal" );
   sprite.loadSync();
+  QCOMPARE( source_loaded_spy.size(), 1 );
   QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/data/char.cel+levels/towndata/town.pal" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a cel image can be loaded asynchronously
 void loadImageAsync_cel()
 {
   QtD1::MenuSprite sprite;
 
+  QSignalSpy source_loaded_spy( &sprite, SIGNAL( sourceLoaded( QString ) ) );
+  
   sprite.setSource( "/data/char.cel+levels/towndata/town.pal" );
   sprite.load();
   sprite.waitForLoadToFinish();
+  QCOMPARE( source_loaded_spy.size(), 1 );
+  QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/data/char.cel+levels/towndata/town.pal" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a cl2 image can be loaded synchronously
 void loadImage_cl2()
 {
@@ -235,19 +266,26 @@ void loadImage_cl2()
 
   sprite.setSource( "/monsters/diablo/diabloa.cl2+levels/towndata/town.pal" );
   sprite.loadSync();
+  QCOMPARE( source_loaded_spy.size(), 1 );
   QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/monsters/diablo/diabloa.cl2+levels/towndata/town.pal" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that a cl2 image can be loaded asynchronously
 void loadImageAsync_cl2()
 {
   QtD1::MenuSprite sprite;
 
+  QSignalSpy source_loaded_spy( &sprite, SIGNAL( sourceLoaded( QString ) ) );
+  
   sprite.setSource( "/monsters/diablo/diabloa.cl2+levels/towndata/town.pal" );
   sprite.load();
   sprite.waitForLoadToFinish();
+  QCOMPARE( source_loaded_spy.size(), 1 );
+  QCOMPARE( source_loaded_spy[0][0].toString(), QString( "/monsters/diablo/diabloa.cl2+levels/towndata/town.pal" ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the number of frames can be returned for a pcx image
 void getNumberOfFrames_pcx()
 {
@@ -258,6 +296,7 @@ void getNumberOfFrames_pcx()
   QCOMPARE( sprite.getNumberOfFrames(), quint32( 1 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the number of frames can be returned for a cel image
 void getNumberOfFrames_cel()
 {
@@ -267,6 +306,7 @@ void getNumberOfFrames_cel()
   QCOMPARE( sprite.getNumberOfFrames(), quint32( 9 ) );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the number of frames can be returned for a cl2 image
 void getNumberOfFrames_cl2()
 {
@@ -276,7 +316,7 @@ void getNumberOfFrames_cl2()
   QCOMPARE( sprite.getNumberOfFrames(), quint32( 128 ) );
 }
 
-
+//---------------------------------------------------------------------------//
 // Check that the current frame width can be returned for a pcx image
 void getCurrentFrameWidth_pcx()
 {
@@ -286,6 +326,7 @@ void getCurrentFrameWidth_pcx()
   QCOMPARE( sprite.getCurrentFrameWidth(), 180 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the current frame width can be returned for a cel image
 void getCurrentFrameWidth_cel()
 {
@@ -295,6 +336,7 @@ void getCurrentFrameWidth_cel()
   QCOMPARE( sprite.getCurrentFrameWidth(), 71 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the current frame width can be returned for a cl2 image
 void getCurrentFrameWidth_cl2()
 {
@@ -304,6 +346,7 @@ void getCurrentFrameWidth_cl2()
   QCOMPARE( sprite.getCurrentFrameWidth(), 160 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the current frame height can be returned for a pcx image
 void getCurrentFrameHeight_pcx()
 {
@@ -313,6 +356,7 @@ void getCurrentFrameHeight_pcx()
   QCOMPARE( sprite.getCurrentFrameHeight(), 304 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the current frame height can be returned for a cel image
 void getCurrentFrameHeight_cel()
 {
@@ -322,6 +366,7 @@ void getCurrentFrameHeight_cel()
   QCOMPARE( sprite.getCurrentFrameHeight(), 19 );
 }
 
+//---------------------------------------------------------------------------//
 // Check that the current frame height can be returned for a cl2 image
 void getCurrentFrameHeight_cl2()
 {
