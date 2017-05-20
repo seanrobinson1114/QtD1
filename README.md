@@ -5,6 +5,7 @@
 4. [zlib 1.2.8](https://www.zlib.net/)
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
 6. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
+7. Diablo 1 cd
 
 All dependencies can be acquired through the package manager in your favorite
 Linux flavor. Build instructions are only provided for Ubuntu 16.04 currently.
