@@ -122,14 +122,14 @@ ADD_LIBRARY(qtd1_cel_plugin STATIC
 SET_TARGET_PROPERTIES(qtd1_cel_plugin PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
 
 # Create the qtd1 executable 
-ADD_EXECUTABLE(qtd1-qml qtd1.cpp)
-SET_TARGET_PROPERTIES(qtd1-qml PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
-TARGET_LINK_LIBRARIES(qtd1-qml qtd1_core qtd1_pcx_plugin qtd1_cel_plugin)
+ADD_EXECUTABLE(qtd1 qtd1.cpp)
+SET_TARGET_PROPERTIES(qtd1 PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
+TARGET_LINK_LIBRARIES(qtd1 qtd1_core qtd1_pcx_plugin qtd1_cel_plugin)
 
 # Install the libraries
 INSTALL(TARGETS qtd1_core qtd1_pcx_plugin qtd1_cel_plugin
   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Install the qtd1 executable
-INSTALL(TARGETS qtd1-qml
+INSTALL(TARGETS qtd1
   RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

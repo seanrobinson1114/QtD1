@@ -24,15 +24,18 @@ Instructions for other flavors and other OSs will be provided in the future.
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)
 2. Move to the new directory (e.g. run `cd qtd1`)
 3. Download the QtD1 source code: run `git clone ...`
-4. Create a build directory (e.g. run `mkdir build`)
-5. Move to the build directory (e.g. run `cd build`)
-6. Copy game assets (diabdat.mpq) and executable (Diablo.exe) from the Diablo 1
+4. Move to the QtD1 directory (e.g. run `cd QtD1`)
+5. Download the StormLib source code: run `git submodule init; git submodule update`
+6. Move to the parent directory (e.g. run `cd ../`)
+7. Create a build directory (e.g. run `mkdir build`)
+8. Move to the build directory (e.g. run `cd build`)
+9. Copy game assets (diabdat.mpq) and executable (Diablo.exe) from the Diablo 1
    cd to the build directory
-7. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../qtd1`
-8. build qtd1: run `make -j4`
-9. build qtd1 manual: run `make manual`
-10. run qtd1 tests: run `make test`
-11. install qtd1: run `make install`
+10. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../qtd1`
+11. build qtd1: run `make -j4`
+12. build qtd1 manual: run `make manual`
+13. run qtd1 tests: run `make test`
+14. install qtd1: run `make install`
 
 After successfully running all of these commands three new directories will be
 present in the parent directory: doc, lib and bin. The doc directory contains
