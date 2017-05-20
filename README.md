@@ -53,3 +53,8 @@ can load all pcx, cel and cl2 files (the cel and cl2 files also require a
 palette). Check out the screen shot of the viewer tool below.
 
 ![QtD1 Image Viewer (qtd1 --viewer)](doc/images/image_viewer.png)
+
+## Acknowledgements
+This project would never have gotten off the ground without the great work from the [Freeablo](https://github.com/wheybags/freeablo) developers. We ultimately decided to go a different direction with the reimplementation of the Diablo 1 game engine by focusing heavily on Qt4.  
+
+Special thanks must also be given to [mewrnd](https://github.com/mewrnd) who developed the blizzconv library. The thorough documentation of the cel and cl2 decoders was extremely helpful. 
