@@ -32,7 +32,7 @@ Instructions for other flavors and other OSs will be provided in the future.
 8. Move to the build directory (e.g. run `cd build`)
 9. Copy game assets (diabdat.mpq) and executable (Diablo.exe) from the Diablo 1
    cd to the build directory
-10. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../qtd1`
+10. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../QtD1`
 11. build qtd1: run `make -j4`
 12. build qtd1 manual: run `make manual`
 13. run qtd1 tests: run `make test`
