@@ -23,7 +23,7 @@ Instructions for other flavors and other OSs will be provided in the future.
 ### Build QtD1
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)
 2. Move to the new directory (e.g. run `cd qtd1`)
-3. Download the QtD1 source code: run `git clone ...`
+3. Download the QtD1 source code: run `git clone git@github.com:seanrobinson1114/QtD1.git`
 4. Move to the QtD1 directory (e.g. run `cd QtD1`)
 5. Download the StormLib source code: run `git submodule init; git submodule update`
 6. Move to the parent directory (e.g. run `cd ../`)
