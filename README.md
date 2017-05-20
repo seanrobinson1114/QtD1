@@ -1,6 +1,6 @@
 ## Dependencies {#mainpage}
-1. <a href="http://doc.qt.io/qt-4.8/" target="_blank">Qt 4.8+</a>
-2. [SDL Mixer 2.0+](https://www.libsdl.org/projects/SDL_mixer/){:target="_blank"}
+1. [Qt 4.8+](http://doc.qt.io/qt-4.8/)
+2. [SDL Mixer 2.0+](https://www.libsdl.org/projects/SDL_mixer/)
 3. [FFmpeg 2.8+](https://ffmpeg.org/download.html)
 4. [zlib 1.2.8](https://www.zlib.net/)
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
