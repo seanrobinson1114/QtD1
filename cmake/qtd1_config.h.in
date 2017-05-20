@@ -1,0 +1,77 @@
+#ifndef QTD1_CONFIG_H
+#define QTD1_CONFIG_H
+
+//---------------------------------------------------------------------------//
+// Define the paths (with file names) to the required diablo files
+//---------------------------------------------------------------------------//
+
+// Define the Diablo.exe path
+#define DIABLO_EXE_PATH "${DIABLO_EXE_PATH}"
+
+// Define the diabdat.mpq path
+#define DIABDAT_MPQ_PATH "${DIABDAT_MPQ_PATH}"
+
+//---------------------------------------------------------------------------//
+// Define the properties paths (with file names)
+//---------------------------------------------------------------------------//
+
+// Define the mpq properties path
+#define MPQ_PROPERTIES_PATH "${MPQ_PROPERTIES_PATH}"
+
+// Define the cel image properties path
+#define CEL_IMAGE_PROPERTIES_PATH "${CEL_IMAGE_PROPERTIES_PATH}"
+
+// Define the cl2 image properties path
+#define CL2_IMAGE_PROPERTIES_PATH "${CL2_IMAGE_PROPERTIES_PATH}"
+
+//---------------------------------------------------------------------------//
+// Define the font file paths (with file names)
+//---------------------------------------------------------------------------//
+
+// Define the FreeMono.ttf path
+#define FREE_MONO_TTF_PATH "${FREE_MONO_TTF_PATH}"
+
+// Define the FreeMonoBold.ttf path
+#define FREE_MONO_BOLD_TTF_PATH "${FREE_MONO_BOLD_TTF_PATH}"
+
+// Define the FreeMonoOblique.ttf path
+#define FREE_MONO_OBLIQUE_TTF_PATH "${FREE_MONO_OBLIQUE_TTF_PATH}"
+
+// Define the FreeMonoBoldOblique.ttf path
+#define FREE_MONO_BOLD_OBLIQUE_TTF_PATH "${FREE_MONO_BOLD_OBLIQUE_TTF_PATH}"
+
+//---------------------------------------------------------------------------//
+// Define the QML file paths (with file names)
+//---------------------------------------------------------------------------//
+
+// Define the introscreen.qml path
+#define INTRO_SCREEN_QML_PATH "${INTRO_SCREEN_QML_PATH}"
+
+// Define the titlescreen.qml path
+#define TITLE_SCREEN_QML_PATH "${TITLE_SCREEN_QML_PATH}"
+
+// Define the mainmenu.qml path
+#define MAIN_MENU_QML_PATH "${MAIN_MENU_QML_PATH}"
+
+// Define the creditsscreen.qml path
+#define CREDITS_SCREEN_QML_PATH "${CREDITS_SCREEN_QML_PATH}"
+
+// Define the singleplayermenu.qml path
+#define SINGLE_PLAYER_MENU_QML_PATH "${SINGLE_PLAYER_MENU_QML_PATH}"
+
+// Define the gamecontrolpanel.qml path
+#define GAME_CONTROL_PANEL_QML_PATH "${GAME_CONTROL_PANEL_QML_PATH}"
+
+// Define the characterstats.qml path
+#define CHARACTER_STATS_QML_PATH "${CHARACTER_STATS_QML_PATH}"
+
+// Define the gamemenu.qml path
+#define GAME_MENU_QML_PATH "${GAME_MENU_QML_PATH}"
+
+// Define the gameoptionsmenu.qml path
+#define GAME_OPTIONS_MENU_QML_PATH "${GAME_OPTIONS_MENU_QML_PATH}"
+
+// Define the imageviewer.qml path
+#define IMAGE_VIEWER_QML_PATH "${IMAGE_VIEWER_QML_PATH}"
+
+#endif // end QTD1_CONFIG_H

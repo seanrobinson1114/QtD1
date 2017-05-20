@@ -1,0 +1,11 @@
+#ifndef QTD1_TEST_CONFIG_H
+#define QTD1_TEST_CONFIG_H
+
+//---------------------------------------------------------------------------//
+// Define the paths (with file names) to the required test files
+//---------------------------------------------------------------------------//
+
+// Define the txt test file
+#define TEST_FILE_TXT_PATH "${TEST_FILE_TXT_PATH}"
+
+#endif // end QTD1_TEST_CONFIG_H

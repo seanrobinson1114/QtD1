@@ -1,0 +1,12 @@
+*.swp
+*.swo
+*.pyc
+CMakeLists.txt.user
+html/
+resources/settings-user.ini
+*.o
+*.make
+*CMakeFiles*
+build/
+.DS_Store
+*~
