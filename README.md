@@ -53,7 +53,7 @@ are available, open up the mpq.ini file in the properties directory. The viewer
 can load all pcx, cel and cl2 files (the cel and cl2 files also require a
 palette). Check out the screen shot of the viewer tool below.
 
-![QtD1 Image Viewer (qtd1 --viewer)](doc/images/image_viewer.png)
+![QtD1 Image Viewer (qtd1 --viewer)](doc/images/image_viewer.gif)
 
 ## Acknowledgements
 This project would never have gotten off the ground without the great work from the [Freeablo](https://github.com/wheybags/freeablo) developers. We ultimately decided to go a different direction with the reimplementation of the Diablo 1 game engine by focusing heavily on Qt4.  
