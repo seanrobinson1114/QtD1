@@ -15,13 +15,24 @@
 namespace QtD1{
 
 // Constructor
-LevelPillar::LevelPillar( const QVector<int>& level_image_frame_indices,
-                          const QRectF bounding_rect )
-  : d_level_image_frame_indices( level_image_frame_indices ),
+LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
+  : d_level_image_blocks( level_image_blocks ),
     d_pillar_image(),
-    d_pillar_bounding_rect( bounding_rect ),
+    d_pillar_bounding_rect(),
     d_pillar_shape()
-{ /* ... */ }
+{ 
+  // Calculate the bounding rect
+  if( level_image_blocks.size() != 10 && level_image_blocks.size() != 16 )
+  {
+    qFatal( "LevelPillar Error: A level pillar can only have 10 or 16 blocks "
+            "(not %i)!", level_image_blocks.size() );
+  }
+
+  if( level_image_blocks.size() == 10 )
+    d_pillar_bounding_rect = QRectF( 0, 0, 64, 160 );
+  else // level_image_blocks.size() == 16
+    d_pillar_bounding_rect = QRectF( 0, 0, 64, 256 );
+}
 
 // Check if the image assets have been loaded
 bool LevelPillar::imageAssetsLoaded() const
@@ -33,42 +44,82 @@ bool LevelPillar::imageAssetsLoaded() const
 void LevelPillar::loadImageAsset( const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames )
 {
-  // Initialize the pillar image
-  QSize pillar_size = this->getImageSize();
-
-  d_pillar_image = QPixmap( pillar_size );
+  d_pillar_image = QPixmap( d_pillar_bounding_rect.size() );
+  d_pillar_image.fill( Qt::transparent );
 
   // Use a painter to fill the pillar image with the blocks
   QPainter pillar_painter( &d_pillar_image );
-
-  // Note: All even indices will form the left column of the pillar starting
-  //       from the top. All odd indices will form the right column of the
-  //       pillar starting from the top.
-  QRect pillar_painter_viewport( 0, 0, 32, 32 );
   
-  for( int i = 0; i < d_level_image_frame_indices.size(); ++i )
-  {
-    // Left column
-    if( i % 2 == 0 )
-    {
-      pillar_painter_viewport.setLeft( 0 );
-      pillar_painter_viewport.setTop( (i/2)*32 );
-    }
-    // Right column
-    else
-      pillar_painter_viewport.setLeft( 32 );
+  // Create the left column of the pillar
+  this->createPillarColumn( pillar_painter,
+                            image_asset_frames,
+                            d_level_image_blocks.size()-2 );
 
-    // Get the block image
-    int frame_index = d_level_image_frame_indices[i];
-    QPixmap block = image_asset_frames[frame_index];
-
-    // Draw the block
-    pillar_painter.drawPixmap( pillar_painter_viewport, block, block.rect() );
-  }
+  // Create the right column of the pillar
+  this->createPillarColumn( pillar_painter,
+                            image_asset_frames,
+                            d_level_image_blocks.size()-1 );
 
   // Get the pillar shape
   d_pillar_shape.addRegion( d_pillar_image.createHeuristicMask() );
 }
+
+// Create a pillar column
+void LevelPillar::createPillarColumn(
+                                    Painter& pillar_painter,
+                                    const QVector<QPixmap>& image_asset_frames,
+                                    const int start_index )
+{
+  // Note: All even indices will form the left column of the pillar starting
+  //       from the top. All odd indices will form the right column of the
+  //       pillar starting from the top.
+  QRect pillar_painter_viewport( (start_index % 2)*32,
+                                 (start_index/2)*32,
+                                 32,
+                                 32 );
+  bool first_block = true;
+  bool move_block_up = false;
+
+  for( int i = start_index; i >= 0; i -= 2 )
+  {
+    const Block& block = d_level_image_blocks[i];
+
+    // Check if the block is transparent - do nothing
+    if( block.transparent )
+      first_block = true;
+    else
+    {
+      // A block of type 4 or 5 must be moved up. All blocks above it in the
+      // same section of the column must also be moved up.
+      if( block.type == 4 || block.type == 5 )
+        move_block_up = true;
+      else
+      {
+        if( first_block )
+        {
+          // If the first block in a section is of type 1, the entire section
+          // of blocks should move up.
+          if( block.type == 1 )
+            move_block_up = true;
+          else
+            move_block_up = false;
+        }
+      }
+
+      if( move_block_up )
+        pillar_painter_viewport.setTop( pillar_painter_viewport.top() - 1 );
+
+      // Draw the block
+      pillar_painter.drawPixmap( pillar_painter_viewport,
+                                 image_asset_frames[block.frame_index],
+                                 image_asset_frames[block.frame_index].rect() );      
+      first_block = false;
+    }
+
+    // Move the viewport
+    pillar_painter_viewport.setTop( pillar_painter_viewport.top() - 32 );
+  }
+}                                      
 
 // Dump the image assets
 void LevelPillar::dumpImageAssets()

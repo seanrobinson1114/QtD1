@@ -12,6 +12,9 @@
 namespace QtD1{
 
 // Constructor
+/*! \details Level squares will alwyas have the following dimensions:
+ * (2*pillar_width, pillar_height+32).
+ */
 LevelSquare::LevelSquare( LevelPillar* top_pillar,
                           LevelPillar* right_pillar,
                           LevelPillar* left_pillar,
@@ -21,7 +24,7 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
     d_left_pillar( left_pillar ),
     d_bottom_pillar( bottom_pillar ),
     d_bounding_rect(
-                QRectF( 0, 0, 2*top_pillar->width(), 2*top_pillar->height() ) )
+               QRectF( 0, 0, 2*top_pillar->width(), top_pillar->height()+32 ) )
 { 
   // Make this the parent of the pillars
   d_top_pillar->setParentItem( this );

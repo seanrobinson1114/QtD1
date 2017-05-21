@@ -13,8 +13,8 @@ namespace QtD1{
 
 // Constructor
 TownLevelPillar::TownLevelPillar(
-                                const QVector<int>& level_image_frame_indices )
-  : LevelPillar( level_image_frame_indices, QRectF( 0, 0, 64, 256 ) )
+                        const QVector<LevelPillar::Block>& level_image_blocks )
+  : LevelPillar( level_image_blocks )
 { /* ... */ }
 
 // Get the number of image assets used by the object

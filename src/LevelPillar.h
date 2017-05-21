@@ -23,6 +23,16 @@ class LevelPillar : public LevelObject
 
 public:
 
+  //! The level pillar block
+  struct Block{
+    bool transparent;
+    int frame_index;
+    int type;
+  };
+
+  //! Constructor
+  LevelPillar( const QVector<Block>& level_image_blocks );
+
   //! Destructor
   virtual ~LevelPillar()
   { /* ... */ }
@@ -48,16 +58,15 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
-protected:
-
-//! Constructor
-LevelPillar( const QVector<int>& level_image_frame_indices,
-             const QRectF bounding_rect );
-
 private:
 
-  // The level image frame indices
-  QVector<int> d_level_image_frame_indices;
+  // Create a pillar column
+  void createPillarColumn( QPainter& pillar_painer,
+                           const QVector<QPixmap>& image_asset_frames,
+                           const int start_index );
+
+  // The level image blocks
+  QVector<Block> d_level_image_blocks;
   
   // The just-in-time images that make up this pillar
   QPixmap d_pillar_image;

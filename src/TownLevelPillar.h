@@ -21,7 +21,7 @@ class TownLevelPillar : public LevelPillar
 public:
 
   //! Constructor
-  TownLevelPillar( const QVector<int>& level_image_frame_indices );
+  TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks );
 
   //! Destructor
   ~TownLevelPillar()
