@@ -51,7 +51,7 @@ To run the image viewer simply run `qtd1 --viewer`. There is currently
 no drop-down menu for the image assets that can be loaded. To see what assets
 are available, open up the mpq.ini file in the properties directory. The viewer
 can load all pcx, cel and cl2 files (the cel and cl2 files also require a
-palette). Check out the screen shot of the viewer tool below.
+palette). Check out the screen capture of the viewer tool below.
 
 ![QtD1 Image Viewer (qtd1 --viewer)](doc/images/image_viewer.gif)
 
