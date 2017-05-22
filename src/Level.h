@@ -44,9 +44,6 @@ public:
     DiabloLair
   };
 
-  //! Constructor
-  Level( QObject* parent = 0 );
-
   //! Destructor
   virtual ~Level()
   { /* ... */ }
@@ -59,13 +56,6 @@ public:
 
   //! Get the image asset name
   virtual QString getImageAssetName() const = 0;
-
-  //! Generate the level pillars
-  void Level:generatePillars(
-                              const QString& level_min_file_name,
-                              const QString& level_sol_file_name,
-                              const QString& level_til_file_name,
-                              const QMap<QString,QPointF>& level_dun_file_names );
 
   //! Create the level background
   void createBackground();
@@ -135,6 +125,9 @@ public slots:
 
 protected:
 
+  //! Constructor
+  Level( QObject* parent = 0 );
+  
   //! Constructor
   Level( QObject* parent, const QString& level_music_file_name );
 

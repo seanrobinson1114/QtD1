@@ -16,15 +16,21 @@
 namespace QtD1{
 
 // Constructor
-Level::Level( QObject* parent, const QString& level_music_file_name )
-  : d_character( NULL ),
+Level::Level( QObject* parent )
+  : QGraphicsScene( parent ),
+    d_character( NULL ),
     d_level_objects(),
     d_level_object_asset_map(),
     d_music( new Music ),
     d_image_asset_loader(),
     d_needs_restore( false ),
     d_ready( false )
-{
+{ /* ... */ }
+  
+// Constructor
+Level::Level( QObject* parent, const QString& level_music_file_name )
+  : Level( parent )
+{ 
   // Set the level music
   d_music->setSource( level_music_file_name );
 }
@@ -139,23 +145,6 @@ void Level::loadImageAssetsSync()
   this->connectImageAssetLoaderSignalsToLevelSlots();
 
   d_image_asset_loader->loadAssetsSync();
-}
-
-// Generate the level pillars
-void Level::generatePillars(
-                            const QString& level_min_file_name,
-                            const QString& level_sol_file_name,
-                            const QString& level_til_file_name,
-                            const QMap<QString,QPointF>& level_dun_file_names )
-{
-  // Parse the min file and create the raw pillars
-  {
-    LevelPillarFactory pillar_factory( level_min_file_name );
-
-    //d_level_pillars = pillar_factory.createPillars();
-  }
-
-
 }
 
 // Reset the asset data

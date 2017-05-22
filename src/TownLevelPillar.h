@@ -26,15 +26,11 @@ public:
   //! Destructor
   ~TownLevelPillar()
   { /* ... */ }
-  
-  //! Get the number of image assets used by the object
-  int getNumberOfImageAssets() const override;
 
-  //! Get the image asset names used by the object
-  void getImageAssetNames( QSet<QString>& image_asset_names ) const override;
+private:
 
-  //! Check if the image asset is used by the object
-  bool isImageAssetUsed( const QString& image_asset_name ) const override;
+  // Get the image asset required by this level pillar
+  QString getRequiredImageAssetName() const override;
 };
   
 } // end QtD1 namespace

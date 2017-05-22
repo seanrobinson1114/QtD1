@@ -64,7 +64,7 @@ QList<LevelPillar*> LevelPillarFactory::createLevelPillars() const
       stream >> raw_data;
 
       // Indexing in the min file starts at 1 (shift left to 0)
-      blocks[i].frame_index = raw_data & 0x0FFF - 1;
+      blocks[i].frame_index = (raw_data & 0x0FFF) - 1;
 
       if( blocks[i].frame_index >= 0 )
       {
@@ -125,24 +125,32 @@ LevelPillar* LevelPillarFactory::createTownPillar( const QVector<LevelPillar::Bl
 LevelPillar* LevelPillarFactory::createCathedralPillar( const QVector<LevelPillar::Block>& )
 {
   qFatal( "Cathedral pillar not implemented" );
+
+  return NULL;
 }
 
 // Create a catacomb pillar
 LevelPillar* LevelPillarFactory::createCatacombPillar( const QVector<LevelPillar::Block>& )
 {
   qFatal( "Catacomb pillar not implemented" );
+
+  return NULL;
 }
 
 // Create a cave pillar
 LevelPillar* LevelPillarFactory::createCavePillar( const QVector<LevelPillar::Block>& )
 {
   qFatal( "Cave pillar not implemented" );
+
+  return NULL;
 }
 
 // Create a hell pillar
 LevelPillar* LevelPillarFactory::createHellPillar( const QVector<LevelPillar::Block>& )
 {
   qFatal( "Hell pillar not implemented" );
+
+  return NULL;
 }
 
 // Get the number of pillar blocks function
@@ -162,6 +170,7 @@ LevelPillarFactory::LevelPillarNumBlocksFunction LevelPillarFactory::getLevelPil
   {
     qFatal( "LevelPillarFactory Error: Invalid min file %s!",
             d_level_min_file_name.toStdString().c_str() );
+    return NULL;
   }
 }
 
@@ -182,6 +191,7 @@ LevelPillarFactory::LevelPillarCreationFunction LevelPillarFactory::getLevelPill
   {
     qFatal( "LevelPillarFactory Error: Invalid min file %s!",
             d_level_min_file_name.toStdString().c_str() );
+    return NULL;
   }
 }
 

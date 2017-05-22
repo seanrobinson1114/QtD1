@@ -35,6 +35,25 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
     d_pillar_bounding_rect = QRectF( 0, 0, 64, 256 );
 }
 
+// Get the number of image assets used by the object
+int LevelPillar::getNumberOfImageAssets() const
+{
+  return 1;
+}
+
+// Get the image asset names used by the object
+void LevelPillar::getImageAssetNames(
+                                       QSet<QString>& image_asset_names ) const
+{
+  image_asset_names.insert( this->getRequiredImageAssetName() );
+}
+
+// Check if the image asset is used by the object
+bool LevelPillar::isImageAssetUsed( const QString& image_asset_name ) const
+{
+  return image_asset_name == this->getRequiredImageAssetName();
+}
+
 // Check if the image assets have been loaded
 bool LevelPillar::imageAssetsLoaded() const
 {
@@ -45,7 +64,15 @@ bool LevelPillar::imageAssetsLoaded() const
 void LevelPillar::loadImageAsset( const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames )
 {
-  d_pillar_image = QPixmap( QSize( d_pillar_bounding_rect.width(), d_pillar_bounding_rect.height() ) );
+  if( image_asset_name != this->getRequiredImageAssetName() )
+  {
+    qFatal( "LevelPillar Error: Image asset %s is not used by the level "
+            "pillar (%s required)!",
+            image_asset_name.toStdString().c_str(),
+            this->getRequiredImageAssetName().toStdString().c_str() );
+  }
+  
+  d_pillar_image = QPixmap( d_pillar_bounding_rect.size().toSize() );
   d_pillar_image.fill( Qt::transparent );
 
   // Use a painter to fill the pillar image with the blocks

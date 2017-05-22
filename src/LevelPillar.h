@@ -37,6 +37,15 @@ public:
   virtual ~LevelPillar()
   { /* ... */ }
 
+  //! Get the number of image assets used by the object
+  int getNumberOfImageAssets() const override;
+
+  //! Get the image asset names used by the object
+  void getImageAssetNames( QSet<QString>& image_asset_names ) const override;
+
+  //! Check if the image asset is used by the object
+  bool isImageAssetUsed( const QString& image_asset_name ) const override;
+
   //! Check if the image assets have been loaded
   bool imageAssetsLoaded() const override;
 
@@ -57,6 +66,11 @@ public:
   void paint( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
+
+protected:
+
+  //! Get the image asset required by this level pillar
+  virtual QString getRequiredImageAssetName() const = 0;
 
 private:
 
