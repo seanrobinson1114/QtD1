@@ -11,6 +11,7 @@
 
 // QtD1 Includes
 #include "Level.h"
+#include "LevelPillarFactory.h"
 
 namespace QtD1{
 
@@ -106,7 +107,7 @@ bool Level::isReady()
 void Level::loadImageAssets()
 {
   this->resetAssetData();
-  
+
   // Gather the assets that must be loaded
   QSet<QString> assets_to_load;
   this->gatherImageAssetsToLoad( assets_to_load );
@@ -117,7 +118,7 @@ void Level::loadImageAssets()
 
   // Connect the image asset loader signals to the level slots
   this->connectImageAssetLoaderSignalsToLevelSlots();
-  
+
   d_image_asset_loader->loadAssets();
 }
 
@@ -125,7 +126,7 @@ void Level::loadImageAssets()
 void Level::loadImageAssetsSync()
 {
   this->resetAssetData();
-  
+
   // Gather the assets that must be loaded
   QSet<QString> assets_to_load;
   this->gatherImageAssetsToLoad( assets_to_load );
@@ -151,10 +152,10 @@ void Level::generatePillars(
   {
     LevelPillarFactory pillar_factory( level_min_file_name );
 
-    d_level_pillars = pillar_factory.createPillars();
+    //d_level_pillars = pillar_factory.createPillars();
   }
 
-  
+
 }
 
 // Reset the asset data
@@ -164,7 +165,7 @@ void Level::resetAssetData()
   d_needs_restore = false;
 
   d_level_object_asset_map.clear();
-  
+
   d_image_asset_loader.reset( new ImageAssetLoader );
 }
 
@@ -187,7 +188,7 @@ void Level::gatherImageAssetsToLoad( QSet<QString>& assets_to_load )
 
   // Add the externally added object assets
   QSet<QString> object_assets;
-  
+
   if( !d_character->imageAssetsLoaded() )
   {
     d_character->getImageAssetNames( object_assets );
@@ -236,7 +237,7 @@ void Level::notifyLevelObjectsOfImpendingAssetLoad()
   {
     d_character->getReadyForImageAssetLoading();
   }
-  
+
   QList<LevelObject*>::const_iterator level_object_it, level_object_end;
   level_object_it = d_level_objects.begin();
   level_object_end = d_level_objects.end();
@@ -322,7 +323,7 @@ void Level::handleImageAssetLoaded( const int number_of_assets_loaded,
                                     const QVector<QImage> asset )
 {
   std::cout << asset_name.toStdString() << ": " << asset.size() << std::endl;
-    
+
   emit assetLoaded( number_of_assets_loaded );
 }
 
@@ -347,10 +348,10 @@ void Level::handleImageAssetLoadingFinished( const int number_of_assets_loaded )
 
     ++level_object_it;
   }
-  
+
   d_ready = true;
   d_needs_restore = false;
-  
+
   emit assetLoadingFinished( number_of_assets_loaded );
 }
 

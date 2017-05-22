@@ -50,7 +50,7 @@ void Town::insertCharacter( Character* character,
 void Town::removeCharacter()
 {
   this->getCharacter()->exitTown();
-  
+
   Level::removeCharacter();
 }
 
@@ -69,7 +69,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
     level_squares = level_square_factory.createLevelSquares();
   }
-  
+
   // Create the top sector first
   LevelSector* top_sector =
     this->createSector( level_min_file_name,
@@ -100,14 +100,14 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
   // Resize the town bounding rect
   this->setSceneRect( 0, 0,
-                      left_sector->width()+right_sector->width(),
-                      top_sector->height()+bottom_sector->height() );
+                      left_sector->boundingRect().width()+right_sector->boundingRect().width(),
+                      top_sector->boundingRect().height()+bottom_sector->boundingRect().height() );
 
   // Reposition the sectors
-  top_sector->setPos( top_sector->width()/2, 0 );
-  left_sector->setPos( 0, left_sector->height()/2 );
-  right_sector->setPos( right_sector->width(), right_sector->height()/2 );
-  bottom_sector->setPos( bottom_sector->width()/2, bottom_sector->height() );
+  top_sector->setPos( top_sector->boundingRect().width()/2, 0 );
+  left_sector->setPos( 0, left_sector->boundingRect().height()/2 );
+  right_sector->setPos( right_sector->boundingRect().width(), right_sector->boundingRect().height()/2 );
+  bottom_sector->setPos( bottom_sector->boundingRect().width()/2, bottom_sector->boundingRect().height() );
 
   // Add the sectors to the town
   this->addItem( top_sector );
@@ -125,7 +125,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 LevelSector* Town::createSector( const QString& level_min_file_name,
                                  const QString& level_til_file_name,
                                  const QString& level_dun_file_name,
-                                 const QList<LevelSquare*> level_squares )
+                                 const QList<LevelSquare*>& level_squares )
 {
   LevelSectorFactory sector_factory( level_min_file_name,
                                      level_til_file_name,
@@ -133,7 +133,7 @@ LevelSector* Town::createSector( const QString& level_min_file_name,
 
   return sector_factory.createLevelSector( level_squares );
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

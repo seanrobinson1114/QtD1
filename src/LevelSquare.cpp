@@ -24,8 +24,8 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
     d_left_pillar( left_pillar ),
     d_bottom_pillar( bottom_pillar ),
     d_bounding_rect(
-               QRectF( 0, 0, 2*top_pillar->width(), top_pillar->height()+32 ) )
-{ 
+               QRectF( 0, 0, 2*top_pillar->boundingRect().width(), top_pillar->boundingRect().height()+32 ) )
+{
   // Make this the parent of the pillars
   d_top_pillar->setParentItem( this );
   d_right_pillar->setParentItem( this );
@@ -108,14 +108,14 @@ QRectF LevelSquare::boundingRect() const
 }
 
 // Paint the level square
-/*! \details The level square has nothing to paint. All painting is done by 
+/*! \details The level square has nothing to paint. All painting is done by
  * the pillars.
  */
 void LevelSquare::paint( QPainter*,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 { /* ... */ }
-  
+
 }// end QtD1 namespace
 
 //---------------------------------------------------------------------------//

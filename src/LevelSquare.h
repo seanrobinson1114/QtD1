@@ -16,6 +16,8 @@
 #include "LevelObject.h"
 #include "LevelPillar.h"
 
+namespace QtD1{
+
 //! The level square class
 class LevelSquare : public LevelObject
 {
@@ -58,7 +60,7 @@ public:
   void paint( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
-  
+
 private:
 
   // The pillars
@@ -70,6 +72,8 @@ private:
   // The bounding rect
   QRectF d_bounding_rect;
 };
+
+} // end Qtd1 namespace
 
 #endif // end LEVEL_SQUARE_H
 

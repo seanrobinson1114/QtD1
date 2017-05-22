@@ -8,6 +8,7 @@
 
 // Qt Includes
 #include <QPainter>
+#include <QBitmap>
 
 // QtD1 Includes
 #include "LevelPillar.h"
@@ -20,7 +21,7 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
     d_pillar_image(),
     d_pillar_bounding_rect(),
     d_pillar_shape()
-{ 
+{
   // Calculate the bounding rect
   if( level_image_blocks.size() != 10 && level_image_blocks.size() != 16 )
   {
@@ -44,12 +45,12 @@ bool LevelPillar::imageAssetsLoaded() const
 void LevelPillar::loadImageAsset( const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames )
 {
-  d_pillar_image = QPixmap( d_pillar_bounding_rect.size() );
+  d_pillar_image = QPixmap( QSize( d_pillar_bounding_rect.width(), d_pillar_bounding_rect.height() ) );
   d_pillar_image.fill( Qt::transparent );
 
   // Use a painter to fill the pillar image with the blocks
   QPainter pillar_painter( &d_pillar_image );
-  
+
   // Create the left column of the pillar
   this->createPillarColumn( pillar_painter,
                             image_asset_frames,
@@ -66,7 +67,7 @@ void LevelPillar::loadImageAsset( const QString& image_asset_name,
 
 // Create a pillar column
 void LevelPillar::createPillarColumn(
-                                    Painter& pillar_painter,
+                                    QPainter& pillar_painter,
                                     const QVector<QPixmap>& image_asset_frames,
                                     const int start_index )
 {
@@ -112,14 +113,14 @@ void LevelPillar::createPillarColumn(
       // Draw the block
       pillar_painter.drawPixmap( pillar_painter_viewport,
                                  image_asset_frames[block.frame_index],
-                                 image_asset_frames[block.frame_index].rect() );      
+                                 image_asset_frames[block.frame_index].rect() );
       first_block = false;
     }
 
     // Move the viewport
     pillar_painter_viewport.setTop( pillar_painter_viewport.top() - 32 );
   }
-}                                      
+}
 
 // Dump the image assets
 void LevelPillar::dumpImageAssets()
@@ -138,7 +139,7 @@ QRectF LevelPillar::boundingRect() const
 // Get the shape of the actor
 QPainterPath LevelPillar::shape() const
 {
-  return d_pillar_shape();
+  return d_pillar_shape;
 }
 
 // Paint the level pillar

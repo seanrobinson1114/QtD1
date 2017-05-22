@@ -13,7 +13,7 @@ namespace QtD1{
 
 // Constructor
 LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
-  : d_level_squar_z_order_map(),
+  : d_level_square_z_order_map(),
     d_bounding_rect()
 {
   // Make sure that the rows are valid
@@ -21,10 +21,10 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
 
   if( num_cols == 0 )
     qFatal( "LevelSector Error: There are zero columns in the sector!" );
-  
+
   for( int i = 1; i < level_squares.size(); ++i )
   {
-    if( level_squares[i].size != num_cols )
+    if( level_squares[i].size() != num_cols )
     {
       qFatal( "LevelSector Error: The number of columns differs between "
               "rows!" );
@@ -33,22 +33,22 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
 
   // Calculate the sector dimensions
   int num_rows = level_squares.size();
-  
+
   int sector_width = (num_cols+num_rows)*64;
   int sector_height = (num_cols+num_cols)*32 +
-    (level_squares.front().front().height() - 64);
+    (level_squares.front().front()->boundingRect().height() - 64);
 
   d_bounding_rect = QRectF( 0, 0, sector_width, sector_height );
 
   // Create the level square z-order map
   int max_y_pos = 0;
-  
+
   for( int j = 0; j < level_squares.size(); ++j )
-  {    
+  {
     for( int i = 0; i < level_squares[j].size(); ++i )
     {
       LevelSquare* square = level_squares[j][i];
-      
+
       // The y position gives use the z-order
       int y_pos = (i+j)*32;
       int x_pos = (int)d_bounding_rect.width()/2 + (i-j-1)*64;
@@ -69,18 +69,18 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
     QList<LevelSquare*>& level_squares =
       d_level_square_z_order_map[i];
 
-    QList<LevelSquare*>::iterator level_square_it, level_square_end;
-    level_square_it = level_squares.begin();
-    level_square_end = level_squares.end();
+    QList<LevelSquare*>::iterator level_squares_it, level_squares_end;
+    level_squares_it = level_squares.begin();
+    level_squares_end = level_squares.end();
 
     while( level_squares_it != level_squares_end )
     {
-      QPointF position = (*level_square_it)->pos();
-      
-      (*level_square_it)->setParent( this );
+      QPointF position = (*level_squares_it)->pos();
+
+      (*level_squares_it)->setParent( this );
 
       // Set the position again so that it is w.r.t. the sector coordinate sys.
-      (*level_square_it)->setPos( position );
+      (*level_squares_it)->setPos( position );
 
       ++level_squares_it;
     }
@@ -95,10 +95,10 @@ int LevelSector::getNumberOfImageAssets() const
 {
   QSet<QString> image_asset_names;
 
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
-      level_squares[j][i]->getImageAssetNames( image_asset_names );
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
+      d_level_square_z_order_map[j][i]->getImageAssetNames( image_asset_names );
   }
 
   return image_asset_names.size();
@@ -107,21 +107,21 @@ int LevelSector::getNumberOfImageAssets() const
 // Get the image asset names used by the object
 void LevelSector::getImageAssetNames( QSet<QString>& image_asset_names ) const
 {
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
-      level_squares[j][i]->getImageAssetNames( image_asset_names );
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
+      d_level_square_z_order_map[j][i]->getImageAssetNames( image_asset_names );
   }
 }
 
 // Check if the image asset is used by the object
 bool LevelSector::isImageAssetUsed( const QString& image_asset_name ) const
 {
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
     {
-      if( level_squares[j][i]->isImageAssetUsed( image_asset_name ) )
+      if( d_level_square_z_order_map[j][i]->isImageAssetUsed( image_asset_name ) )
         return true;
     }
   }
@@ -132,11 +132,11 @@ bool LevelSector::isImageAssetUsed( const QString& image_asset_name ) const
 // Check if the image assets have been loaded
 bool LevelSector::imageAssetsLoaded() const
 {
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
     {
-      if( !level_squares[j][i]->imageAssetsLoaded() )
+      if( !d_level_square_z_order_map[j][i]->imageAssetsLoaded() )
         return false;
     }
   }
@@ -148,11 +148,11 @@ bool LevelSector::imageAssetsLoaded() const
 void LevelSector::loadImageAsset( const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames )
 {
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
     {
-      level_squares[j][i]->loadImageAsset( image_asset_name,
+      d_level_square_z_order_map[j][i]->loadImageAsset( image_asset_name,
                                            image_asset_frames );
     }
   }
@@ -161,10 +161,10 @@ void LevelSector::loadImageAsset( const QString& image_asset_name,
 // Dump the image assets
 void LevelSector::dumpImageAssets()
 {
-  for( int j = 0; j < level_squares.size(); ++j )
+  for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < level_squares[j].size(); ++i )
-      level_squares[j][i]->dumpImageAssets();
+    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
+      d_level_square_z_order_map[j][i]->dumpImageAssets();
   }
 }
 
@@ -182,7 +182,7 @@ void LevelSector::paint( QPainter*,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 { /* ... */ }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

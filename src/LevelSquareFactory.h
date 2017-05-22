@@ -37,7 +37,7 @@ public:
 
   //! Create the level squares (advanced)
   QList<LevelSquare*> createLevelSquares(
-                                   const QList<LevelPillars*>& pillars ) const;
+                                   const QList<LevelPillar*>& level_pillars ) const;
 
 private:
 
@@ -47,7 +47,7 @@ private:
   // The level til file name
   QString d_level_til_file_name;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_SQUARE_FACTORY_H

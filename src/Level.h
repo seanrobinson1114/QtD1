@@ -18,6 +18,7 @@
 // QtD1 Includes
 #include "LevelObject.h"
 #include "LevelPillar.h"
+#include "LevelSector.h"
 #include "ImageAssetLoader.h"
 #include "Character.h"
 #include "Music.h"
@@ -28,7 +29,7 @@ namespace QtD1{
 class Level : public QGraphicsScene
 {
   Q_OBJECT
-  
+
 public:
 
   //! The level types
@@ -42,10 +43,10 @@ public:
     LazarusLair,
     DiabloLair
   };
-  
+
   //! Constructor
   Level( QObject* parent = 0 );
-  
+
   //! Destructor
   virtual ~Level()
   { /* ... */ }
@@ -58,6 +59,13 @@ public:
 
   //! Get the image asset name
   virtual QString getImageAssetName() const = 0;
+
+  //! Generate the level pillars
+  void Level:generatePillars(
+                              const QString& level_min_file_name,
+                              const QString& level_sol_file_name,
+                              const QString& level_til_file_name,
+                              const QMap<QString,QPointF>& level_dun_file_names );
 
   //! Create the level background
   void createBackground();
@@ -121,7 +129,7 @@ public slots:
 
   //! Pause the level music
   void pauseLevelMusic();
-  
+
   //! Stop the level music
   void stopLevelMusic();
 
@@ -148,12 +156,12 @@ private slots:
 
   // Handle image asset loading finished
   void handleImageAssetLoadingFinished( const int number_of_assets_loaded );
-  
+
 private:
 
   // Reset the asset data
   void resetAssetData();
-  
+
   // Gather image assets to load
   void gatherImageAssetsToLoad( QSet<QString>& assets_to_load );
 
@@ -174,7 +182,7 @@ private:
   QList<LevelObject*> d_level_objects;
 
   // The level sectors
-  QList<LevelSectors*> d_level_sectors;
+  QList<LevelSector*> d_level_sectors;
 
   // The level object asset map (all objects)
   QMap<QString,QList<LevelObject*> > d_level_object_asset_map;
@@ -191,7 +199,7 @@ private:
   // Records if the image assets are ready
   bool d_ready;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_H

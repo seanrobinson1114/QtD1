@@ -49,7 +49,7 @@ LevelSectorFactory::LevelSectorFactory( const QString& level_min_file_name,
 LevelSector* LevelSectorFactory::createLevelSector() const
 {
   // Create the level squares
-  QList<LevelSquares*> level_squares;
+  QList<LevelSquare*> level_squares;
 
   {
     LevelSquareFactory square_factory( d_level_min_file_name,
@@ -66,10 +66,10 @@ LevelSector* LevelSectorFactory::createLevelSector(
                                      const QList<LevelSquare*>& squares ) const
 {
   // Initialize the square rows and columns
-  QVector<QVector<LevelSquares*> > ordered_squares( num_rows );
+  QVector<QVector<LevelSquare*> > ordered_squares( squares.size() );
 
-  for( int j = 0; j < num_rows; ++i )
-    ordered_squares[j].resize( num_cols );
+  for( int j = 0; j < squares.size(); ++j )
+    ordered_squares[j].resize( squares[j]->boundingRect().width() );
 
   // Open the dun file
   QFile dun_file( d_level_dun_file_name );
@@ -110,8 +110,8 @@ LevelSector* LevelSectorFactory::createLevelSector(
 
   return new LevelSector( ordered_squares );
 }
-  
-} // end QtD1 
+
+} // end QtD1
 
 //---------------------------------------------------------------------------//
 // end LevelSectorFactory.cpp

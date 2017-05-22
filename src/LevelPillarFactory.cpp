@@ -34,7 +34,7 @@ QList<LevelPillar*> LevelPillarFactory::createLevelPillars() const
 {
   // Create a new pillar list
   QList<LevelPillar*> level_pillars;
-  
+
   // Open the min file
   QFile min_file( d_level_min_file_name );
   min_file.open( QIODevice::ReadOnly );
@@ -43,7 +43,7 @@ QList<LevelPillar*> LevelPillarFactory::createLevelPillars() const
   QDataStream stream( &min_file );
   stream.setByteOrder( QDataStream::LittleEndian );
 
-  LevelPillarNumBlocksFuntion blocks_per_pillar = 
+  LevelPillarFactory::LevelPillarNumBlocksFunction blocks_per_pillar =
     this->getLevelPillarNumBlocksFunction();
 
   LevelPillarCreationFunction create_pillar =
@@ -53,14 +53,14 @@ QList<LevelPillar*> LevelPillarFactory::createLevelPillars() const
   {
     if( stream.atEnd() )
       break;
-    
+
     // Read a section of blocks from the file
-    QVector<LevelPillar::Block> blocks( blocks_per_pillar );
-    
+    QVector<LevelPillar::Block> blocks( blocks_per_pillar() );
+
     for( int i = 0; i < blocks.size(); ++i )
     {
-      uint16 raw_data;
-      
+      quint16 raw_data;
+
       stream >> raw_data;
 
       // Indexing in the min file starts at 1 (shift left to 0)
@@ -146,7 +146,7 @@ LevelPillar* LevelPillarFactory::createHellPillar( const QVector<LevelPillar::Bl
 }
 
 // Get the number of pillar blocks function
-LevelPillarNumBlocksFunction LevelPillarFactory::getLevelPillarNumBlocksFunction() const
+LevelPillarFactory::LevelPillarNumBlocksFunction LevelPillarFactory::getLevelPillarNumBlocksFunction() const
 {
   if( d_level_min_file_name.contains( "town.min" ) )
     return &LevelPillarFactory::getNumberOfBlocksInTownPillar;
@@ -166,7 +166,7 @@ LevelPillarNumBlocksFunction LevelPillarFactory::getLevelPillarNumBlocksFunction
 }
 
 // Get the pillar creation function
-LevelPillarCreationFunction LevelPillarFactory::getLevelPillarCreationFunction() const
+LevelPillarFactory::LevelPillarCreationFunction LevelPillarFactory::getLevelPillarCreationFunction() const
 {
   if( d_level_min_file_name.contains( "town.min" ) )
     return &LevelPillarFactory::createTownPillar;
@@ -184,7 +184,7 @@ LevelPillarCreationFunction LevelPillarFactory::getLevelPillarCreationFunction()
             d_level_min_file_name.toStdString().c_str() );
   }
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

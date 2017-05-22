@@ -41,7 +41,7 @@ LevelSquareFactory::LevelSquareFactory( const QString& level_min_file_name,
 QList<LevelSquare*> LevelSquareFactory::createLevelSquares() const
 {
   // Create the level pillars
-  QList<LevelPillars*> level_pillars;
+  QList<LevelPillar*> level_pillars;
 
   {
     LevelPillarFactory pillar_factory( d_level_min_file_name );
@@ -49,16 +49,16 @@ QList<LevelSquare*> LevelSquareFactory::createLevelSquares() const
     level_pillars = pillar_factory.createLevelPillars();
   }
 
-  return this->createLevelSquares( pillars );
+  return this->createLevelSquares( level_pillars );
 }
 
 // Create the level squares (advanced)
 QList<LevelSquare*> LevelSquareFactory::createLevelSquares(
-                                    const QList<LevelPillars*>& pillars ) const
+                                    const QList<LevelPillar*>& level_pillars ) const
 {
   // Create a new square list
-  QList<LevelSquares*> level_squares;
-  
+  QList<LevelSquare*> level_squares;
+
   // Open the til file
   QFile til_file( d_level_til_file_name );
   til_file.open( QIODevice::ReadOnly );
@@ -91,7 +91,7 @@ QList<LevelSquare*> LevelSquareFactory::createLevelSquares(
 
   return level_squares;
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

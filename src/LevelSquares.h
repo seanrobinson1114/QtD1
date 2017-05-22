@@ -14,7 +14,7 @@
 #include <vector>
 
 // QtD1 Includes
-#include "LevelPillars.h"
+#include "LevelPillar.h"
 
 namespace QtD1{
 

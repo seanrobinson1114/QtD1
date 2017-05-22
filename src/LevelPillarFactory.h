@@ -40,7 +40,7 @@ public:
 private:
 
   // The level pillar number of blocks function typedef
-  typedef std::function<int()> LevelPillarNumBlocksFuntion;
+  typedef std::function<int()> LevelPillarNumBlocksFunction;
 
   // The level pillar creation function typedef
   typedef std::function<LevelPillar*(const QVector<LevelPillar::Block>&)>
@@ -85,7 +85,7 @@ private:
   // The level min file name
   QString d_level_min_file_name;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_PILLAR_FACTORY_H
