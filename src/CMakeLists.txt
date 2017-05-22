@@ -92,6 +92,13 @@ ADD_LIBRARY(qtd1_core
   Sorcerer.cpp
   WarriorData.cpp
   Warrior.cpp
+  LevelPillar.cpp
+  TownLevelPillar.cpp
+  LevelPillarFactory.cpp
+  LevelSquare.cpp
+  LevelSquareFactory.cpp
+  LevelSector.cpp
+  LevelSectorFactory.cpp
   Level.cpp
   Town.cpp
   CathedralLevel.cpp

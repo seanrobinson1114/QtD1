@@ -6,27 +6,25 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Qt Includes
+#include <QImageReader>
+
 // QtD1 Includes
 #include "Level.h"
 
 namespace QtD1{
 
 // Constructor
-Level::Level( QObject* parent )
-  : QGraphicsScene( parent ),
-    d_character( NULL ),
+Level::Level( QObject* parent, const QString& level_music_file_name )
+  : d_character( NULL ),
     d_level_objects(),
     d_level_object_asset_map(),
     d_music( new Music ),
     d_image_asset_loader(),
     d_needs_restore( false ),
     d_ready( false )
-{ /* ... */ }
-
-// Constructor
-Level::Level( QObject* parent, const QString& level_music_file_name )
-  : Level( parent )
 {
+  // Set the level music
   d_music->setSource( level_music_file_name );
 }
 
@@ -34,6 +32,12 @@ Level::Level( QObject* parent, const QString& level_music_file_name )
 void Level::setMusic( const std::shared_ptr<Music>& music )
 {
   d_music = music;
+}
+
+// Create the level background
+void Level::createBackground()
+{
+  this->createSectors( d_level_sectors );
 }
 
 // Get the character
@@ -136,6 +140,23 @@ void Level::loadImageAssetsSync()
   d_image_asset_loader->loadAssetsSync();
 }
 
+// Generate the level pillars
+void Level::generatePillars(
+                            const QString& level_min_file_name,
+                            const QString& level_sol_file_name,
+                            const QString& level_til_file_name,
+                            const QMap<QString,QPointF>& level_dun_file_names )
+{
+  // Parse the min file and create the raw pillars
+  {
+    LevelPillarFactory pillar_factory( level_min_file_name );
+
+    d_level_pillars = pillar_factory.createPillars();
+  }
+
+  
+}
+
 // Reset the asset data
 void Level::resetAssetData()
 {
@@ -150,6 +171,21 @@ void Level::resetAssetData()
 // Gather image assets to load
 void Level::gatherImageAssetsToLoad( QSet<QString>& assets_to_load )
 {
+  // Add the sector assets
+  assets_to_load.insert( this->getImageAssetName() );
+
+  QList<LevelSector*>::const_iterator level_sector_it, level_sector_end;
+  level_sector_it = d_level_sectors.begin();
+  level_sector_end = d_level_sectors.end();
+
+  while( level_sector_it != level_sector_end )
+  {
+    this->assignLevelObjectToAssetNames( assets_to_load, *level_sector_it );
+
+    ++level_sector_it;
+  }
+
+  // Add the externally added object assets
   QSet<QString> object_assets;
   
   if( !d_character->imageAssetsLoaded() )

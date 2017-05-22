@@ -17,6 +17,7 @@
 
 // QtD1 Includes
 #include "LevelObject.h"
+#include "LevelPillar.h"
 #include "ImageAssetLoader.h"
 #include "Character.h"
 #include "Music.h"
@@ -54,6 +55,12 @@ public:
 
   //! Get the number
   virtual int getNumber() const = 0;
+
+  //! Get the image asset name
+  virtual QString getImageAssetName() const = 0;
+
+  //! Create the level background
+  void createBackground();
 
   //! Add a level object
   void addLevelObject( LevelObject* level_object, const QPointF& location );
@@ -126,6 +133,9 @@ protected:
   //! Set the music
   void setMusic( const std::shared_ptr<Music>& music );
 
+  //! Create the level sectors
+  virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
+
 private slots:
 
   // Handle image asset loading started
@@ -160,10 +170,13 @@ private:
   // The character
   Character* d_character;
 
-  // The level objects
+  // The level objects (externally added)
   QList<LevelObject*> d_level_objects;
 
-  // The level object asset map
+  // The level sectors
+  QList<LevelSectors*> d_level_sectors;
+
+  // The level object asset map (all objects)
   QMap<QString,QList<LevelObject*> > d_level_object_asset_map;
 
   // The level music

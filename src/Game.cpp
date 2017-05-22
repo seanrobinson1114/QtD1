@@ -56,7 +56,7 @@ Game* Game::getInstance()
   d_loading_screen->move( 0, 0 );
 
   // Set up the level
-  d_level->setSceneRect( 0, 0, 800, 600 );
+  d_level->createBackground();
 
   QPixmap level_background( d_level_viewer->size() );
   level_background.fill( Qt::gray );

@@ -32,7 +32,13 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
   d_left_pillar->setParentItem( this );
   d_bottom_pillar->setParentItem( this );
 
-  // There is nothing to draw yet
+  // Reposition the pillars
+  d_top_pillar->setPos( 16, 0 );
+  d_right_pillar->setPos( 32, 16 );
+  d_left_pillar->setPos( 0, 16 );
+  d_bottom_pillar->setPos( 16, 32 );
+
+  // There is nothing to draw (all drawing is done by the pillars)
   this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
@@ -102,7 +108,8 @@ QRectF LevelSquare::boundingRect() const
 }
 
 // Paint the level square
-/*! The level square has nothing to paint. All painting is done by the pillars.
+/*! \details The level square has nothing to paint. All painting is done by 
+ * the pillars.
  */
 void LevelSquare::paint( QPainter*,
                          const QStyleOptionGraphicsItem*,

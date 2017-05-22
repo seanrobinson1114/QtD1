@@ -1,35 +1,34 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   LevelSquare.h
+//! \file   LevelSector.h
 //! \author Alex Robinson, Sean Robinson
-//! \brief  Level square class declaration
+//! \brief  Level sector class declaration
 //!
 //---------------------------------------------------------------------------//
 
-#ifndef LEVEL_SQUARE_H
-#define LEVEL_SQUARE_H
+#ifndef LEVEL_SECTOR_H
+#define LEVEL_SECTOR_H
 
 // Qt Includes
-#include <QVector>
+#incoude <QVector>
 
 // QtD1 Includes
 #include "LevelObject.h"
-#include "LevelPillar.h"
+#include "LevelSquare.h"
 
-//! The level square class
-class LevelSquare : public LevelObject
+namespace QtD1{
+
+//! The level sector class
+class LevelSector : public LevelObject
 {
 
 public:
 
   //! Constructor
-  LevelSquare( LevelPillar* top_pillar,
-               LevelPillar* right_pillar,
-               LevelPillar* left_pillar,
-               LevelPillar* bottom_pillar );
+  LevelSector( QVector<QVector<LevelSquare*> > level_squares );
 
   //! Destructor
-  ~LevelSquare()
+  ~LevelSector()
   { /* ... */ }
 
   //! Get the number of image assets used by the object
@@ -58,21 +57,20 @@ public:
   void paint( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
-  
+
 private:
 
-  // The pillars
-  LevelPillar* d_top_pillar;
-  LevelPillar* d_right_pillar;
-  LevelPillar* d_left_pillar;
-  LevelPillar* d_bottom_pillar;
+  // The level square z-order map
+  QMap<int,QList<LevelSquare*> > d_level_square_z_order_map;
 
   // The bounding rect
   QRectF d_bounding_rect;
 };
 
-#endif // end LEVEL_SQUARE_H
+} // end QtD1 namespace
+
+#endif // end LEVEL_SECTOR_H
 
 //---------------------------------------------------------------------------//
-// end LevelSquare.h
+// end LevelSector.h
 //---------------------------------------------------------------------------//

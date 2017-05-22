@@ -34,6 +34,9 @@ public:
   //! Get the number
   int getNumber() const override;
 
+  //! Get the image asset name
+  QString getImageAssetName() const override;
+
   //! Insert the character
   void insertCharacter( Character* character,
                         const QPointF& location,
@@ -41,6 +44,17 @@ public:
 
   //! Remove the character
   void removeCharacter() override;
+
+private:
+
+  // Create the level sectors
+  void createSectors( QList<LevelSector*>& sectors ) override;
+
+  // Create a sector
+  static LevelSector* createSector( const QString& level_min_file_name,
+                                    const QString& level_til_file_name,
+                                    const QString& level_dun_file_name,
+                                    const QList<LevelSquare*>& level_squares );
 };
   
 } // end QtD1 namespace
