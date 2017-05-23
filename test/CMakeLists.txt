@@ -90,3 +90,13 @@ ADD_EXECUTABLE(tstGameSprite tstGameSprite.cpp)
 SET_TARGET_PROPERTIES(tstGameSprite PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 TARGET_LINK_LIBRARIES(tstGameSprite qtd1_cel_plugin)
 ADD_TEST(GameSprite_test tstGameSprite -v2)
+
+ADD_EXECUTABLE(tstTownLevelPillar tstTownLevelPillar.cpp)
+SET_TARGET_PROPERTIES(tstTownLevelPillar PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+TARGET_LINK_LIBRARIES(tstTownLevelPillar qtd1_cel_plugin qtd1_pcx_plugin)
+ADD_TEST(TownLevelPillar_test tstTownLevelPillar -v2)
+
+ADD_EXECUTABLE(tstLevelPillarFactory tstLevelPillarFactory.cpp)
+SET_TARGET_PROPERTIES(tstLevelPillarFactory PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+TARGET_LINK_LIBRARIES(tstLevelPillarFactory qtd1_cel_plugin qtd1_pcx_plugin)
+ADD_TEST(LevelPillarFactory_test tstLevelPillarFactory -v2)
