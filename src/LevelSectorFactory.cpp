@@ -15,6 +15,8 @@
 #include "LevelSectorFactory.h"
 #include "LevelSquareFactory.h"
 
+#include <iostream>
+
 namespace QtD1{
 
 // Constructor
@@ -65,12 +67,6 @@ LevelSector* LevelSectorFactory::createLevelSector() const
 LevelSector* LevelSectorFactory::createLevelSector(
                                      const QList<LevelSquare*>& squares ) const
 {
-  // Initialize the square rows and columns
-  QVector<QVector<LevelSquare*> > ordered_squares( squares.size() );
-
-  for( int j = 0; j < squares.size(); ++j )
-    ordered_squares[j].resize( squares[j]->boundingRect().width() );
-
   // Open the dun file
   QFile dun_file( d_level_dun_file_name );
   dun_file.open( QIODevice::ReadOnly );
@@ -85,8 +81,13 @@ LevelSector* LevelSectorFactory::createLevelSector(
   stream >> num_rows;
   stream >> num_cols;
 
+  // Initialize the square rows and columns
+  QVector<QVector<LevelSquare*> > ordered_squares( num_rows );
+
   for( int j = 0; j < num_rows; ++j )
   {
+    ordered_squares[j].resize( num_cols );
+
     for( int i = 0; i < num_cols; ++i )
     {
       // Make sure that the stream is still valid

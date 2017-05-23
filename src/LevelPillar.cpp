@@ -71,7 +71,7 @@ void LevelPillar::loadImageAsset( const QString& image_asset_name,
             image_asset_name.toStdString().c_str(),
             this->getRequiredImageAssetName().toStdString().c_str() );
   }
-  
+
   d_pillar_image = QPixmap( d_pillar_bounding_rect.size().toSize() );
   d_pillar_image.fill( Qt::transparent );
 

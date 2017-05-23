@@ -9,6 +9,8 @@
 // QtD1 Includes
 #include "LevelSector.h"
 
+#include <iostream>
+
 namespace QtD1{
 
 // Constructor
@@ -43,11 +45,16 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   // Create the level square z-order map
   int max_y_pos = 0;
 
+  std::cout << "size of level_squares: " << level_squares[0].size() << std::endl;
+
   for( int j = 0; j < level_squares.size(); ++j )
   {
     for( int i = 0; i < level_squares[j].size(); ++i )
     {
+      //std::cout<< "starting loop" << std::endl;
       LevelSquare* square = level_squares[j][i];
+      //std::cout<< "added square" << std::endl;
+      //std::cout << j << ":" << i << " " << level_squares[j][i] << std::endl;
 
       // The y position gives use the z-order
       int y_pos = (i+j)*32;
@@ -59,7 +66,9 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
       d_level_square_z_order_map[y_pos] << square;
 
       // This will have to be set again once the parent has been assigned
+      //std::cout << "x position: " << x_pos << " y position: " << y_pos << std::endl;
       square->setPos( x_pos, y_pos );
+      //std::cout << "set position" << std::endl;
     }
   }
 
@@ -87,7 +96,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   }
 
   // There is nothing to draw (all drawing is done by the pillars)
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  //this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Get the number of image assets used by the object

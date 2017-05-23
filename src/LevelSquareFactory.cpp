@@ -15,6 +15,8 @@
 #include "LevelSquareFactory.h"
 #include "LevelPillarFactory.h"
 
+#include <iostream>
+
 namespace QtD1{
 
 // Constructor
@@ -86,8 +88,12 @@ QList<LevelSquare*> LevelSquareFactory::createLevelSquares(
                                                  level_pillars[left_index],
                                                  level_pillars[bottom_index] );
 
+    std::cout << "square memory location: " << level_square << std::endl;
+
     level_squares << level_square;
   }
+  std::cout << "done with squares: " << level_squares.size() << std::endl;
+
 
   return level_squares;
 }

@@ -26,11 +26,11 @@ Level::Level( QObject* parent )
     d_needs_restore( false ),
     d_ready( false )
 { /* ... */ }
-  
+
 // Constructor
 Level::Level( QObject* parent, const QString& level_music_file_name )
   : Level( parent )
-{ 
+{
   // Set the level music
   d_music->setSource( level_music_file_name );
 }
@@ -324,6 +324,18 @@ void Level::handleImageAssetLoadingFinished( const int number_of_assets_loaded )
   {
     d_character->loadRawImageAssets( *d_image_asset_loader->getLoadedAssets() );
     d_character->finalizeImageAssetLoading();
+  }
+
+  QList<LevelSector*>::const_iterator level_sector_it, level_sector_end;
+  level_sector_it = d_level_sectors.begin();
+  level_sector_end = d_level_sectors.end();
+
+  while( level_sector_it != level_sector_end )
+  {
+    (*level_sector_it)->loadRawImageAssets( *d_image_asset_loader->getLoadedAssets() );
+    (*level_sector_it)->finalizeImageAssetLoading();
+
+    ++level_sector_it;
   }
 
   QList<LevelObject*>::const_iterator level_object_it, level_object_end;

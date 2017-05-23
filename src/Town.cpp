@@ -103,7 +103,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
                       left_sector->boundingRect().width()+right_sector->boundingRect().width(),
                       top_sector->boundingRect().height()+bottom_sector->boundingRect().height() );
 
-  // Reposition the sectors
+  // // Reposition the sectors
   top_sector->setPos( top_sector->boundingRect().width()/2, 0 );
   left_sector->setPos( 0, left_sector->boundingRect().height()/2 );
   right_sector->setPos( right_sector->boundingRect().width(), right_sector->boundingRect().height()/2 );

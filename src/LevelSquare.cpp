@@ -39,7 +39,7 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
   d_bottom_pillar->setPos( 16, 32 );
 
   // There is nothing to draw (all drawing is done by the pillars)
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  //this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Get the number of image assets used by the object

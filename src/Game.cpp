@@ -59,12 +59,12 @@ Game* Game::getInstance()
   d_level->createBackground();
 
   QPixmap level_background( d_level_viewer->size() );
-  level_background.fill( Qt::gray );
+  //level_background.fill( Qt::gray );
   d_level->setBackgroundBrush( level_background );
 
   // Set up the level viewer
-  d_level_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  d_level_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  d_level_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+  d_level_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   d_level_viewer->setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
   d_level_viewer->setOptimizationFlags( QGraphicsView::DontClipPainter |
                                         QGraphicsView::DontSavePainterState |
