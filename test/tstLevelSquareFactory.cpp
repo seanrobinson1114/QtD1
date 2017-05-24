@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   tstLevelPillarFactory.cpp
+//! \file   tstLevelSquareFactory.cpp
 //! \author Alex Robinson, Sean Robinson
-//! \brief  The level pillar factory unit tests
+//! \brief  The level square factory unit tests
 //!
 //---------------------------------------------------------------------------//
 
@@ -15,6 +15,7 @@
 #include <QtPlugin>
 
 // QtD1 Includes
+#include "LevelSquareFactory.h"
 #include "LevelPillarFactory.h"
 #include "MPQHandler.h"
 
@@ -25,7 +26,7 @@ Q_IMPORT_PLUGIN(pcx)
 //---------------------------------------------------------------------------//
 // Test suite.
 //---------------------------------------------------------------------------//
-class TestLevelPillarFactory : public QObject
+class TestLevelSquareFactory : public QObject
 {
   Q_OBJECT
 
@@ -40,17 +41,40 @@ private slots:
 //---------------------------------------------------------------------------//
 // Tests.
 //---------------------------------------------------------------------------//
-// Check that level pillars can be constructed
-void createLevelPillars()
+// Check that the level squares can be constructed
+void createLevelSquares()
+{
+  QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.til" );
+
+  QList<QtD1::LevelSquare*> squares = square_factory.createLevelSquares();
+
+  QCOMPARE( squares.size(), 342 );
+
+  // Delete the squares
+  for( int i = 0; i < squares.size(); ++i )
+    delete squares[i];
+}
+
+//---------------------------------------------------------------------------//
+// Check that the level squares can be constructed from cached pillars
+void createLevelSquares_cached_pillars()
 {
   QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min" );
 
   QList<QtD1::LevelPillar*> pillars = pillar_factory.createLevelPillars();
 
-  QCOMPARE( pillars.size(), 1258 );
+  QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.til" );
 
-  for( int i = 0; i < pillars.size(); ++i )
-    delete pillars[i];
+  QList<QtD1::LevelSquare*> squares =
+    square_factory.createLevelSquares( pillars );
+
+  QCOMPARE( squares.size(), 342 );
+
+  // Delete the squares
+  for( int i = 0; i < squares.size(); ++i )
+    delete squares[i];
 }
 
 //---------------------------------------------------------------------------//
@@ -61,9 +85,9 @@ void createLevelPillars()
 //---------------------------------------------------------------------------//
 // Test Main
 //---------------------------------------------------------------------------//
-QTEST_MAIN( TestLevelPillarFactory )
-#include "tstLevelPillarFactory.moc"
+QTEST_MAIN( TestLevelSquareFactory )
+#include "tstLevelSquareFactory.moc"
 
 //---------------------------------------------------------------------------//
-// end tstLevelPillarFactory.cpp
+// end tstLevelSquareFactory.cpp
 //---------------------------------------------------------------------------//

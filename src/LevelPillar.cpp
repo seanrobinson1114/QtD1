@@ -33,6 +33,9 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
     d_pillar_bounding_rect = QRectF( 0, 0, 64, 160 );
   else // level_image_blocks.size() == 16
     d_pillar_bounding_rect = QRectF( 0, 0, 64, 256 );
+
+  // There is nothing to draw until the image asset has been loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Get the number of image assets used by the object
@@ -90,6 +93,8 @@ void LevelPillar::loadImageAsset( const QString& image_asset_name,
 
   // Get the pillar shape
   d_pillar_shape.addRegion( d_pillar_image.createHeuristicMask() );
+
+  this->setFlag( QGraphicsItem::ItemHasNoContents, false );
 }
 
 // Create a pillar column
@@ -174,11 +179,8 @@ void LevelPillar::paint( QPainter* painter,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 {
-  if( !d_pillar_image.isNull() )
-  {
-    // Note: Painting occurs in local coordinates, hence the 0, 0 position.
-    painter->drawPixmap( 0, 0, d_pillar_image );
-  }
+  // Note: Painting occurs in local coordinates, hence the 0, 0 position.
+  painter->drawPixmap( 0, 0, d_pillar_image );
 }
 
 } // end QtD1 namespace
