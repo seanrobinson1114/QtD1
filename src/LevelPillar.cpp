@@ -140,7 +140,10 @@ void LevelPillar::createPillarColumn(
       }
 
       if( move_block_up )
+      {
         pillar_painter_viewport.moveTop( pillar_painter_viewport.top() - 1 );
+        move_block_up = false;
+      }
 
       // Draw the block
       pillar_painter.drawPixmap( pillar_painter_viewport,

@@ -268,8 +268,8 @@ void getNumberOfImageAssets()
 }
 
 //---------------------------------------------------------------------------//
-// Check if the image asset is used by the square
-void isImageAssetUsed()
+// Check that the image assets used by the square can be retrieved
+void getImageAssetNames()
 {
   QtD1::LevelPillar* top_pillar, *right_pillar, *left_pillar, *bottom_pillar;
 
@@ -285,6 +285,23 @@ void isImageAssetUsed()
 
   QCOMPARE( image_asset_names.size(), 1 );
   QVERIFY( image_asset_names.contains( "/levels/towndata/town.cel+levels/towndata/town.pal" ) );
+}
+
+//---------------------------------------------------------------------------//
+// Check if the image asset is used by the square
+void isImageAssetUsed()
+{
+  QtD1::LevelPillar* top_pillar, *right_pillar, *left_pillar, *bottom_pillar;
+
+  createPillars( &top_pillar, &right_pillar, &left_pillar, &bottom_pillar );
+  
+  QtD1::LevelSquare square( top_pillar,
+                            right_pillar,
+                            left_pillar,
+                            bottom_pillar );
+  
+  QVERIFY( square.isImageAssetUsed( "/levels/towndata/town.cel+levels/towndata/town.pal" ) );
+  QVERIFY( !square.isImageAssetUsed( "/dummy/dummy.cel" ) );
 }
 
 //---------------------------------------------------------------------------//
@@ -334,7 +351,7 @@ void dumpImageAssets()
 }
 
 //---------------------------------------------------------------------------//
-// Check that the square can be pained
+// Check that the square can be painted
 void paint()
 {
   QtD1::LevelPillar* top_pillar, *right_pillar, *left_pillar, *bottom_pillar;

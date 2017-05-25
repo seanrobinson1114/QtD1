@@ -110,3 +110,13 @@ ADD_EXECUTABLE(tstLevelSquareFactory tstLevelSquareFactory.cpp)
 SET_TARGET_PROPERTIES(tstLevelSquareFactory PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 TARGET_LINK_LIBRARIES(tstLevelSquareFactory qtd1_cel_plugin qtd1_pcx_plugin)
 ADD_TEST(LevelSquareFactory_test tstLevelSquareFactory -v2)
+
+ADD_EXECUTABLE(tstLevelSector tstLevelSector.cpp)
+SET_TARGET_PROPERTIES(tstLevelSector PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+TARGET_LINK_LIBRARIES(tstLevelSector qtd1_cel_plugin qtd1_pcx_plugin)
+ADD_TEST(LevelSector_test tstLevelSector -v2)
+
+ADD_EXECUTABLE(tstLevelSectorFactory tstLevelSectorFactory.cpp)
+SET_TARGET_PROPERTIES(tstLevelSectorFactory PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+TARGET_LINK_LIBRARIES(tstLevelSectorFactory qtd1_cel_plugin qtd1_pcx_plugin)
+ADD_TEST(LevelSectorFactory_test tstLevelSectorFactory -v2)
