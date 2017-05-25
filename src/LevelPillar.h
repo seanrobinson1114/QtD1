@@ -67,10 +67,19 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Clone the level pillar
+  virtual LevelPillar* clone() const = 0;
+
 protected:
+
+  //! Constructor
+  LevelPillar();
 
   //! Get the image asset required by this level pillar
   virtual QString getRequiredImageAssetName() const = 0;
+
+  //! Deep copy pillar data
+  void deepCopyPillarData( LevelPillar& pillar ) const;
 
 private:
 

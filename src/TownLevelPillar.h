@@ -27,7 +27,13 @@ public:
   ~TownLevelPillar()
   { /* ... */ }
 
+  //! Clone the level pillar
+  TownLevelPillar* clone() const override;
+
 private:
+
+  // Default Constructor
+  TownLevelPillar();
 
   // Get the image asset required by this level pillar
   QString getRequiredImageAssetName() const override;

@@ -38,6 +38,10 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
   this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
+// Constructor
+LevelPillar::LevelPillar()
+{ /* ... */ }
+
 // Get the number of image assets used by the object
 int LevelPillar::getNumberOfImageAssets() const
 {
@@ -161,7 +165,6 @@ void LevelPillar::createPillarColumn(
 void LevelPillar::dumpImageAssets()
 {
   d_pillar_image = QPixmap();
-  d_pillar_bounding_rect = QRectF();
   d_pillar_shape = QPainterPath();
 }
 
@@ -184,6 +187,19 @@ void LevelPillar::paint( QPainter* painter,
 {
   // Note: Painting occurs in local coordinates, hence the 0, 0 position.
   painter->drawPixmap( 0, 0, d_pillar_image );
+}
+
+// Deep copy pillar data
+void LevelPillar::deepCopyPillarData( LevelPillar& pillar ) const
+{
+  pillar.d_level_image_blocks = d_level_image_blocks;
+  pillar.d_pillar_bounding_rect = d_pillar_bounding_rect;
+
+  if( !d_pillar_image.isNull() )
+  {
+    pillar.d_pillar_image = d_pillar_image.copy();
+    pillar.d_pillar_shape = d_pillar_shape;
+  }
 }
 
 } // end QtD1 namespace

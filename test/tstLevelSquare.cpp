@@ -351,6 +351,31 @@ void dumpImageAssets()
 }
 
 //---------------------------------------------------------------------------//
+// Check that the square can be cloned
+void clone()
+{
+  QtD1::LevelPillar* top_pillar, *right_pillar, *left_pillar, *bottom_pillar;
+
+  createPillars( &top_pillar, &right_pillar, &left_pillar, &bottom_pillar );
+  
+  QtD1::LevelSquare* square( new QtD1::LevelSquare( top_pillar,
+                                                    right_pillar,
+                                                    left_pillar,
+                                                    bottom_pillar ) );
+  
+  square->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+
+  QtD1::LevelSquare* square_clone = square->clone();
+
+  QCOMPARE( square->boundingRect(), square_clone->boundingRect() );
+  QVERIFY( square != square_clone );
+
+  delete square;
+  delete square_clone;
+}
+
+//---------------------------------------------------------------------------//
 // Check that the square can be painted
 void paint()
 {

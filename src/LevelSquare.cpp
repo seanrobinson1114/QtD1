@@ -116,6 +116,16 @@ void LevelSquare::paint( QPainter*,
                          QWidget* )
 { /* ... */ }
 
+// Clone the level square
+LevelSquare* LevelSquare::clone()
+{
+  LevelSquare* square_clone = new LevelSquare( d_top_pillar->clone(),
+                                               d_right_pillar->clone(),
+                                               d_left_pillar->clone(),
+                                               d_bottom_pillar->clone() );
+  return square_clone;
+}
+
 }// end QtD1 namespace
 
 //---------------------------------------------------------------------------//

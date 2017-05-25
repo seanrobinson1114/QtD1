@@ -181,6 +181,25 @@ void dumpImageAssets()
 }
 
 //---------------------------------------------------------------------------//
+// Check that the pillar can be cloned
+void clone()
+{
+  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+
+  pillar.loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                         t_image_asset_frames );
+
+  QtD1::TownLevelPillar* pillar_clone = pillar.clone();
+
+  QCOMPARE( pillar.boundingRect(), pillar_clone->boundingRect() );
+  QCOMPARE( pillar.shape(), pillar_clone->shape() );
+  QVERIFY( &pillar != pillar_clone );
+  QVERIFY( pillar_clone->isImageAssetUsed( "/levels/towndata/town.cel+levels/towndata/town.pal" ) );
+
+  delete pillar_clone;
+}
+
+//---------------------------------------------------------------------------//
 // Check that the shape of the pillar is valid
 void shape()
 {

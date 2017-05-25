@@ -17,6 +17,20 @@ TownLevelPillar::TownLevelPillar(
   : LevelPillar( level_image_blocks )
 { /* ... */ }
 
+// Default Constructor
+TownLevelPillar::TownLevelPillar()
+{ /* ... */ }
+
+// Clone the level pillar
+TownLevelPillar* TownLevelPillar::clone() const
+{
+  TownLevelPillar* new_pillar = new TownLevelPillar;
+
+  this->deepCopyPillarData( *new_pillar );
+
+  return new_pillar;
+}
+
 // Get the image asset required by this level pillar
 QString TownLevelPillar::getRequiredImageAssetName() const
 {
