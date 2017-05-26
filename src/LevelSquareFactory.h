@@ -9,6 +9,9 @@
 #ifndef LEVEL_SQUARE_FACTORY_H
 #define LEVEL_SQUARE_FACTORY_H
 
+// Std Lib Includes
+#include <memory>
+
 // Qt Includes
 #include <QString>
 #include <QList>
@@ -33,11 +36,11 @@ public:
   { /* ... */ }
 
   //! Create the level squares
-  QList<LevelSquare*> createLevelSquares() const;
+  QList<std::shared_ptr<LevelSquare> > createLevelSquares() const;
 
   //! Create the level squares (advanced)
-  QList<LevelSquare*> createLevelSquares(
-                                   const QList<LevelPillar*>& level_pillars ) const;
+  QList<std::shared_ptr<LevelSquare> > createLevelSquares(
+             const QList<std::shared_ptr<LevelPillar> >& level_pillars ) const;
 
 private:
 

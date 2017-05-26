@@ -47,13 +47,10 @@ void createLevelSquares()
   QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
                                            "/levels/towndata/town.til" );
 
-  QList<QtD1::LevelSquare*> squares = square_factory.createLevelSquares();
+  QList<std::shared_ptr<QtD1::LevelSquare> > squares =
+    square_factory.createLevelSquares();
 
   QCOMPARE( squares.size(), 342 );
-
-  // Delete the squares
-  for( int i = 0; i < squares.size(); ++i )
-    delete squares[i];
 }
 
 //---------------------------------------------------------------------------//
@@ -62,19 +59,16 @@ void createLevelSquares_cached_pillars()
 {
   QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min" );
 
-  QList<QtD1::LevelPillar*> pillars = pillar_factory.createLevelPillars();
+  QList<std::shared_ptr<QtD1::LevelPillar> > pillars =
+    pillar_factory.createLevelPillars();
 
   QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
                                            "/levels/towndata/town.til" );
 
-  QList<QtD1::LevelSquare*> squares =
+  QList<std::shared_ptr<QtD1::LevelSquare> > squares =
     square_factory.createLevelSquares( pillars );
 
   QCOMPARE( squares.size(), 342 );
-
-  // Delete the squares
-  for( int i = 0; i < squares.size(); ++i )
-    delete squares[i];
 }
 
 //---------------------------------------------------------------------------//

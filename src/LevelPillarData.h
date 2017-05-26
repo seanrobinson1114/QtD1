@@ -28,6 +28,12 @@ public:
   //! Constructor
   LevelPillarData();
 
+  //! Copy constructor
+  LevelPillarData( const LevelPillarData& other_data );
+
+  //! Assignment operator
+  LevelPillarData& operator=( const LevelPillarData& other_data );
+
   //! Destructor
   ~LevelPillarData()
   { /* ... */ }

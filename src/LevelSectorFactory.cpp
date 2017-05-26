@@ -54,7 +54,7 @@ LevelSectorFactory::LevelSectorFactory( const QString& level_min_file_name,
 LevelSector* LevelSectorFactory::createLevelSector() const
 {
   // Create the level squares
-  QList<LevelSquare*> level_squares;
+  QList<std::shared_ptr<LevelSquare> > level_squares;
 
   {
     LevelSquareFactory square_factory( d_level_min_file_name,
@@ -68,7 +68,7 @@ LevelSector* LevelSectorFactory::createLevelSector() const
 
 // Create the level sector (advanced)
 LevelSector* LevelSectorFactory::createLevelSector(
-                                     const QList<LevelSquare*>& squares ) const
+                    const QList<std::shared_ptr<LevelSquare> >& squares ) const
 {
   // Open the dun file
   QFile dun_file( d_level_dun_file_name );
@@ -83,13 +83,12 @@ LevelSector* LevelSectorFactory::createLevelSector(
 
   stream >> num_rows;
   stream >> num_cols;
-
+  
   // Initialize the square rows and columns
   QVector<QVector<LevelSquare*> > ordered_squares( num_rows );
 
   for( int j = 0; j < num_rows; ++j )
   {
-    std::cout << "row " << j << ": ";
     ordered_squares[j].resize( num_cols );
 
     for( int i = 0; i < num_cols; ++i )
@@ -106,10 +105,10 @@ LevelSector* LevelSectorFactory::createLevelSector(
       quint16 square_index;
 
       stream >> square_index;
-      std::cout << square_index << " ";
-      ordered_squares[j][i] = squares[square_index];
+
+      if( square_index > 0 )
+        ordered_squares[j][i] = squares[square_index-1]->clone();
     }
-    std::cout << std::endl;
   }
 
   // Todo: parse the additional info in the dun file...

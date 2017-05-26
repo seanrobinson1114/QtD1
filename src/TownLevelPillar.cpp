@@ -39,10 +39,8 @@ TownLevelPillar& TownLevelPillar::operator=(
 // Clone the level pillar
 TownLevelPillar* TownLevelPillar::clone() const
 {
-  TownLevelPillar* new_pillar = new TownLevelPillar;
-
-  *new_pillar = *this;
-  
+  TownLevelPillar* new_pillar = new TownLevelPillar( *this );
+    
   return new_pillar;
 }
 

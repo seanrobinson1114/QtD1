@@ -61,7 +61,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   QString level_sol_file_name( "/levels/towndata/town.sol" );
   QString level_til_file_name( "/levels/towndata/town.til" );
 
-  QList<LevelSquare*> level_squares;
+  QList<std::shared_ptr<LevelSquare> > level_squares;
 
   {
     LevelSquareFactory level_square_factory( level_min_file_name,
@@ -103,7 +103,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
                       left_sector->boundingRect().width()+right_sector->boundingRect().width(),
                       top_sector->boundingRect().height()+bottom_sector->boundingRect().height() );
 
-  // // Reposition the sectors
+  // Reposition the sectors
   top_sector->setPos( top_sector->boundingRect().width()/2, 0 );
   left_sector->setPos( 0, left_sector->boundingRect().height()/2 );
   right_sector->setPos( right_sector->boundingRect().width(), right_sector->boundingRect().height()/2 );
@@ -122,10 +122,11 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 }
 
 // Create a sector
-LevelSector* Town::createSector( const QString& level_min_file_name,
-                                 const QString& level_til_file_name,
-                                 const QString& level_dun_file_name,
-                                 const QList<LevelSquare*>& level_squares )
+LevelSector* Town::createSector(
+                    const QString& level_min_file_name,
+                    const QString& level_til_file_name,
+                    const QString& level_dun_file_name,
+                    const QList<std::shared_ptr<LevelSquare> >& level_squares )
 {
   LevelSectorFactory sector_factory( level_min_file_name,
                                      level_til_file_name,

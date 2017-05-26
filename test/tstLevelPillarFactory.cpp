@@ -45,12 +45,10 @@ void createLevelPillars()
 {
   QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min" );
 
-  QList<QtD1::LevelPillar*> pillars = pillar_factory.createLevelPillars();
+  QList<std::shared_ptr<QtD1::LevelPillar> > pillars =
+    pillar_factory.createLevelPillars();
 
   QCOMPARE( pillars.size(), 1258 );
-
-  for( int i = 0; i < pillars.size(); ++i )
-    delete pillars[i];
 }
 
 //---------------------------------------------------------------------------//

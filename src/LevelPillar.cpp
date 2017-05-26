@@ -29,21 +29,13 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
     d_data( new LevelPillarData )
 {
   d_data->setBlocks( level_image_blocks );
-
-  // There is nothing to draw until the image asset has been loaded
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Copy constructor
 LevelPillar::LevelPillar( const LevelPillar& other_pillar )
   : LevelObject(),
     d_data( other_pillar.d_data )
-{
-  if( d_data->imageAssetsLoaded() )
-    this->setFlag( QGraphicsItem::ItemHasNoContents, false );
-  else
-    this->setFlag( QGraphicsItem::ItemHasNoContents, true );
-}
+{ /* ... */ }
 
 // Assignment operator
 LevelPillar& LevelPillar::operator=( const LevelPillar& other_pillar )
@@ -51,14 +43,15 @@ LevelPillar& LevelPillar::operator=( const LevelPillar& other_pillar )
   if( this != &other_pillar )
   {
     d_data = other_pillar.d_data;
-
-    if( d_data->imageAssetsLoaded() )
-      this->setFlag( QGraphicsItem::ItemHasNoContents, false );
-    else
-      this->setFlag( QGraphicsItem::ItemHasNoContents, true );
   }
 
   return *this;
+}
+
+// Deep copy the pillar data
+void LevelPillar::deepCopyPillarData( const LevelPillar& other_pillar ) const
+{
+  *other_pillar.d_data = *d_data;
 }
 
 // Get the number of image assets used by the object
@@ -98,17 +91,15 @@ void LevelPillar::loadImageAsset( const QString& image_asset_name,
             this->getRequiredImageAssetName().toStdString().c_str() );
   }
 
-  d_data->loadImageAsset( image_asset_frames );
-
-  this->setFlag( QGraphicsItem::ItemHasNoContents, false );
+  if( !d_data->imageAssetsLoaded() )
+    d_data->loadImageAsset( image_asset_frames );
 }
 
 // Dump the image assets
 void LevelPillar::dumpImageAssets()
 {
-  d_data->dumpImageAssets();
-
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  if( d_data->imageAssetsLoaded() )
+    d_data->dumpImageAssets();
 }
 
 // Get the bounding rect of the pillar
@@ -117,11 +108,11 @@ QRectF LevelPillar::boundingRect() const
   return d_data->boundingRect();
 }
 
-// Get the shape of the actor
-QPainterPath LevelPillar::shape() const
-{
-  return d_data->shape();
-}
+// // Get the shape of the actor
+// QPainterPath LevelPillar::shape() const
+// {
+//   return d_data->shape();
+// }
 
 // Paint the level pillar
 void LevelPillar::paint( QPainter* painter,

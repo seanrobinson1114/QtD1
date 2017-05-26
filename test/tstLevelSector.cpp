@@ -179,7 +179,7 @@ void paint()
   
   sector->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
                           t_image_asset_frames );
-
+  
   QGraphicsScene sector_scene( sector->boundingRect() );
   sector_scene.addItem( sector );
   

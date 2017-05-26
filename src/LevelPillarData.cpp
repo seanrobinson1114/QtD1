@@ -23,6 +23,28 @@ namespace QtD1{
 LevelPillarData::LevelPillarData()
 { /* ... */ }
 
+// Copy constructor
+LevelPillarData::LevelPillarData( const LevelPillarData& other_data )
+  : d_pillar_blocks( other_data.d_pillar_blocks ),
+    d_pillar_image( other_data.d_pillar_image.copy() ),
+    d_pillar_bounding_rect( other_data.d_pillar_bounding_rect ),
+    d_pillar_shape( other_data.d_pillar_shape )
+{ /* ... */ }
+
+// Assignment operator
+LevelPillarData& LevelPillarData::operator=( const LevelPillarData& other_data )
+{
+  if( this != &other_data )
+  {
+    d_pillar_blocks = other_data.d_pillar_blocks;
+    d_pillar_image = other_data.d_pillar_image.copy();
+    d_pillar_bounding_rect = other_data.d_pillar_bounding_rect;
+    d_pillar_shape = other_data.d_pillar_shape;
+  }
+
+  return *this;
+}
+
 // Set the pillar blocks
 void LevelPillarData::setBlocks(
                              const QVector<LevelPillar::Block>& pillar_blocks )
