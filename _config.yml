@@ -1,3 +1,9 @@
 theme: jekyll-theme-midnight
 gems:
  - jekyll-seo-tag
+
+name: QtD1
+
+description: Diablo 1 implementation using Qt 4
+
+author: Robinson
