@@ -11,23 +11,38 @@
 
 namespace QtD1{
 
+// Default Constructor
+TownLevelPillar::TownLevelPillar()
+{ /* ... */ }
+
 // Constructor
 TownLevelPillar::TownLevelPillar(
                         const QVector<LevelPillar::Block>& level_image_blocks )
   : LevelPillar( level_image_blocks )
 { /* ... */ }
 
-// Default Constructor
-TownLevelPillar::TownLevelPillar()
+// Copy constructor
+TownLevelPillar::TownLevelPillar( const TownLevelPillar& other_pillar )
+  : LevelPillar( other_pillar )
 { /* ... */ }
+
+// Assignment operator
+TownLevelPillar& TownLevelPillar::operator=(
+                                          const TownLevelPillar& other_pillar )
+{
+  if( this != &other_pillar )
+    LevelPillar::operator=( other_pillar );
+
+  return *this;
+}
 
 // Clone the level pillar
 TownLevelPillar* TownLevelPillar::clone() const
 {
   TownLevelPillar* new_pillar = new TownLevelPillar;
 
-  this->deepCopyPillarData( *new_pillar );
-
+  *new_pillar = *this;
+  
   return new_pillar;
 }
 

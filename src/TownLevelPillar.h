@@ -21,7 +21,16 @@ class TownLevelPillar : public LevelPillar
 public:
 
   //! Constructor
+  TownLevelPillar();
+  
+  //! Constructor
   TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks );
+
+  //! Copy constructor
+  TownLevelPillar( const TownLevelPillar& other_pillar );
+
+  //! Assignment operator
+  TownLevelPillar& operator=( const TownLevelPillar& other_pillar );
 
   //! Destructor
   ~TownLevelPillar()
@@ -31,9 +40,6 @@ public:
   TownLevelPillar* clone() const override;
 
 private:
-
-  // Default Constructor
-  TownLevelPillar();
 
   // Get the image asset required by this level pillar
   QString getRequiredImageAssetName() const override;
