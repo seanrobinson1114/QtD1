@@ -17,6 +17,8 @@
 
 namespace QtD1{
 
+class LevelPillarData;
+
 //! The level pillar class
 class LevelPillar : public LevelObject
 {
@@ -31,7 +33,16 @@ public:
   };
 
   //! Constructor
+  LevelPillar();
+
+  //! Constructor
   LevelPillar( const QVector<Block>& level_image_blocks );
+
+  //! Copy constructor
+  LevelPillar( const LevelPillar& other_pillar );
+
+  //! Assignment operator
+  LevelPillar& operator=( const LevelPillar& other_pillar );
 
   //! Destructor
   virtual ~LevelPillar()
@@ -67,6 +78,9 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Clone the level pillar
+  virtual LevelPillar* clone() const = 0;
+
 protected:
 
   //! Get the image asset required by this level pillar
@@ -79,17 +93,8 @@ private:
                            const QVector<QPixmap>& image_asset_frames,
                            const int start_index );
 
-  // The level image blocks
-  QVector<Block> d_level_image_blocks;
-  
-  // The just-in-time images that make up this pillar
-  QPixmap d_pillar_image;
-
-  // The pillar bounding rect
-  QRectF d_pillar_bounding_rect;
-
-  // The pillar shape
-  QPainterPath d_pillar_shape;
+  // The level pillar data
+  std::shared_ptr<LevelPillarData> d_data;
 };
   
 } // end QtD1 namespace

@@ -33,13 +33,13 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
   d_bottom_pillar->setParentItem( this );
 
   // Reposition the pillars
-  d_top_pillar->setPos( 16, 0 );
-  d_right_pillar->setPos( 32, 16 );
+  d_top_pillar->setPos( 32, 0 );
+  d_right_pillar->setPos( 64, 16 );
   d_left_pillar->setPos( 0, 16 );
-  d_bottom_pillar->setPos( 16, 32 );
+  d_bottom_pillar->setPos( 32, 32 );
 
   // There is nothing to draw (all drawing is done by the pillars)
-  //this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Get the number of image assets used by the object
@@ -115,6 +115,16 @@ void LevelSquare::paint( QPainter*,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 { /* ... */ }
+
+// Clone the level square
+LevelSquare* LevelSquare::clone()
+{
+  LevelSquare* square_clone = new LevelSquare( d_top_pillar->clone(),
+                                               d_right_pillar->clone(),
+                                               d_left_pillar->clone(),
+                                               d_bottom_pillar->clone() );
+  return square_clone;
+}
 
 }// end QtD1 namespace
 

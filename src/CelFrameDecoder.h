@@ -149,7 +149,7 @@ private:
   // The tile frame row decode functor type
   typedef std::function<void(CelImagePixelSetter&,
                              const CelPalette&,
-                             const char*,
+                             const char**,
                              const uint8_t,
                              const bool)> TileFrameRowDecodeFunctor;
 
@@ -161,7 +161,7 @@ private:
   static void decodeImplicitLeftTransTileFrameRow(
                                     CelImagePixelSetter& frame,
                                     const CelPalette& palette,
-                                    const char* frame_data_it,
+                                    const char** frame_data_it,
                                     const uint8_t explicit_row_size,
                                     const bool explicit_trans_values_present );
 
@@ -169,7 +169,7 @@ private:
   static void decodeImplicitRightTransTileFrameRow(
                                     CelImagePixelSetter& frame,
                                     const CelPalette& palette,
-                                    const char* frame_data_it,
+                                    const char** frame_data_it,
                                     const uint8_t explicit_row_size,
                                     const bool explicit_trans_values_present );
   

@@ -61,6 +61,9 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Clone the level square
+  LevelSquare* clone();
+
 private:
 
   // The pillars

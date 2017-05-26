@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // QtD1 Includes
 #include "CelFrameDecoder.h"
 #include "CelImageProperties.h"
@@ -419,9 +422,7 @@ QImage CelFrameDecoder::decodeImplicitUpperLowerTransTileFrame(
   TileFrameRowDecodeFunctor row_decoder =
     CelFrameDecoder::getTileFrameRowDecoder( is_impl_trans_on_left );
 
-  for( int row = 0;
-       row < s_upper_lower_impl_trans_frame_row_sizes.size();
-       ++row )
+  for( int row = 0; row < 32; ++row )
   {
     bool explicit_trans_values_present = false;
     if( row%2 == 1 )
@@ -429,7 +430,7 @@ QImage CelFrameDecoder::decodeImplicitUpperLowerTransTileFrame(
 
     row_decoder( frame,
                  palette,
-                 frame_data_it,
+                 &frame_data_it,
                  s_upper_lower_impl_trans_frame_row_sizes[row],
                  explicit_trans_values_present );
   }
@@ -487,9 +488,7 @@ QImage CelFrameDecoder::decodeImplicitUpperTransTileFrame(
   TileFrameRowDecodeFunctor row_decoder =
     CelFrameDecoder::getTileFrameRowDecoder( is_impl_trans_on_left );
 
-  for( int row = 0;
-       row < s_upper_impl_trans_frame_row_sizes.size();
-       ++row )
+  for( int row = 0; row < 32; ++row )
   {
     bool explicit_trans_values_present = false;
 
@@ -501,7 +500,7 @@ QImage CelFrameDecoder::decodeImplicitUpperTransTileFrame(
 
     row_decoder( frame,
                  palette,
-                 frame_data_it,
+                 &frame_data_it,
                  s_upper_impl_trans_frame_row_sizes[row],
                  explicit_trans_values_present );
   }
@@ -614,7 +613,7 @@ bool CelFrameDecoder::hasImplicitUpperRightTransData(
 void CelFrameDecoder::decodeImplicitLeftTransTileFrameRow(
                                      CelImagePixelSetter& frame,
                                      const CelPalette& palette,
-                                     const char* frame_data_it,
+                                     const char** frame_data_it,
                                      const uint8_t explicit_row_size,
                                      const bool explicit_trans_values_present )
 {
@@ -642,16 +641,16 @@ void CelFrameDecoder::decodeImplicitLeftTransTileFrameRow(
     *frame.pixel() = palette.getTransparentColorKey();
 
     frame.gotoNextPixel();
-    ++frame_data_it;
+    ++(*frame_data_it);
   }
 
   // Add the explicit color pixels
   for( int i = 0; i < num_explicit_color_pixels; ++i )
   {
-    *frame.pixel() = *frame_data_it;
+    *frame.pixel() = **frame_data_it;
 
     frame.gotoNextPixel();
-    ++frame_data_it;
+    ++(*frame_data_it);
   }
 }
 
@@ -659,7 +658,7 @@ void CelFrameDecoder::decodeImplicitLeftTransTileFrameRow(
 void CelFrameDecoder::decodeImplicitRightTransTileFrameRow(
                                      CelImagePixelSetter& frame,
                                      const CelPalette& palette,
-                                     const char* frame_data_it,
+                                     const char** frame_data_it,
                                      const uint8_t explicit_row_size,
                                      const bool explicit_trans_values_present )
 {
@@ -677,10 +676,10 @@ void CelFrameDecoder::decodeImplicitRightTransTileFrameRow(
   // Add the explicit color pixels
   for( int i = 0; i < num_explicit_color_pixels; ++i )
   {
-    *frame.pixel() = *frame_data_it;
+    *frame.pixel() = **frame_data_it;
 
     frame.gotoNextPixel();
-    ++frame_data_it;
+    ++(*frame_data_it);
   }
 
   // Add the explicit transparent pixels
@@ -689,7 +688,7 @@ void CelFrameDecoder::decodeImplicitRightTransTileFrameRow(
     *frame.pixel() = palette.getTransparentColorKey();
 
     frame.gotoNextPixel();
-    ++frame_data_it;
+    ++(*frame_data_it);
   }
 
   // Add the implicit transparent pixels

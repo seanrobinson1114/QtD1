@@ -45,30 +45,23 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   // Create the level square z-order map
   int max_y_pos = 0;
 
-  std::cout << "size of level_squares: " << level_squares[0].size() << std::endl;
-
   for( int j = 0; j < level_squares.size(); ++j )
   {
     for( int i = 0; i < level_squares[j].size(); ++i )
     {
-      //std::cout<< "starting loop" << std::endl;
       LevelSquare* square = level_squares[j][i];
-      //std::cout<< "added square" << std::endl;
-      //std::cout << j << ":" << i << " " << level_squares[j][i] << std::endl;
-
-      // The y position gives use the z-order
+      
+      // The y position gives us the z-order
       int y_pos = (i+j)*32;
       int x_pos = (int)d_bounding_rect.width()/2 + (i-j-1)*64;
 
       if( y_pos > max_y_pos )
         max_y_pos = y_pos;
-
+      std::cout << x_pos << " " << y_pos << std::endl;
       d_level_square_z_order_map[y_pos] << square;
 
       // This will have to be set again once the parent has been assigned
-      //std::cout << "x position: " << x_pos << " y position: " << y_pos << std::endl;
       square->setPos( x_pos, y_pos );
-      //std::cout << "set position" << std::endl;
     }
   }
 
@@ -77,7 +70,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   {
     QList<LevelSquare*>& level_squares =
       d_level_square_z_order_map[i];
-
+    std::cout << i << ": " << level_squares.size() << std::endl;
     QList<LevelSquare*>::iterator level_squares_it, level_squares_end;
     level_squares_it = level_squares.begin();
     level_squares_end = level_squares.end();
@@ -96,7 +89,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   }
 
   // There is nothing to draw (all drawing is done by the pillars)
-  //this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
 
 // Get the number of image assets used by the object
@@ -162,7 +155,7 @@ void LevelSector::loadImageAsset( const QString& image_asset_name,
     for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
     {
       d_level_square_z_order_map[j][i]->loadImageAsset( image_asset_name,
-                                           image_asset_frames );
+                                                        image_asset_frames );
     }
   }
 }

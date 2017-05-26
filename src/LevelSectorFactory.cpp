@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // Qt Includes
 #include <QDataStream>
 #include <QFile>
@@ -86,6 +89,7 @@ LevelSector* LevelSectorFactory::createLevelSector(
 
   for( int j = 0; j < num_rows; ++j )
   {
+    std::cout << "row " << j << ": ";
     ordered_squares[j].resize( num_cols );
 
     for( int i = 0; i < num_cols; ++i )
@@ -102,9 +106,10 @@ LevelSector* LevelSectorFactory::createLevelSector(
       quint16 square_index;
 
       stream >> square_index;
-
+      std::cout << square_index << " ";
       ordered_squares[j][i] = squares[square_index];
     }
+    std::cout << std::endl;
   }
 
   // Todo: parse the additional info in the dun file...
