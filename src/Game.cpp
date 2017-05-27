@@ -59,7 +59,7 @@ Game* Game::getInstance()
   d_level->createBackground();
 
   QPixmap level_background( d_level_viewer->size() );
-  //level_background.fill( Qt::gray );
+  level_background.fill( Qt::black );
   d_level->setBackgroundBrush( level_background );
 
   // Set up the level viewer
@@ -128,8 +128,7 @@ void Game::create( const QString& character_name,
 
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
-                            QPointF( d_level->sceneRect().width()/2,
-                                     d_level->sceneRect().height()/2 ),
+                            QPointF( 3250, 2450 ),
                             South );
 
   // Load the level assets
