@@ -71,7 +71,7 @@ public:
   QRectF boundingRect() const override;
 
   //! Get the shape of the pillar
-  QPainterPath shape() const override;
+  //QPainterPath shape() const override;
 
   //! Paint the level pillar
   void paint( QPainter* painter,
@@ -85,6 +85,9 @@ protected:
 
   //! Get the image asset required by this level pillar
   virtual QString getRequiredImageAssetName() const = 0;
+
+  //! Deep copy the pillar data
+  void deepCopyPillarData( const LevelPillar& other_pillar ) const;
 
 private:
 

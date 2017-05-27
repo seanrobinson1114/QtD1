@@ -57,11 +57,15 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
 
       if( y_pos > max_y_pos )
         max_y_pos = y_pos;
-      std::cout << x_pos << " " << y_pos << std::endl;
-      d_level_square_z_order_map[y_pos] << square;
 
-      // This will have to be set again once the parent has been assigned
-      square->setPos( x_pos, y_pos );
+      // Null square pointers are treated as transparent regions
+      if( square )
+      {
+        d_level_square_z_order_map[y_pos] << square;
+
+        // This will have to be set again once the parent has been assigned
+        square->setPos( x_pos, y_pos );
+      }
     }
   }
 
@@ -70,7 +74,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   {
     QList<LevelSquare*>& level_squares =
       d_level_square_z_order_map[i];
-    std::cout << i << ": " << level_squares.size() << std::endl;
+    
     QList<LevelSquare*>::iterator level_squares_it, level_squares_end;
     level_squares_it = level_squares.begin();
     level_squares_end = level_squares.end();
@@ -79,8 +83,8 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
     {
       QPointF position = (*level_squares_it)->pos();
 
-      (*level_squares_it)->setParent( this );
-
+      (*level_squares_it)->setParentItem( this );
+      
       // Set the position again so that it is w.r.t. the sector coordinate sys.
       (*level_squares_it)->setPos( position );
 
@@ -152,10 +156,15 @@ void LevelSector::loadImageAsset( const QString& image_asset_name,
 {
   for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
+    QList<LevelSquare*>& row_level_squares = d_level_square_z_order_map[j];
+    
+    for( int i = 0; i < row_level_squares.size(); ++i )
     {
-      d_level_square_z_order_map[j][i]->loadImageAsset( image_asset_name,
-                                                        image_asset_frames );
+      if( !row_level_squares[i]->imageAssetsLoaded() )
+      {
+        row_level_squares[i]->loadImageAsset( image_asset_name,
+                                              image_asset_frames );
+      }
     }
   }
 }
@@ -165,8 +174,13 @@ void LevelSector::dumpImageAssets()
 {
   for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
-    for( int i = 0; i < d_level_square_z_order_map[j].size(); ++i )
-      d_level_square_z_order_map[j][i]->dumpImageAssets();
+    QList<LevelSquare*>& row_level_squares = d_level_square_z_order_map[j];
+    
+    for( int i = 0; i < row_level_squares.size(); ++i )
+    {
+      if( row_level_squares[i]->imageAssetsLoaded() )
+        row_level_squares[i]->dumpImageAssets();
+    }
   }
 }
 

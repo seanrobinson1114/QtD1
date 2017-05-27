@@ -20,6 +20,7 @@
 
 // QtD1 Includes
 #include "LevelSquare.h"
+#include "LevelSquareFactory.h"
 #include "TownLevelPillar.h"
 #include "MPQHandler.h"
 
@@ -377,7 +378,7 @@ void clone()
 
 //---------------------------------------------------------------------------//
 // Check that the square can be painted
-void paint()
+void paint_33()
 {
   QtD1::LevelPillar* top_pillar, *right_pillar, *left_pillar, *bottom_pillar;
 
@@ -404,6 +405,76 @@ void paint()
   
   // Save the square image for visual inspection
   QImageWriter image_writer( "square_033.png" );
+  image_writer.write( square_image );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the square can be painted
+void paint_58()
+{
+  QtD1::LevelSquare* square;
+  
+  {
+    QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                             "/levels/towndata/town.til" );
+
+    QList<std::shared_ptr<QtD1::LevelSquare> > squares =
+      square_factory.createLevelSquares();
+
+    square = squares[58]->clone();
+  }
+
+  square->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+
+  QGraphicsScene square_scene( square->boundingRect() );
+  square_scene.addItem( square );
+  
+  QImage square_image( square->boundingRect().size().toSize(),
+                       QImage::Format_ARGB32 );
+  square_image.fill( Qt::transparent );
+
+  QPainter square_painter( &square_image );
+
+  square_scene.render( &square_painter );
+  
+  // Save the square image for visual inspection
+  QImageWriter image_writer( "square_058.png" );
+  image_writer.write( square_image );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the square can be painted
+void paint_21()
+{
+  QtD1::LevelSquare* square;
+  
+  {
+    QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                             "/levels/towndata/town.til" );
+
+    QList<std::shared_ptr<QtD1::LevelSquare> > squares =
+      square_factory.createLevelSquares();
+
+    square = squares[21]->clone();
+  }
+
+  square->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+
+  QGraphicsScene square_scene( square->boundingRect() );
+  square_scene.addItem( square );
+  
+  QImage square_image( square->boundingRect().size().toSize(),
+                       QImage::Format_ARGB32 );
+  square_image.fill( Qt::transparent );
+
+  QPainter square_painter( &square_image );
+
+  square_scene.render( &square_painter );
+  
+  // Save the square image for visual inspection
+  QImageWriter image_writer( "square_021.png" );
   image_writer.write( square_image );
 }
 

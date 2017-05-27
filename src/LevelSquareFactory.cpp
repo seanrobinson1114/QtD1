@@ -40,10 +40,11 @@ LevelSquareFactory::LevelSquareFactory( const QString& level_min_file_name,
 }
 
 // Create the level squares
-QList<LevelSquare*> LevelSquareFactory::createLevelSquares() const
+QList<std::shared_ptr<LevelSquare> >
+LevelSquareFactory::createLevelSquares() const
 {
   // Create the level pillars
-  QList<LevelPillar*> level_pillars;
+  QList<std::shared_ptr<LevelPillar> > level_pillars;
 
   {
     LevelPillarFactory pillar_factory( d_level_min_file_name );
@@ -55,11 +56,12 @@ QList<LevelSquare*> LevelSquareFactory::createLevelSquares() const
 }
 
 // Create the level squares (advanced)
-QList<LevelSquare*> LevelSquareFactory::createLevelSquares(
-                                    const QList<LevelPillar*>& level_pillars ) const
+QList<std::shared_ptr<LevelSquare> >
+LevelSquareFactory::createLevelSquares(
+              const QList<std::shared_ptr<LevelPillar> >& level_pillars ) const
 {
   // Create a new square list
-  QList<LevelSquare*> level_squares;
+  QList<std::shared_ptr<LevelSquare> > level_squares;
 
   // Open the til file
   QFile til_file( d_level_til_file_name );
@@ -83,10 +85,11 @@ QList<LevelSquare*> LevelSquareFactory::createLevelSquares(
     stream >> bottom_index;
 
     // Create a new square
-    LevelSquare* level_square = new LevelSquare( level_pillars[top_index],
-                                                 level_pillars[right_index],
-                                                 level_pillars[left_index],
-                                                 level_pillars[bottom_index] );
+    std::shared_ptr<LevelSquare> level_square(
+                     new LevelSquare( level_pillars[top_index]->clone(),
+                                      level_pillars[right_index]->clone(),
+                                      level_pillars[left_index]->clone(),
+                                      level_pillars[bottom_index]->clone() ) );
     level_squares << level_square;
   }
 

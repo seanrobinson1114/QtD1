@@ -34,7 +34,8 @@ public:
   LevelSector* createLevelSector() const;
 
   //! Create the level sector (advanced)
-  LevelSector* createLevelSector( const QList<LevelSquare*>& squares ) const;
+  LevelSector* createLevelSector(
+                   const QList<std::shared_ptr<LevelSquare> >& squares ) const;
 
 private:
 

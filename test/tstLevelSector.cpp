@@ -170,7 +170,7 @@ void dumpImageAssets()
 
 //---------------------------------------------------------------------------//
 // Check that the square can be painted
-void paint()
+void paint_1()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
                                            "/levels/towndata/town.til",
@@ -179,7 +179,7 @@ void paint()
   
   sector->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
                           t_image_asset_frames );
-
+  
   QGraphicsScene sector_scene( sector->boundingRect() );
   sector_scene.addItem( sector );
   
@@ -193,6 +193,90 @@ void paint()
   
   // Save the square image for visual inspection
   QImageWriter image_writer( "sector_1.png" );
+  image_writer.write( sector_image );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the square can be painted
+void paint_2()
+{
+  QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.til",
+                                           "/levels/towndata/sector2s.dun" );
+  QtD1::LevelSector* sector = sector_factory.createLevelSector();
+  
+  sector->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+  
+  QGraphicsScene sector_scene( sector->boundingRect() );
+  sector_scene.addItem( sector );
+  
+  QImage sector_image( sector->boundingRect().size().toSize(),
+                       QImage::Format_ARGB32 );
+  sector_image.fill( Qt::blue );
+
+  QPainter sector_painter( &sector_image );
+
+  sector_scene.render( &sector_painter );
+  
+  // Save the square image for visual inspection
+  QImageWriter image_writer( "sector_2.png" );
+  image_writer.write( sector_image );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the square can be painted
+void paint_3()
+{
+  QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.til",
+                                           "/levels/towndata/sector3s.dun" );
+  QtD1::LevelSector* sector = sector_factory.createLevelSector();
+  
+  sector->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+  
+  QGraphicsScene sector_scene( sector->boundingRect() );
+  sector_scene.addItem( sector );
+  
+  QImage sector_image( sector->boundingRect().size().toSize(),
+                       QImage::Format_ARGB32 );
+  sector_image.fill( Qt::blue );
+
+  QPainter sector_painter( &sector_image );
+
+  sector_scene.render( &sector_painter );
+  
+  // Save the square image for visual inspection
+  QImageWriter image_writer( "sector_3.png" );
+  image_writer.write( sector_image );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the square can be painted
+void paint_4()
+{
+  QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.til",
+                                           "/levels/towndata/sector4s.dun" );
+  QtD1::LevelSector* sector = sector_factory.createLevelSector();
+  
+  sector->loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
+                          t_image_asset_frames );
+  
+  QGraphicsScene sector_scene( sector->boundingRect() );
+  sector_scene.addItem( sector );
+  
+  QImage sector_image( sector->boundingRect().size().toSize(),
+                       QImage::Format_ARGB32 );
+  sector_image.fill( Qt::blue );
+
+  QPainter sector_painter( &sector_image );
+
+  sector_scene.render( &sector_painter );
+  
+  // Save the square image for visual inspection
+  QImageWriter image_writer( "sector_4.png" );
   image_writer.write( sector_image );
 }
 

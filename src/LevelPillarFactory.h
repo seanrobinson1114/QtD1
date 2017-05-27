@@ -11,6 +11,7 @@
 
 // Std Lib Includes
 #include <functional>
+#include <memory>
 
 // Qt Includes
 #include <QString>
@@ -35,7 +36,7 @@ public:
   { /* ... */ }
 
   //! Create the level pillars
-  QList<LevelPillar*> createLevelPillars() const;
+  QList<std::shared_ptr<LevelPillar> > createLevelPillars() const;
 
 private:
 
@@ -43,7 +44,7 @@ private:
   typedef std::function<int()> LevelPillarNumBlocksFunction;
 
   // The level pillar creation function typedef
-  typedef std::function<LevelPillar*(const QVector<LevelPillar::Block>&)>
+  typedef std::function<std::shared_ptr<LevelPillar>(const QVector<LevelPillar::Block>&)>
   LevelPillarCreationFunction;
 
   // Get the number of blocks in a town pillar
@@ -62,19 +63,19 @@ private:
   static int getNumberOfBlocksInHellPillar();
 
   // Create a town pillar
-  static LevelPillar* createTownPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createTownPillar( const QVector<LevelPillar::Block>& blocks );
 
   // Create a cathedral pillar
-  static LevelPillar* createCathedralPillar( const QVector<LevelPillar::Block>&  blocks );
+  static std::shared_ptr<LevelPillar> createCathedralPillar( const QVector<LevelPillar::Block>&  blocks );
 
   // Create a catacomb pillar
-  static LevelPillar* createCatacombPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createCatacombPillar( const QVector<LevelPillar::Block>& blocks );
 
   // Create a cave pillar
-  static LevelPillar* createCavePillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createCavePillar( const QVector<LevelPillar::Block>& blocks );
 
   // Create a hell pillar
-  static LevelPillar* createHellPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createHellPillar( const QVector<LevelPillar::Block>& blocks );
 
   // Get the number of pillar blocks function
   LevelPillarNumBlocksFunction getLevelPillarNumBlocksFunction() const;

@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // QtD1 Includes
 #include "LevelSquare.h"
 
@@ -123,6 +126,7 @@ LevelSquare* LevelSquare::clone()
                                                d_right_pillar->clone(),
                                                d_left_pillar->clone(),
                                                d_bottom_pillar->clone() );
+  
   return square_clone;
 }
 
