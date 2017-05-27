@@ -83,13 +83,13 @@ bool LevelPillar::imageAssetsLoaded() const
 void LevelPillar::loadImageAsset( const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames )
 {
-  if( image_asset_name != this->getRequiredImageAssetName() )
-  {
-    qFatal( "LevelPillar Error: Image asset %s is not used by the level "
-            "pillar (%s required)!",
-            image_asset_name.toStdString().c_str(),
-            this->getRequiredImageAssetName().toStdString().c_str() );
-  }
+  // if( image_asset_name != this->getRequiredImageAssetName() )
+  // {
+  //   qFatal( "LevelPillar Error: Image asset %s is not used by the level "
+  //           "pillar (%s required)!",
+  //           image_asset_name.toStdString().c_str(),
+  //           this->getRequiredImageAssetName().toStdString().c_str() );
+  // }
 
   if( !d_data->imageAssetsLoaded() )
     d_data->loadImageAsset( image_asset_frames );

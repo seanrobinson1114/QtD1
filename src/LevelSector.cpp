@@ -44,8 +44,6 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
 
   // Create the level square z-order map
   int max_y_pos = 0;
-  int min_x_pos = 10000;
-  int max_x_pos = 0;
 
   for( int j = 0; j < level_squares.size(); ++j )
   {
@@ -59,12 +57,6 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
 
       if( y_pos > max_y_pos )
         max_y_pos = y_pos;
-
-      if( x_pos > max_x_pos )
-        max_x_pos = x_pos;
-
-      if( x_pos < min_x_pos )
-        min_x_pos = x_pos;
 
       // Null square pointers are treated as transparent regions
       if( square )

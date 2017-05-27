@@ -128,7 +128,8 @@ void Game::create( const QString& character_name,
 
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
-                            QPointF( 360., 300. ),
+                            QPointF( d_level->sceneRect().width()/2,
+                                     d_level->sceneRect().height()/2 ),
                             South );
 
   // Load the level assets

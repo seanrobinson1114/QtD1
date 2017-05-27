@@ -81,9 +81,9 @@ LevelSector* LevelSectorFactory::createLevelSector(
   // Get the number of rows and columns
   quint16 num_rows, num_cols;
 
-  stream >> num_rows;
   stream >> num_cols;
-  
+  stream >> num_rows;
+
   // Initialize the square rows and columns
   QVector<QVector<LevelSquare*> > ordered_squares( num_rows );
 
