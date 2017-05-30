@@ -11,6 +11,11 @@
 
 // Std Lib Includes
 #include <memory>
+#include <utility>
+
+// Qt Includes
+#include <QStateMachine>
+#include <QState>
 
 // QtD1 Includes
 #include "QMLRegistrationHelper.h"
@@ -26,18 +31,8 @@ class BasicActor : public InteractiveLevelObject
 
 public:
 
-  //! The basic actor state enum
-  enum State{
-    Standing = 0,
-    Walking
-  };
-
   //! The directional sprites type
   typedef QMap<Direction,GameSprite> DirectionGameSpriteMap;
-
-  //! The state sprites type
-  typedef QMap<Actor::State,std::shared_ptr<DirectionGameSpriteMap> >
-  StateDirectionGameSpriteMap;
 
   //! Constructor
   BasicActor( QGraphicsObject* parent = 0 );
@@ -46,48 +41,57 @@ public:
   virtual ~BasicActor()
   { /* ... */ }
 
-  //! Set the state of the actor
-  void setState( const State state );
-
-  //! Get the state of the actor
-  State getState() const;
-
-  //! Set the direction of the actor
-  void setDirection( const Direction direction );
-
-  //! Get the direction of the actor
+  //! Get the direction of the basic actor
   Direction getDirection() const;
 
-  //! Set the state and direction of the actor
-  void setStateAndDirection( const State state, const Direction direction );
-
-  //! Get the bounding rect of the actor
+  //! Get the bounding rect of the basic actor
   QRectF boundingRect() const override;
 
-  //! Get the shape of the actor
+  //! Get the shape of the basic actor
   QPainterPath shape() const override;
 
-  //! Advance the actor state
+  //! Advance the basic actor state (if time dependent)
   void advance( int phase ) override;
+
+  //! Start the actor state machine
+  void startStateMachine();
+
+signals:
+
+  //! The direction has changed
+  void directionChanged( const Direction new_direction );
+
+  //! The time state has been advanced
+  void timeStateAdvanced();
+
+public slots:
+
+  //! Set the direction of the basic actor
+  void setDirection( const Direction direction );
 
 protected:
 
-  //! Set the actor sprites
-  void setActorSprites(
-                 const std::shared_ptr<StateDirectionGameSpriteMap>& sprites );
+  //! Initialize the state machine
+  virtual void initializeStateMachine( QStateMachine& state_machine ) = 0;
 
   //! Paint the actor
   void paintImpl( QPainter* painter,
                   const QStyleOptionGraphicsItem* option,
                   QWidget* widget ) override;
 
+  //! Set the active sprites
+  void setActiveSprites( DirectionGameSpriteMap* active_sprites );
+
 private:
 
-  // Connect actor data signals to actor slots
-  void connectActorDataSignalsToActorSlots();
+  // The active sprites
+  DirectionGameSpriteMap* d_active_sprites;
 
-  // Disconnect actor slots from actor data signals
-  void disconnectActorSlotsFromActorDataSignals();
+  // The active direction sprite
+  std::pair<Direction,GameSprite*> d_active_direction_sprite;
+
+  // The basic actor state machine
+  std::unique_ptr<QStateMachine> d_state_machine;
 };
 
 } // end QtD1 namespace
