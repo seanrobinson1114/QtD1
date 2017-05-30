@@ -12,15 +12,14 @@
 // Std Lib Includes
 #include <memory>
 
+// Qt Includes
+#include <QState>
+
 // QtD1 Includes
 #include "QMLRegistrationHelper.h"
-#include "InteractiveLevelObject.h"
-#include "Direction.h"
-#include "GameSprite.h"
+#include "BasicActor.h"
 
 namespace QtD1{
-
-class ActorData;
 
 /*! The actor base class
  *
@@ -56,24 +55,6 @@ class Actor : public InteractiveLevelObject
 
 public:
 
-  //! The actor state enum
-  enum State{
-    Standing = 0,
-    Walking,
-    Attacking,
-    RecoilingFromHit,
-    CastingSpell,
-    Dying,
-    Dead
-  };
-
-  //! The directional sprites type
-  typedef QMap<Direction,GameSprite> DirectionGameSpriteMap;
-
-  //! The state sprites type
-  typedef QMap<Actor::State,std::shared_ptr<DirectionGameSpriteMap> >
-  StateDirectionGameSpriteMap;
-
   //! Constructor
   Actor( QGraphicsObject* parent = 0 );
 
@@ -86,21 +67,6 @@ public:
   //! Destructor
   virtual ~Actor()
   { /* ... */ }
-
-  //! Set the state of the actor
-  void setState( const State state );
-
-  //! Get the state of the actor
-  State getState() const;
-
-  //! Set the direction of the actor
-  void setDirection( const Direction direction );
-
-  //! Get the direction of the actor
-  Direction getDirection() const;
-
-  //! Set the state and direction of the actor
-  void setStateAndDirection( const State state, const Direction direction );
 
   //! Set the level
   void setLevel( const int level );
@@ -121,7 +87,7 @@ public:
   int getBaseStrength() const;
 
   //! Get the strength
-  int getStrength() const;
+  virtual int getStrength() const;
 
   //! Set the base magic
   void setBaseMagic( const int magic );
@@ -130,7 +96,7 @@ public:
   int getBaseMagic() const;
 
   //! Get the magic
-  int getMagic() const;
+  virtual int getMagic() const;
 
   //! Set the base dexterity
   void setBaseDexterity( const int dexterity );
@@ -139,7 +105,7 @@ public:
   int getBaseDexterity() const;
 
   //! Get the dexterity
-  int getDexterity() const;
+  virtual int getDexterity() const;
 
   //! Set the base vitality
   void setBaseVitality( const int vitality );
@@ -148,46 +114,22 @@ public:
   int getBaseVitality() const;
 
   //! Get the vitality
-  int getVitality() const;
+  virtual int getVitality() const;
 
   //! Get the base health
-  int getBaseHealth() const;
+  virtual int getBaseHealth() const;
 
   //! Get the max health
-  int getMaxHealth() const;
-
-  //! Set the health
-  void setHealth( const int health );
-
-  //! Add health
-  void addHealth( const int health );
-
-  //! Remove health
-  void removeHealth( const int health );
-
-  //! Restore health
-  void restoreHealth();
+  virtual int getMaxHealth() const;
 
   //! Get the health
   int getHealth() const;
 
   //! Get the base mana
-  int getBaseMana() const;
+  virtual int getBaseMana() const;
 
   //! Get the max mana
-  int getMaxMana() const;
-
-  //! Set the mana
-  void setMana( const int mana );
-
-  //! Add mana
-  void addMana( const int mana );
-
-  //! Remove mana
-  void removeMana( const int mana );
-
-  //! Restore mana
-  void restoreMana();
+  virtual int getMaxMana() const;
 
   //! Get the mana
   int getMana() const;
@@ -199,7 +141,7 @@ public:
   qreal getBaseMagicResistance() const;
 
   //! Get the magic resistance
-  qreal getMagicResistance() const;
+  virtual qreal getMagicResistance() const;
 
   //! Set the base fire resistance
   void setBaseFireResistance( const qreal resist_fraction );
@@ -208,7 +150,7 @@ public:
   qreal getBaseFireResistance() const;
 
   //! Get the fire resistance
-  qreal getFireResistance() const;
+  virtual qreal getFireResistance() const;
 
   //! Set the base lightning resistance
   void setBaseLightningResistance( const qreal resist_fraction );
@@ -217,43 +159,46 @@ public:
   qreal getBaseLightningResistance() const;
 
   //! Get the lightning resistance
-  qreal getLightningResistance() const;
+  virtual qreal getLightningResistance() const;
 
   //! Get the base armor class
-  int getBaseArmorClass() const;
+  virtual int getBaseArmorClass() const;
 
   //! Get the armor class
-  int getArmorClass() const;
+  virtual int getArmorClass() const;
 
   //! Get the base damage
-  int getBaseDamage() const;
+  virtual int getBaseDamage() const;
 
   //! Get the minimum damage
-  int getMinimumDamage() const;
+  virtual int getMinimumDamage() const;
 
   //! Get the maximum damage
-  int getMaximumDamage() const;
+  virtual int getMaximumDamage() const;
 
-  //! Get the percent chance to hit with melee
-  qreal getChanceToHitWithMeleeWeapon() const;
+  //! Get the base percent chance to hit with melee weapon
+  virtual qreal getBaseChanceToHitWithMeleeWeapon() const;
 
-  //! Get the percent chance to hit with ranged
-  qreal getChanceToHitWithRangedWeapon() const;
+  //! Get the percent chance to hit with melee weapon
+  virtual qreal getChanceToHitWithMeleeWeapon() const;
 
-  //! Get the percent chance to hit with spell
-  qreal getChanceToHitWithSpell() const;
+  //! Get the base percent chance to hit with ranged weapon
+  virtual qreal getBaseChanceToHitWithRangedWeapon() const;
 
-  //! Get the bounding rect of the actor
-  QRectF boundingRect() const override;
+  //! Get the percent chance to hit with ranged weapon
+  virtual qreal getChanceToHitWithRangedWeapon() const;
 
-  //! Get the shape of the actor
-  QPainterPath shape() const override;
+  //! Get the base percent chance to hit with a spell
+  virtual qreal getBaseChanceToHitWithSpell() const;
 
-  //! Advance the actor state
-  void advance( int phase ) override;
+  //! Get the chance to hit with a spell
+  virtual qreal getChanceToHitWithSpell() const;
 
-  //! Clone the actor
-  virtual Actor* clone( QGraphicsObject* parent = 0 ) const = 0;
+  //! Get the actor x velocity
+  qreal getXVelocity() const;
+
+  //! Get the actor y velocity
+  qreal getYVelocity() const;
 
 signals:
 
@@ -261,7 +206,11 @@ signals:
   void healthChanged( const int current_health );
   void manaChanged( const int current_mana );
   void baseStatsChanged();
-  void death();
+  void healthDepleted();
+  void destinationReached();
+  void targetReached( Actor* target );
+  void hit();
+  void dead();
 
 public slots:
 
@@ -277,56 +226,162 @@ public slots:
   //! Increment the base vitality
   void incrementBaseVitality();
 
-private slots:
+  //! Add health
+  void addHealth( const int health );
 
-  // Forward health changed signal in actor data to health changed signal
-  void handleHealthChangedInActorData( const int current_health );
+  //! Remove health
+  void removeHealth( const int health );
 
-  // Forward mana changed signal in actor data to mana changed signal
-  void handleManaChangedInActorData( const int current_mana );
+  //! Restore health
+  void restoreHealth();
 
-  // Forward core stat incremented signal in actor data to base stats changed
-  // signal
-  void handleCoreStatIncrementedInActorData();
+    //! Add mana
+  void addMana( const int mana );
 
-  // Forward health depeleted signal in actor data to death signal
-  void handleHealthDepletedInActorData();
+  //! Remove mana
+  void removeMana( const int mana );
+
+  //! Restore mana
+  void restoreMana();
 
 protected:
 
-  //! Constructor
-  Actor( ActorData* data, QGraphicsObject* parent = 0 );
+  //! The actor state enum
+  enum State{
+    Standing = 0,
+    Walking,
+    Attacking,
+    RecoilingFromHit,
+    CastingSpell,
+    Dying,
+    Dead
+  };
 
-  //! Get the actor data
-  ActorData* getActorData();
-
-  //! Get the actor data
-  const ActorData* getActorData() const;
+  //! The state sprites type
+  typedef QMap<Actor::State,std::shared_ptr<BasicActor::DirectionGameSpriteMap> >
+  StateDirectionGameSpriteMap;
 
   //! Set the actor sprites
   void setActorSprites(
                  const std::shared_ptr<StateDirectionGameSpriteMap>& sprites );
 
-  //! Paint the actor
-  void paintImpl( QPainter* painter,
-                  const QStyleOptionGraphicsItem* option,
-                  QWidget* widget ) override;
+  //! Initialize the state machine
+  virtual void initializeStateMachine( QStateMachine& state_machine );
+
+  //! Create the action states
+  void createActionStates( QState* parent_state );
+
+  //! Create the transition to the attacking state
+  virtual QAbstractTransition* createTransitionToAttackingState() = 0;
+
+  //! Create the transition to the walking state
+  virtual QAbstractTransition* createTransitionToWalkingState() = 0;
+
+  //! Create the transition to the standing state
+  virtual QAbstractTransition* createTransitionToStandingState() = 0;
+
+  //! Create the transition to the casting state
+  virtual QAbstractTransition* createTransitionToCastingState() = 0;
+
+protected slots:
+
+  //! Set the health (will emit healthChanged signal)
+  void setHealth( const int new_health );
+
+  //! Set the mana (will emit manaChanged signal)
+  void setMana( const int new_mana );
+
+  //! Set the actor x velocity
+  void setXVelocity( const qreal x_velocity );
+
+  //! Set the actor y velocity
+  void setYVelocity( const qreal y_velocity );
+
+  //! Set the actor velocity
+  void setVelocity( const qreal x_velocity, const qreal y_velocity );
+
+private slots:
+
+  // Handle standing state entered
+  void handleStandingStateEntered();
+
+  // Handle walking state entered
+  void handleWalkingStateEntered();
+
+  // Handle walking state exited
+  void handleWalkingStateExited();
+
+  // Handle attacking state entered
+  void handleAttackingStateEntered();
+
+  // Handle attacking state exited
+  void handleAttackingStateExited();
+
+  // Handle casting state entered
+  void handleCastingStateEntered();
+
+  // Handle casting state exited
+  void handleCastingStateExited();
+
+  // Handle recoiling state entered
+  void handleRecoilingStateEntered();
+
+  // Handle dying state entered
+  void handleDyingStateEntered();
+
+  // Handle dead state entered
+  void handleDeadStateEntered();
 
 private:
 
-  // Connect actor data signals to actor slots
-  void connectActorDataSignalsToActorSlots();
+  // Create the alive states
+  void createAliveStates( QState* alive_parent_state );
 
-  // Disconnect actor slots from actor data signals
-  void disconnectActorSlotsFromActorDataSignals();
+  // The level
+  int d_level;
 
-  // The actor data
-  std::shared_ptr<ActorData> d_data;
+  // The kill experience
+  int d_kill_experience;
+
+  // The base strength
+  int d_base_strength;
+
+  // The base magic
+  int d_base_magic;
+
+  // The base dexterity
+  int d_base_dexterity;
+
+  // The base vitality
+  int d_base_vitality;
+
+  // The current health
+  int d_health;
+
+  // The current mana
+  int d_mana;
+
+  // The base magic resistance percent
+  qreal d_base_magic_resistance_fraction;
+
+  // The base fire resistance percent
+  qreal d_base_fire_resistance_fraction;
+
+  // The base lightning resistance percent
+  qreal d_base_lightning_resistance_fraction;
+
+  // The velocity of the actor
+  qreal d_x_velocity;
+  qreal d_y_velocity;
+
+  // The actor sprites
+  std::shared_ptr<StateDirectionGameSpriteMap> d_sprites;
+
+  // The active state
+  State d_active_state;
 };
 
 } // end QtD1 namespace
-
-Q_DECLARE_METATYPE( QtD1::Actor::State )
 
 #endif // end ACTOR_H
 

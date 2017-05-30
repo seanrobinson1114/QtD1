@@ -59,9 +59,12 @@ void BasicActor::advance( int phase )
     if( d_active_direction_sprite.second )
     {
       d_active_direction_sprite.second->incrementFrame();
-      this->update( d_data->getActiveSprite()->boundingRect() );
+      this->update( d_active_direction_sprite.second->boundingRect() );
 
       emit timeStateAdvanced();
+
+      if( d_active_direction_sprite.second->getFrame() == 0 )
+        emit allActiveFramesShown();
     }    
   }
 }
@@ -112,6 +115,13 @@ void BasicActor::setActiveSprites( DirectionGameSpriteMap* active_sprites )
     d_active_direction_sprite.second =
       &(*d_active_sprites)[d_active_direction_sprite.first];
   }
+}
+
+// Restart active sprite
+void BasicActor::restartActiveSprite()
+{
+  if( d_active_direction_sprite.second )
+    d_active_direction_sprite.second->setFrame( 0 );
 }
   
 } // end QtD1 namespace

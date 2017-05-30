@@ -15,7 +15,6 @@
 
 // Qt Includes
 #include <QStateMachine>
-#include <QState>
 
 // QtD1 Includes
 #include "QMLRegistrationHelper.h"
@@ -56,6 +55,9 @@ public:
   //! Start the actor state machine
   void startStateMachine();
 
+  //! Clone the actor
+  virtual Actor* clone( QGraphicsObject* parent = 0 ) const = 0;
+
 signals:
 
   //! The direction has changed
@@ -63,6 +65,9 @@ signals:
 
   //! The time state has been advanced
   void timeStateAdvanced();
+
+  //! All of the active sprite frames have been shown
+  void allActiveFramesShown();
 
 public slots:
 
@@ -81,6 +86,9 @@ protected:
 
   //! Set the active sprites
   void setActiveSprites( DirectionGameSpriteMap* active_sprites );
+
+  //! Restart active sprite
+  void restartActiveSprite();
 
 private:
 
