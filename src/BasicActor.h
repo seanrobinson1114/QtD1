@@ -55,9 +55,6 @@ public:
   //! Start the actor state machine
   void startStateMachine();
 
-  //! Clone the actor
-  virtual Actor* clone( QGraphicsObject* parent = 0 ) const = 0;
-
 signals:
 
   //! The time state has been advanced

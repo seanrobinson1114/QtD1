@@ -330,19 +330,56 @@ const Warrior::AssetStateMap& Warrior::getAssetStateMap()
 }
 
 // Constructor
-/*! \details This constructor should only be used by the qml engine.
- */
-Warrior::Warrior( QGraphicsObject* parent )
-  : Character( new WarriorData(), parent )
+Warrior::Warrior( const QString& name, QGraphicsObject* parent )
+  : Character( name, new WarriorInventory, new WarriorSpellBook, parent ),
+    d_base_health( 1 ),
+    d_base_mana( 1 ),
+    d_base_damage( 0 ),
+    d_base_armor_class( 0 ),
+    d_base_chance_to_hit_with_melee( 0.0 ),
+    d_base_chance_to_hit_with_ranged( 0.0 ),
+    d_base_chance_to_hit_with_spell( 0.0 )
 {
   this->initializeStats();
 }
 
-// Constructor
-Warrior::Warrior( const QString& name, QGraphicsObject* parent )
-  : Character( new WarriorData( name ), parent )
+// Get the base health
+int Warrior::getBaseHealth() const
 {
-  this->initializeStats();
+  return d_base_health;
+}
+
+int Warrior::getBaseMana() const
+{
+  return d_base_mana;
+}
+
+int Warrior::getBaseDamage() const
+{
+  return d_base_damage;
+}
+
+int Warrior::getBaseArmorClass() const
+{
+  return d_base_armor_class;
+}
+
+// Get the base percent chance to hit with melee
+qreal Warrior::getBaseChanceToHitWithMeleeWeapon() const
+{
+  return d_base_chance_to_hit_with_melee;
+}
+
+// Get the base percent chance to hit with ranged
+qreal Warrior::getBaseChanceToHitWithRangedWeapon() const
+{
+  return d_base_chance_to_hit_with_ranged;
+}
+
+// Get the base percent chance to hit with spell
+qreal Warrior::getBaseChanceToHitWithSpell() const
+{
+  return d_base_chance_to_hit_with_spell;
 }
 
 // Get the number of image assets used by the object
@@ -390,18 +427,39 @@ const Character::States& Warrior::getImageAssetStates(
   return asset_state_it.value();
 }
 
-// Clone the Warrior
-/*! \details The returned pointer is heap allocated
- */
-Warrior* Warrior::clone( QGraphicsObject* parent ) const
+void Warrior::handleStrengthChange( int )
 {
-  Warrior* new_warrior = new Warrior( this->getName(), parent );
+  this->calculateBaseDamage();
+}
 
-  // Deep copy the warrior data
-  *dynamic_cast<WarriorData*>(new_warrior->getCharacterData()) =
-    *dynamic_cast<const WarriorData*>(this->getCharacterData());
+void Warrior::handleDexterityChange( int total_dexterity )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  d_base_armor_class = total_dexterity / 5;
+}
 
-  return new_warrior;
+void Warrior::handleVitalityChange( int, int )
+{
+  this->calculateBaseHealth();
+}
+
+void Warrior::handleMagicChange( int, int )
+{
+  this->calculateBaseMana();
+  this->calculateBaseChanceToHitWithSpell();
+}
+
+void Warrior::handleLevelUp( const int )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  this->calculateBaseChanceToHitWithSpell();
+  this->calculateBaseDamage();
+  this->calculateBaseHealth();
+  this->calculateBaseMana();
+
+  this->updateStats();
 }
 
 // Initialize warrior stats
@@ -412,9 +470,41 @@ void Warrior::initializeStats()
   this->setBaseMagic( 10 );
   this->setBaseDexterity( 20 );
   this->setBaseVitality( 25 );
-  this->updateStats();
+
+  this->handleLevelUp( 1 );
+  
   this->restoreHealth();
   this->restoreMana();
+}
+
+void Warrior::calculateBaseChanceToHitWithMelee()
+{
+  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
+}
+
+void Warrior::calculateBaseChanceToHitWithRanged()
+{
+  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
+}
+
+void Warrior::calculateBaseChanceToHitWithSpell()
+{
+  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
+}
+
+void Warrior::calculateBaseDamage()
+{
+  d_base_damage = this->getStrength() * this->getLevel() / 100;
+}
+
+void Warrior::calculateBaseHealth()
+{
+  d_base_health = 2 * this->getVitality() + 2 * this->getLevel() + 18;
+}
+
+void Warrior::calculateBaseMana()
+{
+  d_base_mana = this->getMagic() + this->getLevel() - 1;
 }
 
 // Get the number of sprite sheet frames per direction
@@ -479,6 +569,21 @@ int Warrior::getSpriteSheetFramesPerDirection( const States& states ) const
       }
     }
   }
+}
+
+// Connect the stats changed signal to warrior slots
+void Warrior::connectStatChangeSignalToWarriorSlots()
+{
+  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
+                    this, SLOT( handleStrengthChange( int ) ) );
+  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
+                    this, SLOT( handleDexterityChange( int ) ) );
+  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
+                    this, SLOT( handleVitalityChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
+                    this, SLOT( handleMagicChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( levelUp( const int ) ),
+                    this, SLOT( handleLevelUp( const int ) ) );
 }
 
 QML_REGISTER_META_TYPE( Warrior );
