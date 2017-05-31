@@ -52,6 +52,7 @@ ADD_LIBRARY(qtd1_core
 
   GameSpriteData.cpp
   GameSprite.cpp
+  CharacterStats.cpp
   Inventory.cpp
   RogueInventory.cpp
   SorcererInventory.cpp
@@ -108,6 +109,7 @@ ADD_LIBRARY(qtd1_core
   HellLevel.cpp
   LoadingScreen.cpp
   Game.cpp
+  ControlPanel.cpp
   GameFrontendProxy.cpp
   MainWindow.cpp
   MainWindowFrontendProxy.cpp)
@@ -129,7 +131,7 @@ ADD_LIBRARY(qtd1_cel_plugin STATIC
   CelDecoder.cpp)
 SET_TARGET_PROPERTIES(qtd1_cel_plugin PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
 
-# Create the qtd1 executable 
+# Create the qtd1 executable
 ADD_EXECUTABLE(qtd1 qtd1.cpp)
 SET_TARGET_PROPERTIES(qtd1 PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
 TARGET_LINK_LIBRARIES(qtd1 qtd1_core qtd1_pcx_plugin qtd1_cel_plugin)
