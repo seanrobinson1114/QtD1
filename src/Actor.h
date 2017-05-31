@@ -202,14 +202,28 @@ public:
 
 signals:
 
-  // Backend and frontend
+  //! Actor health changed
   void healthChanged( const int current_health );
+  
+  //! Actor mana changed
   void manaChanged( const int current_mana );
+
+  //! Actor base stats changed
   void baseStatsChanged();
+
+  //! Actor health depleted
   void healthDepleted();
+
+  //! Actor destination reached
   void destinationReached();
+
+  //! Actor target reached
   void targetReached( Actor* target );
+
+  //! Actor hit
   void hit();
+
+  //! Actor dead
   void dead();
 
 public slots:

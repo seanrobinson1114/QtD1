@@ -11,155 +11,256 @@
 
 // QtD1 Includes
 #include "Character.h"
-#include "CharacterData.h"
 
 namespace QtD1{
 
 // Constructor
-Character::Character( QGraphicsObject* parent )
-  : Actor( parent )
-{
-  // Frontend proxies do not need to display anything
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+Character::Character( const QString& name,
+                      Inventory* inventory,
+                      SpellBook* spell_book,
+                      QGraphicsObject* parent )
+  : Actor( parent ),
+    d_name( name ),
+    d_experience( 0 ),
+    d_next_level_experience_threshold( 2000 ),
+    d_gold( 0 ),
+    d_strength( 0 ),
+    d_magic( 0 ),
+    d_dexterity( 0 ),
+    d_vitality( 0 ),
+    d_max_health( 1 ),
+    d_max_mana( 1 ),
+    d_magic_resistance_fraction( 0.0 ),
+    d_fire_resistance_fraction( 0.0 ),
+    d_lightning_resistance_fraction( 0.0 ),
+    d_armor_class( 0 ),
+    d_minimum_damage( 0 ),
+    d_maximum_damage( 0 ),
+    d_chance_to_hit_with_melee( 0.0 ),
+    d_chance_to_hit_with_ranged( 0.0 ),
+    d_chance_to_hit_with_spell( 0.0 ),
+    d_inventory( inventory ),
+    d_spell_book( spell_book ),
+    d_quest_log( new QuestLog ),
+    d_dungeon_sprites(),
+    d_town_sprites(),
+    d_direction_sprites(),
+    d_sprites_loaded( false ),
+    d_active_armor_state( Inventory::LowClassArmorEquiped ),
+    d_active_weapon_state( Inventory::NothingEquiped ),
+    d_active_spell_state( SpellBook::NoSpellEquiped ),
+    d_in_town( true )
+{ 
+  // Initialize the spell book pages
+  d_spell_book->initializePages();
+
+  // Connect to base stats changed signal
+  this->connectToBaseStatsChangedSignal();
+
+  // Connect to the inventory signals
+  this->connectInventorySignalsToCharacterSlots();
+
+  // Connect to the spell book signals
+  this->connectSpellBookSignalsToCharacterSlots();
 }
 
-// Copy constructor
-/*! \details This constructor should only be called by the qml engine.
+// Destructor
+/*! \details If the inventory and/or the spell book have a parent widget
+ * set, that parent will take care of destroying it/them when it is closed.
+ * If that is the case, the inventory and/or the spell book will already be
+ * null pointers once this destructor is invoked.
  */
-Character::Character( const Character& other_character )
-  : Actor( other_character )
+Character::~Character()
 {
-  // Frontend proxies do not need to display anything
-  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+  if( d_inventory )
+      d_inventory->close();
 
-  // Connect to the character data signals
-  this->connectCharacterDataSignalsToCharacterSlots();
+  if( d_spell_book )
+      d_spell_book->close();
 }
-
-// Constructor
-Character::Character( CharacterData* data, QGraphicsObject* parent )
-  : Actor( data, parent )
-{
-  this->connectCharacterDataSignalsToCharacterSlots();
-}
-
-// Assignment operator
-/*! \details This operator should only be called by the qml engine.
- */
-Character& Character::operator=( const Character& other_character )
-{
-  if( this != &other_character )
-  {
-    this->disconnectCharacterSlotsFromCharacterDataSignals();
-
-    Actor::operator=( other_character );
-
-    // Connect to the character data signals
-    this->connectCharacterDataSignalsToCharacterSlots();
-
-    // Frontend proxies do not need to display anything
-    this->setFlag( QGraphicsItem::ItemHasNoContents, true );
-  }
-
-  return *this;
-}
-
-
 
 // Get the name
 QString Character::getName() const
 {
-  return this->getCharacterData()->getName();
-}
-
-// Get the character type
-Character::Type Character::getType() const
-{
-  return this->getCharacterData()->getType();
+  return d_name;
 }
 
 // Increment the level
 void Character::incrementLevel()
 {
-  this->getCharacterData()->incrementLevel();
-}
+  this->setLevel( this->getLevel() + 1 );
 
-// Set the experience
-void Character::setExperience( const int experience )
-{
-  this->getCharacterData()->setExperience( experience );
+  // Update the next level experience threshold
+  d_next_level_experience_threshold *= 2;
+
+  emit levelUp( this->getLevel() );
 }
 
 // Add to experience
 void Character::addExperience( const int experience )
 {
-  this->getCharacterData()->addExperience( experience );
+  d_experience += std::max( experience, 0 );
+
+  while( d_experience > d_next_level_experience_threshold )
+  {
+    this->incrementLevel();
+  }
 }
 
 // Get the experience
 int Character::getExperience() const
 {
-  return this->getCharacterData()->getExperience();
+  return d_experience;
 }
 
 // Get the next level experience threshold
 int Character::getNextLevelExperienceThreshold()
 {
-  return this->getCharacterData()->getNextLevelExperienceThreshold();
+  return d_next_level_experience_threshold;
 }
 
 // Get experience to next level threshold
 int Character::getExperienceToNextLevelThreshold()
 {
-  return std::max( this->getCharacterData()->getNextLevelExperienceThreshold() - this->getCharacterData()->getExperience(), 0 );
+  return std::max( this->getNextLevelExperienceThreshold() - this->getExperience(), 0 );
+}
+
+// Get the strength
+int Character::getStrength() const
+{
+  return d_strength;
+}
+
+// Get the magic
+int Character::getMagic() const
+{
+  return d_magic;
+}
+
+// Get the dexterity
+int Character::getDexterity() const
+{
+  return d_dexterity;
+}
+
+// Get the vitality
+int Character::getVitality() const
+{
+  return d_vitality;
+}
+
+// Get the max health
+int Character::getMaxHealth() const
+{
+  return d_max_health;
+}
+
+// Get the max mana
+int Character::getMaxMana() const
+{
+  return d_max_mana;
+}
+
+// Get the magic resistance
+qreal Character::getMagicResistance() const
+{
+  return d_magic_resistance_fraction;
+}
+
+// Get the fire resistance
+qreal Character::getFireResistance() const
+{
+  return d_fire_resistance_fraction;
+}
+
+// Get the lightning resistance
+qreal Character::getLightningResistance() const
+{
+  return d_lightning_resistance_fraction;
+}
+
+// Get the armor class
+int Character::getArmorClass() const
+{
+  return d_armor_class;
+}
+
+// Get the minimum damage
+int Character::getMinimumDamage() const
+{
+  return d_minimum_damage;
+}
+
+// Get the maximum damage
+int Character::getMaximumDamage() const
+{
+  return d_maximum_damage;
+}
+
+// Get the percent chance to hit with melee weapon
+qreal Character::getChanceToHitWithMeleeWeapon() const
+{
+  return d_chance_to_hit_with_melee;
+}
+
+// Get the percent chance to hit with ranged weapon
+qreal Character::getChanceToHitWithRangedWeapon() const
+{
+  return d_chance_to_hit_with_ranged;
+}
+
+// Get the chance to hit with a spell_state
+qreal Character::getChanceToHitWithSpell() const
+{
+  return d_chance_to_hit_with_spell;
 }
 
 // Get the gold amount
 int Character::getGold()
 {
-  return this->getCharacterData()->getGold();
+  return d_gold;
 }
 
 // Get the inventory
 const Inventory& Character::getInventory() const
 {
-  return this->getCharacterData()->getInventory();
+  return *d_inventory;
 }
 
 // Get the inventory
 Inventory& Character::getInventory()
 {
-  return this->getCharacterData()->getInventory();
+  return *d_inventory;
 }
 
 // Get the spell book
 const SpellBook& Character::getSpellBook() const
 {
-  return this->getCharacterData()->getSpellBook();
+  return *d_spell_book;
 }
 
 // Get the spell book
 SpellBook& Character::getSpellBook()
 {
-  return this->getCharacterData()->getSpellBook();
+  return *d_spell_book;
 }
 
 // Get the quest log
 const QuestLog& Character::getQuestLog() const
 {
-  return this->getCharacterData()->getQuestLog();
+  return *d_quest_log;
 }
 
 // Get the quest log
 QuestLog& Character::getQuestLog()
 {
-  return this->getCharacterData()->getQuestLog();
+  return *d_quest_log;
 }
 
 // Check if the image assets have been loaded
 bool Character::imageAssetsLoaded() const
 {
-  return this->getCharacterData()->spritesLoaded();
+  return d_sprites_loaded;
 }
 
 // Load the image asset
@@ -433,8 +534,9 @@ void Character::loadGameSprites( const QString& source,
 // Finalize image asset loading
 void Character::finalizeImageAssetLoading()
 {
-  this->getCharacterData()->setSpritesLoaded();
-  this->setActorSprites( this->getCharacterData()->getCharacterTownSprites()[Inventory::NothingEquiped][Inventory::LowClassArmorEquiped] );
+  d_sprites_loaded = true;
+
+  this->setActorSprites( d_town_sprites[Inventory::NothingEquiped][Inventory::LowClassArmorEquiped] );
 }
 
 // Dump the image assets
@@ -442,8 +544,8 @@ void Character::dumpImageAssets()
 {
   QMap<QString,std::shared_ptr<Actor::DirectionGameSpriteMap> >::iterator
     asset_sprite_it, asset_sprite_end;
-  asset_sprite_it = this->getCharacterData()->getDirectionSprites().begin();
-  asset_sprite_end = this->getCharacterData()->getDirectionSprites().end();
+  asset_sprite_it = d_direction_sprites.begin();
+  asset_sprite_end = d_direction_sprites.end();
 
   while( asset_sprite_it != asset_sprite_end )
   {
@@ -465,65 +567,230 @@ void Character::dumpImageAssets()
     ++asset_sprite_it;
   }
 
-  this->getCharacterData()->setSpritesNotLoaded();
+  d_sprites_loaded = false;
 }
 
 // Enter the town
 void Character::enterTown()
 {
-  this->getCharacterData()->enterTown();
+  d_in_town = true;
+
+  this->updateActorSprites();
+  this->setDirection( Direction::South );
 }
 
 // Exit the town
 void Character::exitTown()
 {
-  this->getCharacterData()->enterTown();
+  d_in_town = false;
+
+  this->updateActorSprites();
+  this->setDirection( Direction::South );
 }
 
-void Character::handleLevelUpInCharacterData( const int new_level )
+// Update the active actor sprites
+void CharacterData::updateActorSprites()
 {
-  emit levelUp( new_level );
-}
-
-void Character::handleStatsChangedInCharacterData()
-{
-  emit statsChanged();
-}
-
-// Connect character data signals to character slots
-void Character::connectCharacterDataSignalsToCharacterSlots()
-{
-  QObject::connect( this->getCharacterData(), SIGNAL(levelUp(const int)),
-                    this, SLOT(handleLevelUpInCharacterData(const int)) );
-  QObject::connect( this->getCharacterData(), SIGNAL(statsChanged()),
-                    this, SLOT(handleStatsChangedInCharacterData()) );
-}
-
-// Disconnect character slots from character data signals
-void Character::disconnectCharacterSlotsFromCharacterDataSignals()
-{
-  QObject::disconnect( this->getCharacterData(), SIGNAL(levelUp(const int)),
-                       this, SLOT(handleLevelUpInCharacterData(const int)) );
-  QObject::disconnect( this->getCharacterData(), SIGNAL(statsChanged()),
-                       this, SLOT(handleStatsChangedInCharacterData()) );
+  if( d_in_town )
+  {
+    this->setActorSprites(
+                 d_town_sprites[d_active_weapon_state][d_active_armor_state] );
+  }
+  else
+  {
+    this->setActorSprites( d_dungeon_sprites[d_active_spell_state][d_active_weapon_state][d_active_armor_state] );
+  }
 }
 
 // Update character stats
 void Character::updateStats()
 {
-  this->getCharacterData()->updateStats();
+  // Update strength
+  d_strength = this->getBaseStrength() +
+    d_inventory->calculateStrengthModifier();
+  emit strengthChanged( d_strength );
+
+  // Update magic
+  int magic_modifier = d_inventory->calculateMagicModifier();
+  d_magic = this->getBaseMagic() + magic_modifier;
+  
+  emit magicChanged( this->getBaseMagic(), magic_modifier );
+
+  // Update dexterity
+  d_dexterity = this->getBaseDexterity() +
+    d_inventory->calculateDexterityModifier();
+  emit dexterityChanged( d_dexterity );
+
+  // Update vitality
+  int vitality_modifier = d_inventory->calculateVitalityModifier();
+  d_vitality = this->getBaseVitality() + vitality_modifier;
+    
+  emit vitalityChanged( this->getBaseVitality(), vitality_modifier );
+
+  // Update max health
+  int health_modifier = d_inventory->calculateHealthModifier();
+  d_max_health = this->getBaseHealth() + health_modifier;    
+  
+  if( d_max_health < this->getHealth() )
+    this->setHealth( d_max_health );
+  
+  emit maxHealthChanged( this->getBaseHealth(), health_modifier );
+
+  // Update max mana
+  int mana_modifier = d_inventory->calculateManaModifier();
+  d_max_mana = this->getBaseMana() + mana_modifier;
+      
+  if( d_max_mana < this->getMana() )
+    this->setMana( d_max_mana );
+
+  emit maxManaChanged( this->getBaseMana(), mana_modifier );
+
+  // Update magic resistance
+  d_magic_resistance_fraction = this->getBaseMagicResistance() +
+    d_inventory->calculateMagicResistance();
+
+  // Update fire resistance
+  d_fire_resistance_fraction = this->getBaseFireResistance() +
+    d_inventory->calculateFireResistance();
+
+  // Update lightning resistance
+  d_lightning_resistance_fraction = this->getBaseLightningResistance() +
+    d_inventory->calculateLightningResistance();
+
+  // Update the armor class
+  d_armor_class = this->getBaseArmorClass() +
+    d_inventory->calculateArmorClass();
+
+  // Update the damage
+  d_minimum_damage = this->getBaseDamage();
+  //   + d_inventory->calculateMinimumDamage();
+  //
+  d_maximum_damage = this->getBaseDamage();
+  //   + d_inventory->calculateMaximumDamage();
+
+  emit statsChanged();
 }
 
-// Get the character data
-CharacterData* Character::getCharacterData()
+// Handle character weapon changed
+void Character::handleWeaponChanged( const Inventory::WeaponState state )
 {
-  return dynamic_cast<CharacterData*>( this->getActorData() );
+  if( d_active_weapon_state != state )
+  {
+    d_active_weapon_state = state;
+
+    this->updateActorSprites();
+  }
+
+  this->updateStats();
 }
 
-// Get the character data
-const CharacterData* Character::getCharacterData() const
+// Handle character shield changed
+void Character::handleShieldChanged( const Inventory::WeaponState state )
 {
-  return dynamic_cast<const CharacterData*>( this->getActorData() );
+  if( d_active_weapon_state != state )
+  {
+    d_active_weapon_state = state;
+
+    this->updateActorSprites();
+  }
+
+  this->updateStats();
+}
+// Handle character ring changed
+void Character::handleRingChanged()
+{
+  this->updateStats();
+}
+
+// Handle character amulet changed
+void Character::handleAmuletChanged()
+{
+  this->updateStats();
+}
+
+// Handle character armor changed
+void Character::handleArmorChanged( const Inventory::ChestArmorState state )
+{
+  if( d_active_armor_state != state )
+  {
+    d_active_armor_state = state;
+
+    this->updateActorSprites();
+  }
+
+  this->updateStats();
+}
+
+// Handle character helmet changed
+void Character::handleHelmetChanged()
+{
+  this->updateStats();
+}
+
+// Handle character spell changed
+void Character::handleSpellChanged( const SpellBook::SpellState state )
+{
+  if( d_active_spell_state != state )
+  {
+    d_active_spell_state = state;
+
+    this->updateActorSprites();
+  }
+}
+
+// Connect to base stats changed signal
+void Character::connectToBaseStatsChangedSignal()
+{
+  QObject::connect( this, SIGNAL(baseStatsChanged),
+                    this, SLOT(updateStats()) );
+}
+
+// Connect to inventory signals
+void Character::connectInventorySignalsToCharacterSlots()
+{
+  QObject::connect( d_inventory, SIGNAL(weaponChanged(const Inventory::WeaponState)),
+                    this, SLOT(handleWeaponChanged(const Inventory::WeaponState)) );
+  QObject::connect( d_inventory, SIGNAL(shieldChanged(const Inventory::WeaponState)),
+                    this, SLOT(handleShieldChanged(const Inventory::WeaponState)) );
+  QObject::connect( d_inventory, SIGNAL(ringChanged()),
+                    this, SLOT(handleRingChanged()) );
+  QObject::connect( d_inventory, SIGNAL(amuletChanged()),
+                    this, SLOT(handleAmuletChanged()) );
+  QObject::connect( d_inventory, SIGNAL(armorChanged(const Inventory::ChestArmorState)),
+                    this, SLOT(handleArmorChanged(const Inventory::ChestArmorState)) );
+  QObject::connect( d_inventory, SIGNAL(helmetChanged()),
+                    this, SLOT(handleHelmetChanged()) );
+}
+
+// Connect to spell book signals
+void Character::connectSpellBookSignalsToCharacterSlots()
+{
+  QObject::connect( d_spell_book, SIGNAL(spellChanged(const SpellBook::SpellState)),
+                    this, SLOT(handleSpellChanged(const SpellBook::SpellState)) );
+}
+
+// Create the transition to the attacking state
+QAbstractTransition* Character::createTransitionToAttackingState()
+{
+
+}
+
+// Create the transition to the walking state
+QAbstractTransition* Character::createTransitionToWalkingState()
+{
+
+}
+
+// Create the transition to the standing state
+QAbstractTransition* Character::createTransitionToStandingState()
+{
+
+}
+
+// Create the transition to the casting state
+QAbstractTransition* Character::createTransitionToCastingState()
+{
+
 }
 
 QML_REGISTER_BASE_TYPE( Character );

@@ -60,9 +60,6 @@ public:
 
 signals:
 
-  //! The direction has changed
-  void directionChanged( const Direction new_direction );
-
   //! The time state has been advanced
   void timeStateAdvanced();
 
