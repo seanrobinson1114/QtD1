@@ -8,7 +8,8 @@
 
 // QtD1 Includes
 #include "Sorcerer.h"
-#include "SorcererData.h"
+#include "SorcererInventory.h"
+#include "SorcererSpellBook.h"
 
 namespace QtD1{
 
@@ -333,16 +334,54 @@ const Sorcerer::AssetStateMap& Sorcerer::getAssetStateMap()
 /*! \details This constructor should only be used by the qml engine.
  */
 Sorcerer::Sorcerer( QGraphicsObject* parent )
-  : Character( new SorcererData(), parent )
-{
-  this->initializeStats();
-}
+  : Sorcerer( "", parent )
+{ /* ... */ }
 
 // Constructor
 Sorcerer::Sorcerer( const QString& name, QGraphicsObject* parent )
-  : Character( new SorcererData( name ), parent )
+  : Character( name, new SorcererInventory, new SorcererSpellBook, parent )
 {
+  this->connectStatChangeSignalToSorcererSlots();
   this->initializeStats();
+}
+
+// Get the base health
+int Sorcerer::getBaseHealth() const
+{
+  return d_base_health;
+}
+
+int Sorcerer::getBaseMana() const
+{
+  return d_base_mana;
+}
+
+int Sorcerer::getBaseDamage() const
+{
+  return d_base_damage;
+}
+
+int Sorcerer::getBaseArmorClass() const
+{
+  return d_base_armor_class;
+}
+
+// Get the base percent chance to hit with melee
+qreal Sorcerer::getBaseChanceToHitWithMeleeWeapon() const
+{
+  return d_base_chance_to_hit_with_melee;
+}
+
+// Get the base percent chance to hit with ranged
+qreal Sorcerer::getBaseChanceToHitWithRangedWeapon() const
+{
+  return d_base_chance_to_hit_with_ranged;
+}
+
+// Get the base percent chance to hit with spell
+qreal Sorcerer::getBaseChanceToHitWithSpell() const
+{
+  return d_base_chance_to_hit_with_spell;
 }
 
 // Get the number of image assets used by the object
@@ -411,7 +450,9 @@ void Sorcerer::initializeStats()
   this->setBaseMagic( 35 );
   this->setBaseDexterity( 15 );
   this->setBaseVitality( 15 );
-  this->updateStats();
+
+  this->handleLevelUp( 1 );
+  
   this->restoreHealth();
   this->restoreMana();
 }
@@ -464,6 +505,85 @@ int Sorcerer::getSpriteSheetFramesPerDirection( const States& states ) const
       }
     }
   }
+}
+
+void Sorcerer::handleStrengthChange( int )
+{
+  this->calculateBaseDamage();
+}
+
+void Sorcerer::handleDexterityChange( int total_dexterity )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  d_base_armor_class = total_dexterity / 5;
+}
+
+void Sorcerer::handleVitalityChange( int, int )
+{
+  this->calculateBaseHealth();
+}
+
+void Sorcerer::handleMagicChange( int, int )
+{
+  this->calculateBaseMana();
+  this->calculateBaseChanceToHitWithSpell();
+}
+
+void Sorcerer::handleLevelUp( const int )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  this->calculateBaseChanceToHitWithSpell();
+  this->calculateBaseDamage();
+  this->calculateBaseHealth();
+  this->calculateBaseMana();
+
+  this->updateStats();
+}
+
+void Sorcerer::connectStatChangeSignalToSorcererSlots()
+{
+  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
+                    this, SLOT( handleStrengthChange( int ) ) );
+  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
+                    this, SLOT( handleDexterityChange( int ) ) );
+  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
+                    this, SLOT( handleVitalityChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
+                    this, SLOT( handleMagicChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( levelUp( const int ) ),
+                    this, SLOT( handleLevelUp( const int ) ) );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithMelee()
+{
+  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithRanged()
+{
+  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithSpell()
+{
+  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
+}
+
+void Sorcerer::calculateBaseDamage()
+{
+  d_base_damage = this->getStrength() * this->getLevel() / 200;
+}
+
+void Sorcerer::calculateBaseHealth()
+{
+  d_base_health = this->getVitality() + this->getLevel() + 9;
+}
+
+void Sorcerer::calculateBaseMana()
+{
+  d_base_mana = 2 * this->getMagic() + 2 * this->getLevel() - 2;
 }
 
 QML_REGISTER_META_TYPE( Sorcerer );
