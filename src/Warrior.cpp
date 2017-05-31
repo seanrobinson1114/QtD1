@@ -8,7 +8,8 @@
 
 // QtD1 Includes
 #include "Warrior.h"
-#include "WarriorData.h"
+#include "WarriorInventory.h"
+#include "WarriorSpellBook.h"
 
 namespace QtD1{
 
@@ -329,6 +330,11 @@ const Warrior::AssetStateMap& Warrior::getAssetStateMap()
   return Warrior::s_asset_state_map;
 }
 
+// Default Constructor
+Warrior::Warrior( QGraphicsObject* parent )
+  : Warrior( "", parent )
+{ /* ... */ }
+  
 // Constructor
 Warrior::Warrior( const QString& name, QGraphicsObject* parent )
   : Character( name, new WarriorInventory, new WarriorSpellBook, parent ),
@@ -340,6 +346,7 @@ Warrior::Warrior( const QString& name, QGraphicsObject* parent )
     d_base_chance_to_hit_with_ranged( 0.0 ),
     d_base_chance_to_hit_with_spell( 0.0 )
 {
+  this->connectStatChangeSignalToWarriorSlots();
   this->initializeStats();
 }
 

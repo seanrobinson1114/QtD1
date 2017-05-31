@@ -26,6 +26,9 @@ class Warrior : public Character
 
 public:
 
+  //! Default Constructor
+  Warrior( QGraphicsObject* parent = 0 );
+
   //! Constructor
   Warrior( const QString& name, QGraphicsObject* parent = 0 );
 
@@ -116,10 +119,10 @@ private:
   // The warrior image asset names
   static AssetStateMap s_asset_state_map;
 
-  // The warrior max health
+  // The warrior base health
   int d_base_health;
 
-  // The warrior max mana
+  // The warrior base mana
   int d_base_mana;
 
   // The warrior damage
