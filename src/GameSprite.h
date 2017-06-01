@@ -62,8 +62,23 @@ public:
   //! Check if the game sprite is ready
   bool isReady() const;
 
+  //! Set the duration of the sprite (in game tics)
+  void setDuration( const int duration );
+
+  //! Get the duration of the sprite (in game tics)
+  int getDuration() const;
+
+  //! Set the duration of each sprite frame (in game tics)
+  void setFrameDuration( const int duration );
+
+  //! Get the duration of each sprite frame (in game tics)
+  int getFrameDuration() const;
+
   //! Set the sprite frame
   void setFrame( const int frame );
+
+  //! Increment the number of elapsed game tics
+  bool incrementElapsedGameTics();
 
   //! Increment the sprite frame
   void incrementFrame();
@@ -99,6 +114,9 @@ private:
   // The game sprite asset data
   std::shared_ptr<GameSpriteData> d_asset_data;
 
+  // The number of elapsed game tics
+  int d_elapsed_game_tics;
+  
   // The current frame
   int d_current_frame;
 };

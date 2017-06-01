@@ -16,7 +16,6 @@
 #include <QState>
 
 // QtD1 Includes
-#include "QMLRegistrationHelper.h"
 #include "BasicActor.h"
 
 namespace QtD1{
@@ -26,7 +25,7 @@ namespace QtD1{
  * Objects of this class can be passed by value without copy overhead because
  * this class uses implicit data sharing.
  */
-class Actor : public InteractiveLevelObject
+class Actor : public BasicActor
 {
   Q_OBJECT
   Q_PROPERTY(int level READ getLevel)
@@ -194,11 +193,14 @@ public:
   //! Get the chance to hit with a spell
   virtual qreal getChanceToHitWithSpell() const;
 
-  //! Get the actor x velocity
+  //! Get the actor x velocity (pixels per game tic)
   qreal getXVelocity() const;
 
-  //! Get the actor y velocity
+  //! Get the actor y velocity (pixels per game tic)
   qreal getYVelocity() const;
+
+  //! The actor can be attacked
+  bool canBeAttacked() const override;
 
 signals:
 
@@ -214,11 +216,14 @@ signals:
   //! Actor health depleted
   void healthDepleted();
 
-  //! Actor destination reached
-  void destinationReached();
+  //! Actor target set
+  void targetSet( LevelObject* target );
 
   //! Actor target reached
-  void targetReached( Actor* target );
+  void targetReached( LevelObject* target );
+
+  //! Actor cast spell at
+  void spellCastAt( LevelObject* target );
 
   //! Actor hit
   void hit();
@@ -258,6 +263,12 @@ public slots:
   //! Restore mana
   void restoreMana();
 
+  //! Set the target
+  void setTarget( LevelObject* target );
+
+  //! Cast a spell at the target
+  virtual void castSpellAt( LevelObject* target );
+
 protected:
 
   //! The actor state enum
@@ -284,18 +295,6 @@ protected:
 
   //! Create the action states
   void createActionStates( QState* parent_state );
-
-  //! Create the transition to the attacking state
-  virtual QAbstractTransition* createTransitionToAttackingState() = 0;
-
-  //! Create the transition to the walking state
-  virtual QAbstractTransition* createTransitionToWalkingState() = 0;
-
-  //! Create the transition to the standing state
-  virtual QAbstractTransition* createTransitionToStandingState() = 0;
-
-  //! Create the transition to the casting state
-  virtual QAbstractTransition* createTransitionToCastingState() = 0;
 
 protected slots:
 
@@ -351,6 +350,9 @@ private:
   // Create the alive states
   void createAliveStates( QState* alive_parent_state );
 
+  // Update time dependent states
+  bool updateTimeDependentStates() override;
+
   // The level
   int d_level;
 
@@ -387,6 +389,9 @@ private:
   // The velocity of the actor
   qreal d_x_velocity;
   qreal d_y_velocity;
+
+  // The target of the actor
+  LevelObject* d_target;
 
   // The actor sprites
   std::shared_ptr<StateDirectionGameSpriteMap> d_sprites;

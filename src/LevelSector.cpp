@@ -199,6 +199,12 @@ void LevelSector::paint( QPainter*,
                          QWidget* )
 { /* ... */ }
 
+// Check if the object can be attacked
+bool LevelSector::canBeAttacked() const
+{
+  return false;
+}
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

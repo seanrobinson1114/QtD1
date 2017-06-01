@@ -22,8 +22,11 @@ class Sorcerer : public Character
   
 public:
 
-  //! Constructor
+  //! Default constructor
   Sorcerer( QGraphicsObject* parent = 0 );
+
+  //! Copy constructor
+  Sorcerer( const Sorcerer& other_sorcerer );
 
   //! Constructor
   Sorcerer( const QString& name, QGraphicsObject* parent = 0 );
@@ -31,6 +34,9 @@ public:
   //! Destructor
   ~Sorcerer()
   { /* ... */ }
+
+  //! Get the character type
+  Character::Type getType() const override;
 
   //! Get the max health
   int getBaseHealth() const override;

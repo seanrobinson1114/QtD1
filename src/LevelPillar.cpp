@@ -123,6 +123,12 @@ void LevelPillar::paint( QPainter* painter,
   painter->drawPixmap( 0, 0, d_data->image() );
 }
 
+// Check if the object can be attacked
+bool LevelPillar::canBeAttacked() const
+{
+  return false;
+}
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

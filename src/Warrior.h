@@ -26,8 +26,11 @@ class Warrior : public Character
 
 public:
 
-  //! Default Constructor
+  //! Default constructor
   Warrior( QGraphicsObject* parent = 0 );
+
+  //! Copy constructor
+  Warrior( const Warrior& other_warrior );
 
   //! Constructor
   Warrior( const QString& name, QGraphicsObject* parent = 0 );
@@ -35,6 +38,9 @@ public:
   //! Destructor
   ~Warrior()
   { /* ... */ }
+
+  //! Get the character type
+  Character::Type getType() const override;
 
   //! Get the max health
   int getBaseHealth() const override;

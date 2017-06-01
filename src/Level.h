@@ -66,7 +66,6 @@ public:
   //! Add an actor
   void addActor( Actor* actor,
                  const QPointF& location,
-                 const Actor::State state = Actor::Standing,
                  const Direction direction = South );
 
   //! Insert the character
@@ -164,6 +163,9 @@ private:
 
   // Notify level objects of impending asset load
   void notifyLevelObjectsOfImpendingAssetLoad();
+
+  // Handle mouse press events in a custom way
+  void mousePressEvent( QGraphicsSceneMouseEvent* mouse_event ) override;
 
   // Connect the image asset loader signals to the level slots
   void connectImageAssetLoaderSignalsToLevelSlots() const;

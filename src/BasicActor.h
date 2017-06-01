@@ -43,6 +43,9 @@ public:
   //! Get the direction of the basic actor
   Direction getDirection() const;
 
+  //! Get the movement speed (pixels per game tic)
+  virtual qreal getMovementSpeed() const = 0;
+
   //! Get the bounding rect of the basic actor
   QRectF boundingRect() const override;
 
@@ -56,9 +59,6 @@ public:
   void startStateMachine();
 
 signals:
-
-  //! The time state has been advanced
-  void timeStateAdvanced();
 
   //! All of the active sprite frames have been shown
   void allActiveFramesShown();
@@ -79,15 +79,19 @@ protected:
                   QWidget* widget ) override;
 
   //! Set the active sprites
-  void setActiveSprites( DirectionGameSpriteMap* active_sprites );
+  void setActiveSprites(
+               const std::shared_ptr<DirectionGameSpriteMap>& active_sprites );
 
   //! Restart active sprite
   void restartActiveSprite();
 
+  //! Update time dependent states (return if a screen update
+  virtual bool updateTimeDependentStates() = 0;
+
 private:
 
   // The active sprites
-  DirectionGameSpriteMap* d_active_sprites;
+  std::shared_ptr<DirectionGameSpriteMap> d_active_sprites;
 
   // The active direction sprite
   std::pair<Direction,GameSprite*> d_active_direction_sprite;

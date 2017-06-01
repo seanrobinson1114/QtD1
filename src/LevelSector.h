@@ -58,6 +58,9 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Check if the object can be attacked
+  bool canBeAttacked() const override;
+
 private:
 
   // The level square z-order map

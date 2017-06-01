@@ -19,6 +19,7 @@ namespace QtD1{
 GameSprite::GameSprite( QGraphicsItem* parent )
   : QGraphicsItem( parent ),
     d_asset_data( new GameSpriteData ),
+    d_elapsed_game_tics( 0 ),
     d_current_frame( 0 )
 { /* ... */ }
   
@@ -28,6 +29,7 @@ GameSprite::GameSprite( const QString& source,
                         QGraphicsItem* parent )
   : QGraphicsItem( parent ),
     d_asset_data( new GameSpriteData ),
+    d_elapsed_game_tics( 0 ),
     d_current_frame( 0 )
 {
   d_asset_data->setSource( source );
@@ -38,6 +40,7 @@ GameSprite::GameSprite( const QString& source,
 GameSprite::GameSprite( const GameSprite& that )
   : QGraphicsItem( that.parentItem() ),
     d_asset_data( that.d_asset_data ),
+    d_elapsed_game_tics( that.d_elapsed_game_tics ),
     d_current_frame( that.d_current_frame )
 { /* ... */ }
 
@@ -48,6 +51,7 @@ GameSprite& GameSprite::operator=( const GameSprite& that )
   {
     this->setParentItem( that.parentItem() );
     d_asset_data = that.d_asset_data;
+    d_elapsed_game_tics = that.d_elapsed_game_tics;
     d_current_frame = that.d_current_frame;
   }
 
@@ -62,7 +66,8 @@ GameSprite* GameSprite::clone( QGraphicsItem* parent ) const
   GameSprite* new_game_sprite = new GameSprite( parent );
 
   *new_game_sprite->d_asset_data = *this->d_asset_data;
-  new_game_sprite->d_current_frame = this->d_current_frame;
+  new_game_sprite->d_elapsed_game_tics = 0;
+  new_game_sprite->d_current_frame = 0;
 
   return new_game_sprite;
 }
@@ -137,17 +142,63 @@ bool GameSprite::isReady() const
 {
   return d_asset_data->isReady();
 }
+
+// Set the duration of the sprite (in game tics)
+void GameSprite::setDuration( const int duration )
+{
+  d_asset_data->setDuration( duration );
+}
+
+// Get the duration of the sprite (in game tics)
+int GameSprite::getDuration() const
+{
+  return d_asset_data->getDuration();
+}
+
+// Set the duration of each sprite frame (in game tics)
+void GameSprite::setFrameDuration( const int duration )
+{
+  d_asset_data->setFrameDuration( duration );
+}
+
+// Get the duration of each sprite frame (in game tics)
+int GameSprite::getFrameDuration() const
+{
+  return d_asset_data->getFrameDuration();
+}
   
 // Set the sprite frame
 void GameSprite::setFrame( const int frame )
 {
   d_current_frame = frame % d_asset_data->getNumberOfFrames();
+  d_elapsed_game_tics = 0;
+}
+
+// Increment the number of elapsed game tics
+/*! \details This method will ensure that the game sprite animates with the
+ * correct duration (measured in game tics). If the frame is incremented
+ * this method will return true, which is the only time that a screen update
+ * needs to be scheduled.
+ */
+bool GameSprite::incrementElapsedGameTics()
+{
+  ++d_elapsed_game_tics;
+
+  if( d_elapsed_game_tics >= d_asset_data->getFrameDuration() )
+  {
+    this->incrementFrame();
+    
+    return true;
+  }
+
+  return false;
 }
 
 // Increment the sprite frame
 void GameSprite::incrementFrame()
 {
   d_current_frame = (d_current_frame+1) % d_asset_data->getNumberOfFrames();
+  d_elapsed_game_tics = 0;
 }
 
 // Get the sprite frame

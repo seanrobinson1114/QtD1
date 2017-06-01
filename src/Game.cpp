@@ -556,6 +556,7 @@ void Game::handleTownAssetLoadFinished()
 
   // Activate the character
   d_character->activate();
+  d_character->startStateMachine();
 
   // Start the game timer
   d_game_timer_id = this->startTimer( s_refresh_delay_time );

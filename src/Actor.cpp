@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   Actor.cpp
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The actor base class definition
 //!
 //---------------------------------------------------------------------------//
@@ -14,7 +14,8 @@
 
 // QtD1 Includes
 #include "Actor.h"
-#include "ActorData.h"
+#include "ActorStandingByTargetTransition.h"
+#include "ActorAttackingTargetTransition.h"
 
 namespace QtD1{
 
@@ -69,19 +70,19 @@ Actor& Actor::operator=( const Actor& other_actor )
   {
     this->setParentItem( other_actor.parentObject() );
     
-    d_level = other.d_level;
-    d_kill_experience = other.d_kill_experience;
-    d_base_strength = other.d_base_strength;
-    d_base_magic = other.d_base_magic;
-    d_base_dexterity = other.d_base_dexterity;
-    d_base_vitality = other.d_base_vitality;
-    d_health = other.d_health;
-    d_mana = other.d_mana;
-    d_base_magic_resistance_fraction = other.d_base_magic_resistance_fraction;
-    d_base_fire_resistance_fraction = other.d_base_fire_resistance_fraction;
-    d_base_lightning_resistance_fraction = other.d_base_lightning_resistance_fraction;
-    d_x_velocity = other.d_x_velocity;
-    d_y_velocity = other.d_y_velocity;
+    d_level = other_actor.d_level;
+    d_kill_experience = other_actor.d_kill_experience;
+    d_base_strength = other_actor.d_base_strength;
+    d_base_magic = other_actor.d_base_magic;
+    d_base_dexterity = other_actor.d_base_dexterity;
+    d_base_vitality = other_actor.d_base_vitality;
+    d_health = other_actor.d_health;
+    d_mana = other_actor.d_mana;
+    d_base_magic_resistance_fraction = other_actor.d_base_magic_resistance_fraction;
+    d_base_fire_resistance_fraction = other_actor.d_base_fire_resistance_fraction;
+    d_base_lightning_resistance_fraction = other_actor.d_base_lightning_resistance_fraction;
+    d_x_velocity = other_actor.d_x_velocity;
+    d_y_velocity = other_actor.d_y_velocity;
     d_sprites.reset();
     d_active_state = Standing;
   }
@@ -188,13 +189,13 @@ int Actor::getVitality() const
 // Get the base health
 int Actor::getBaseHealth() const
 {
-  return d_data->getBaseHealth();
+  return 1;
 }
 
 // Get the max health
 int Actor::getMaxHealth() const
 {
-  return d_data->getMaxHealth();
+  return this->getBaseHealth();
 }
 
 // Set the health
@@ -218,20 +219,20 @@ void Actor::setHealth( const int health )
 void Actor::addHealth( const int health )
 {
   if( health > 0 )
-    this->setHealth( d_data->getHealth() + health );
+    this->setHealth( this->getHealth() + health );
 }
 
 // Remove health
 void Actor::removeHealth( const int health )
 {
   if( health > 0 )
-    this->setHealth( d_data->getHealth() - health );
+    this->setHealth( this->getHealth() - health );
 }
 
 // Restore health
 void Actor::restoreHealth()
 {
-  this->setHealth( d_data->getMaxHealth() );
+  this->setHealth( this->getMaxHealth() );
 }
 
 // Get the health
@@ -270,14 +271,14 @@ void Actor::setMana( const int mana )
 void Actor::addMana( const int mana )
 {
   if( mana > 0 )
-    this->setMana( d_data->getMana() + mana );
+    this->setMana( this->getMana() + mana );
 }
 
 // Remove mana
 void Actor::removeMana( const int mana )
 {
   if( mana > 0 )
-    this->setMana( d_data->getMana() - mana );
+    this->setMana( this->getMana() - mana );
 }
 
 // Restore mana
@@ -451,6 +452,12 @@ void Actor::setVelocity( const qreal x_velocity, const qreal y_velocity )
   d_y_velocity = y_velocity;
 }
 
+// The actor can be attacked
+bool Actor::canBeAttacked() const
+{
+  return true;
+}
+
 // Increment the base strength
 void Actor::incrementBaseStrength()
 {
@@ -480,8 +487,67 @@ void Actor::incrementBaseVitality()
   emit baseStatsChanged();
 }
 
+// Set the target
+void Actor::setTarget( LevelObject* target )
+{
+  if( target )
+  {
+    d_target = target;
+    std::cout << "actor target set: " << target << std::endl;
+    emit targetSet( target );
+  }
+}
+
+// Cast a spell at the target
+void Actor::castSpellAt( LevelObject* target )
+{
+  emit spellCastAt( target );
+}
+
+// Update time dependent states
+/*! \details If the actor direction or position changes this method will
+ * return true indicating that the screen update is required.
+ */
+bool Actor::updateTimeDependentStates()
+{
+  if( d_target )
+  {
+    if( d_target->scenePos() != this->scenePos() )
+    {
+      // Calculate the movement direction
+      Direction direction =
+        calculateDiscreteDirection( this->scenePos(), d_target->scenePos() );
+
+      if( direction != this->getDirection() )
+      {
+        // Get the movement direction enum
+        this->setDirection( direction );
+
+        QPointF direction_vector = getDirectionVector( direction );
+        
+        // Calculate the velocity
+        double speed = this->getMovementSpeed();
+        d_x_velocity = direction_vector.x()*speed;
+        d_y_velocity = direction_vector.y()*speed;
+
+        // Only move the actor if it is in the walking state
+        if( d_active_state == Walking )
+          this->moveBy( d_x_velocity, d_y_velocity );
+
+        if( d_target->scenePos() == this->scenePos() )
+          emit targetReached( d_target );
+
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
 // Set the actor sprites
-void Actor::setActorSprites( const std::shared_ptr<ActorSprites>& sprites )
+void Actor::setActorSprites(
+                  const std::shared_ptr<StateDirectionGameSpriteMap>& sprites )
 {
   if( sprites )
   {
@@ -490,7 +556,7 @@ void Actor::setActorSprites( const std::shared_ptr<ActorSprites>& sprites )
     if( d_sprites->find( d_active_state ) == d_sprites->end() )
       d_active_state = Standing;
 
-    this->setActiveSprites( &(*d_sprites[d_active_state]) );
+    this->setActiveSprites( (*d_sprites)[d_active_state] );
   }
 }
 
@@ -501,8 +567,9 @@ void Actor::initializeStateMachine( QStateMachine& state_machine )
   QState* action_states_parent = new QState;
 
   this->createActionStates( action_states_parent );
-
-  state_machine->addState( action_states_parent );
+  
+  state_machine.addState( action_states_parent );
+  state_machine.setInitialState( action_states_parent );
 }
 
 // Create the action states
@@ -526,8 +593,8 @@ void Actor::createActionStates( QState* parent_state )
                               SIGNAL(allActiveFramesShown()),
                               dead_state );
 
-  // Add the states to the state machine
-  state_machine.addState( alive_states_parent );
+  // Set the alive states parent as the initial state
+  parent_state->setInitialState( alive_states_parent );
 
   // Connect the state signals to actor slots
   QObject::connect( dying_state, SIGNAL(entered()),
@@ -560,9 +627,6 @@ void Actor::createAliveStates( QState* alive_parent_state )
   // Create the recoiling state
   QState* recoiling_state = new QState( alive_parent_state );
 
-  // Set the initial state (standing)
-  non_casting_state_parent->setInitialState( standing_state );
-
   // Create the recoiling transitions
   non_recoiling_state_parent->addTransition( this,
                                              SIGNAL(hit()),
@@ -572,11 +636,9 @@ void Actor::createAliveStates( QState* alive_parent_state )
                                   standing_state );
 
   // Create the spell casting transitions
-  QAbstractTransition* to_casting_state_transition =
-    this->createTransitionToCastingState();
-
-  to_casting_state_transition->setTargetState( casting_state );
-  non_casting_state_parent->addTransition( to_casting_state_transition );
+  non_casting_state_parent->addTransition( this,
+                                           SIGNAL(spellCastAt(LevelObject*)),
+                                           casting_state );
 
   casting_state->addTransition( this,
                                 SIGNAL(allActiveFramesShown()),
@@ -584,29 +646,29 @@ void Actor::createAliveStates( QState* alive_parent_state )
 
   // Create the attacking transitions
   QAbstractTransition* to_attacking_state_transition =
-    this->createTransitionToAttackingState();
-
+    new ActorAttackingTargetTransition( this );
   to_attacking_state_transition->setTargetState( attacking_state );
+  
   walking_state->addTransition( to_attacking_state_transition );
-  standing_state->addTransition( to_attacking_state_transition );
-
   attacking_state->addTransition( this,
                                   SIGNAL(allActiveFramesShown()),
                                   standing_state );
 
   // Create the walking transitions
-  QAbstractTransition* to_walking_state_transition =
-    this->createTransitionToWalkingState();
+  standing_state->addTransition( this,
+                                 SIGNAL(targetSet(LevelObject*)),
+                                 walking_state );
 
-  to_walking_state_transition->setTargetState( walking_state );
-  standing_state->addTransition( to_walking_state_transition );
+  QAbstractTransition* to_standing_state_transition =
+    new ActorStandingByTargetTransition( this );
+  to_standing_state_transition->setTargetState( standing_state );
 
-  walking_state->addTransition( this,
-                                SIGNAL(destinationReached()),
-                                standing_state );
-  walking_state->addTransition( this,
-                                SIGNAL(targetReached(Actor*)),
-                                attacking_state );
+  walking_state->addTransition( to_standing_state_transition );
+
+  // Set the initial states
+  alive_parent_state->setInitialState( non_recoiling_state_parent );
+  non_recoiling_state_parent->setInitialState( non_casting_state_parent );
+  non_casting_state_parent->setInitialState( standing_state );
 
   // Connect the state signals to actor slots
   QObject::connect( standing_state, SIGNAL(entered()),
@@ -632,7 +694,7 @@ void Actor::handleStandingStateEntered()
 {
   d_active_state = Standing;
   
-  this->setActiveSprites( &(*d_sprites)[Standing] );
+  this->setActiveSprites( (*d_sprites)[Standing] );
 
   this->update( this->boundingRect() );
 }
@@ -642,7 +704,7 @@ void Actor::handleWalkingStateEntered()
 {
   d_active_state = Walking;
 
-  this->setActiveSprites( &(*d_sprites)[Walking] );
+  this->setActiveSprites( (*d_sprites)[Walking] );
 
   this->update( this->boundingRect() );
 }
@@ -658,7 +720,7 @@ void Actor::handleAttackingStateEntered()
 {
   d_active_state = Attacking;
 
-  this->setActiveSprites( &(*d_sprites)[Attacking] );
+  this->setActiveSprites( (*d_sprites)[Attacking] );
 
   this->update( this->boundingRect() );
 }
@@ -667,6 +729,9 @@ void Actor::handleAttackingStateEntered()
 void Actor::handleAttackingStateExited()
 {
   this->restartActiveSprite();
+
+  // Remove the target
+  d_target = NULL;
 }
 
 // Handle casting state entered
@@ -674,7 +739,7 @@ void Actor::handleCastingStateEntered()
 {
   d_active_state = CastingSpell;
 
-  this->setActiveSprites( &(*d_sprites)[CastingSpell] );
+  this->setActiveSprites( (*d_sprites)[CastingSpell] );
   this->restartActiveSprite();
 
   this->update( this->boundingRect() );
@@ -685,9 +750,12 @@ void Actor::handleRecoilingStateEntered()
 {
   d_active_state = RecoilingFromHit;
 
-  this->setActiveSprites( &(*d_sprites)[RecoilingFromHit] );
+  this->setActiveSprites( (*d_sprites)[RecoilingFromHit] );
 
   this->update( this->boundingRect() );
+
+  // Remove the target
+  d_target = NULL;
 }
 
 // Handle casting state exited
@@ -701,7 +769,7 @@ void Actor::handleDyingStateEntered()
 {
   d_active_state = Dying;
   
-  this->setActiveSprites( &(*d_sprites)[Dying] );
+  this->setActiveSprites( (*d_sprites)[Dying] );
 
   this->update( this->boundingRect() );
 }
@@ -711,7 +779,7 @@ void Actor::handleDeadStateEntered()
 {
   d_active_state = Dead;
 
-  this->setActiveSprites( &(*d_sprites)[Dead] );
+  this->setActiveSprites( (*d_sprites)[Dead] );
 
   this->update( this->boundingRect() );
   

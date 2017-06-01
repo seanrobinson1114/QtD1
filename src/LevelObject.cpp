@@ -89,6 +89,8 @@ void LevelObject::loadImageAssets(
     ++image_asset_name_it;
   }
 }
+
+QML_REGISTER_BASE_TYPE( LevelObject );
   
 } // end QtD1 namespace
 

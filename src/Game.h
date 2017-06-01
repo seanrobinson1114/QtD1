@@ -223,7 +223,7 @@ private:
                                  const char* deactivated_signal );
 
   // The game state refresh delay time (ms)
-  static const int s_refresh_delay_time = 33;
+  static const int s_refresh_delay_time = 10;
 
   // The singleton instance
   static Game* s_instance;

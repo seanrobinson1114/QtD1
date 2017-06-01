@@ -22,7 +22,8 @@ namespace QtD1{
 GameSpriteData::GameSpriteData()
   : d_source(),
     d_source_frame_indices(),
-    d_frames()
+    d_frames(),
+    d_game_tics_per_frame( 1 )
 { /* ... */ }
 
 // Set the source
@@ -74,6 +75,30 @@ void GameSpriteData::clearFrames()
 bool GameSpriteData::isReady() const
 {
   return d_frames.size() > 0;
+}
+
+// Set the duration of the sprite (in game tics)
+void GameSpriteData::setDuration( const int duration )
+{
+  d_game_tics_per_frame = std::max( duration/d_frames.size(), 1 );
+}
+
+// Get the duration of the sprite (in game tics)
+int GameSpriteData::getDuration() const
+{
+  return d_game_tics_per_frame*d_frames.size();
+}
+
+// Set the duration of each sprite frame (in game tics)
+void GameSpriteData::setFrameDuration( const int duration )
+{
+  d_game_tics_per_frame = std::max( duration, 1 );
+}
+
+// Get the duration of each sprite frame (in game tics)
+int GameSpriteData::getFrameDuration() const
+{
+  return d_game_tics_per_frame;
 }
   
 // Get the number of frames

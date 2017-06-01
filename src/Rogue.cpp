@@ -16,6 +16,290 @@ namespace QtD1{
 // Initialize static member data
 Rogue::AssetStateMap Rogue::s_asset_state_map;
 
+// Get the asset state map
+const Rogue::AssetStateMap& Rogue::getAssetStateMap()
+{
+  // Just-in-time initialization
+  if( Rogue::s_asset_state_map.size() == 0 )
+    Rogue::initializeAssetStateMap();
+
+  return Rogue::s_asset_state_map;
+}
+
+// Constructor
+/*! \details This constructor should only be used by the QML engine.
+ */
+Rogue::Rogue( QGraphicsObject* parent )
+  : Rogue( "", parent )
+{ 
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
+// Copy constructor
+/*! \details This constructor should only be used by the QML engine.
+ */
+Rogue::Rogue( const Rogue& other_rogue )
+  : Character( other_rogue ),
+    d_base_health( other_rogue.d_base_health ),
+    d_base_mana( other_rogue.d_base_mana ),
+    d_base_damage( other_rogue.d_base_damage ),
+    d_base_armor_class( other_rogue.d_base_armor_class ),
+    d_base_chance_to_hit_with_melee( other_rogue.d_base_chance_to_hit_with_melee ),
+    d_base_chance_to_hit_with_ranged( other_rogue.d_base_chance_to_hit_with_ranged ),
+    d_base_chance_to_hit_with_spell( other_rogue.d_base_chance_to_hit_with_spell )
+{ 
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
+// Constructor
+Rogue::Rogue( const QString& name, QGraphicsObject* parent )
+  : Character( name, new RogueInventory, new RogueSpellBook, parent ),
+    d_base_health( 1 ),
+    d_base_mana( 1 ),
+    d_base_damage( 0 ),
+    d_base_armor_class( 0 ),
+    d_base_chance_to_hit_with_melee( 0.0 ),
+    d_base_chance_to_hit_with_ranged( 0.0 ),
+    d_base_chance_to_hit_with_spell( 0.0 )
+{
+  this->connectStatChangeSignalToRogueSlots();
+  this->initializeStats();
+}
+
+// Get the character type
+Character::Type Rogue::getType() const
+{
+  return Character::Rogue;
+}
+
+// Get the base health
+int Rogue::getBaseHealth() const
+{
+  return d_base_health;
+}
+
+int Rogue::getBaseMana() const
+{
+  return d_base_mana;
+}
+
+int Rogue::getBaseDamage() const
+{
+  return d_base_damage;
+}
+
+int Rogue::getBaseArmorClass() const
+{
+  return d_base_armor_class;
+}
+
+// Get the base percent chance to hit with melee
+qreal Rogue::getBaseChanceToHitWithMeleeWeapon() const
+{
+  return d_base_chance_to_hit_with_melee;
+}
+
+// Get the base percent chance to hit with ranged
+qreal Rogue::getBaseChanceToHitWithRangedWeapon() const
+{
+  return d_base_chance_to_hit_with_ranged;
+}
+
+// Get the base percent chance to hit with spell
+qreal Rogue::getBaseChanceToHitWithSpell() const
+{
+  return d_base_chance_to_hit_with_spell;
+}
+
+// Get the number of image assets used by the object
+int Rogue::getNumberOfImageAssets() const
+{
+  return Rogue::getAssetStateMap().size();
+}
+
+// Get the image asset names used by the object
+void Rogue::getImageAssetNames( QSet<QString>& image_asset_names ) const
+{
+  AssetStateMap::const_iterator asset_state_it, asset_state_end;
+  asset_state_it = Rogue::getAssetStateMap().begin();
+  asset_state_end = Rogue::getAssetStateMap().end();
+
+  while( asset_state_it != asset_state_end )
+  {
+    image_asset_names.insert( asset_state_it.key() );
+    
+    ++asset_state_it;
+  }
+}
+
+// Check if an image asset is used
+bool Rogue::isImageAssetUsed( const QString& image_asset_name ) const
+{
+  return Rogue::getAssetStateMap().find( image_asset_name ) !=
+    Rogue::getAssetStateMap().end();
+}
+
+// Get the states associated with the image asset
+const Character::States& Rogue::getImageAssetStates(
+                                        const QString& image_asset_name ) const
+{
+  AssetStateMap::const_iterator asset_state_it =
+    Rogue::getAssetStateMap().find( image_asset_name );
+
+  if( asset_state_it == Rogue::getAssetStateMap().end() )
+  {
+    qFatal( "Rogue Error: Cannot get image asset states because image asset "
+            "%s is not used by the Rogue!",
+            image_asset_name.toStdString().c_str() );
+  }
+
+  return asset_state_it.value();
+}
+
+// Initialize rogue stats
+void Rogue::initializeStats()
+{
+  this->setBaseStrength( 25 );
+  this->setBaseMagic( 15 );
+  this->setBaseDexterity( 30 );
+  this->setBaseVitality( 20 );
+
+  this->handleLevelUp( 1 );
+  
+  this->restoreHealth();
+  this->restoreMana();
+}
+
+// Get the number of sprite sheet frames per direction
+int Rogue::getSpriteSheetFramesPerDirection( const States& states ) const
+{
+  if( states.in_town )
+  {
+    if( states.actor_state == Actor::Standing )
+      return 20;
+    else if( states.actor_state == Actor::Walking )
+      return 8;
+    else
+    {
+      qFatal( "Rogue Error: actor state %i is not valid in town!",
+              states.actor_state );
+      return 0;
+    }
+  }
+  else
+  {
+    switch( states.actor_state )
+    {
+      case Actor::Standing:
+        return 8;
+      case Actor::Walking:
+        return 8;
+      case Actor::Attacking:
+      {
+        if( states.weapon_state == Inventory::AxeEquiped )
+          return 22;
+        else if( states.weapon_state == Inventory::BowEquiped )
+          return 12;
+        else
+          return 18;
+      }
+      case Actor::RecoilingFromHit:
+        return 7;
+      case Actor::CastingSpell:
+        return 16;
+      case Actor::Dying:
+        return 20;
+      default:
+      {
+        qFatal( "Rogue Error: actor state %i does not have frames per "
+                "direction info!", states.actor_state );
+        return 0;
+      }
+    }
+  }
+}
+
+void Rogue::handleStrengthChange( int )
+{
+  this->calculateBaseDamage();
+}
+
+void Rogue::handleDexterityChange( int total_dexterity )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  d_base_armor_class = total_dexterity / 5;
+}
+
+void Rogue::handleVitalityChange( int, int )
+{
+  this->calculateBaseHealth();
+}
+
+void Rogue::handleMagicChange( int, int )
+{
+  this->calculateBaseMana();
+  this->calculateBaseChanceToHitWithSpell();
+}
+
+void Rogue::handleLevelUp( const int )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  this->calculateBaseChanceToHitWithSpell();
+  this->calculateBaseDamage();
+  this->calculateBaseHealth();
+  this->calculateBaseMana();
+
+  this->updateStats();
+}
+
+void Rogue::calculateBaseChanceToHitWithMelee()
+{
+  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
+}
+
+void Rogue::calculateBaseChanceToHitWithRanged()
+{
+  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
+}
+
+void Rogue::calculateBaseChanceToHitWithSpell()
+{
+  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
+}
+
+void Rogue::calculateBaseDamage()
+{
+  d_base_damage = (this->getStrength() + this->getDexterity()) * this->getLevel() / 200;
+}
+
+void Rogue::calculateBaseHealth()
+{
+  d_base_health = 1 * this->getBaseVitality() + 1.5 * this->getInventory().calculateVitalityModifier() + 2 * this->getLevel() + 23;
+}
+
+void Rogue::calculateBaseMana()
+{
+  d_base_mana = this->getBaseMagic() + 1.5 * this->getInventory().calculateMagicModifier() + 2 * this->getLevel() + 5;
+}
+
+void Rogue::connectStatChangeSignalToRogueSlots()
+{
+  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
+                    this, SLOT( handleStrengthChange( int ) ) );
+  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
+                    this, SLOT( handleDexterityChange( int ) ) );
+  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
+                    this, SLOT( handleVitalityChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
+                    this, SLOT( handleMagicChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( levelUp( const int ) ),
+                    this, SLOT( handleLevelUp( const int ) ) );
+}
+
 // Initialize asset state map
 void Rogue::initializeAssetStateMap()
 {
@@ -318,264 +602,6 @@ void Rogue::initializeAssetStateMap()
   Rogue::s_asset_state_map["/plrgfx/rogue/rln/rlnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   Rogue::s_asset_state_map["/plrgfx/rogue/rln/rlnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   Rogue::s_asset_state_map["/plrgfx/rogue/rln/rlndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-}
-
-// Get the asset state map
-const Rogue::AssetStateMap& Rogue::getAssetStateMap()
-{
-  // Just-in-time initialization
-  if( Rogue::s_asset_state_map.size() == 0 )
-    Rogue::initializeAssetStateMap();
-
-  return Rogue::s_asset_state_map;
-}
-
-// Constructor
-/*! \details This constructor should only be used by the qml engine.
- */
-Rogue::Rogue( QGraphicsObject* parent )
-  : Rogue( "", parent )
-{ /* ... */ }
-
-// Constructor
-Rogue::Rogue( const QString& name, QGraphicsObject* parent )
-  : Character( name, new RogueInventory, new RogueSpellBook, parent ),
-    d_base_health( 1 ),
-    d_base_mana( 1 ),
-    d_base_damage( 0 ),
-    d_base_armor_class( 0 ),
-    d_base_chance_to_hit_with_melee( 0.0 ),
-    d_base_chance_to_hit_with_ranged( 0.0 ),
-    d_base_chance_to_hit_with_spell( 0.0 )
-{
-  this->connectStatChangeSignalToWarriorSlots();
-  this->initializeStats();
-}
-
-// Get the base health
-int Rogue::getBaseHealth() const
-{
-  return d_base_health;
-}
-
-int Rogue::getBaseMana() const
-{
-  return d_base_mana;
-}
-
-int Rogue::getBaseDamage() const
-{
-  return d_base_damage;
-}
-
-int Rogue::getBaseArmorClass() const
-{
-  return d_base_armor_class;
-}
-
-// Get the base percent chance to hit with melee
-qreal Rogue::getBaseChanceToHitWithMeleeWeapon() const
-{
-  return d_base_chance_to_hit_with_melee;
-}
-
-// Get the base percent chance to hit with ranged
-qreal Rogue::getBaseChanceToHitWithRangedWeapon() const
-{
-  return d_base_chance_to_hit_with_ranged;
-}
-
-// Get the base percent chance to hit with spell
-qreal Rogue::getBaseChanceToHitWithSpell() const
-{
-  return d_base_chance_to_hit_with_spell;
-}
-
-// Get the number of image assets used by the object
-int Rogue::getNumberOfImageAssets() const
-{
-  return Rogue::getAssetStateMap().size();
-}
-
-// Get the image asset names used by the object
-void Rogue::getImageAssetNames( QSet<QString>& image_asset_names ) const
-{
-  AssetStateMap::const_iterator asset_state_it, asset_state_end;
-  asset_state_it = Rogue::getAssetStateMap().begin();
-  asset_state_end = Rogue::getAssetStateMap().end();
-
-  while( asset_state_it != asset_state_end )
-  {
-    image_asset_names.insert( asset_state_it.key() );
-    
-    ++asset_state_it;
-  }
-}
-
-// Check if an image asset is used
-bool Rogue::isImageAssetUsed( const QString& image_asset_name ) const
-{
-  return Rogue::getAssetStateMap().find( image_asset_name ) !=
-    Rogue::getAssetStateMap().end();
-}
-
-// Get the states associated with the image asset
-const Character::States& Rogue::getImageAssetStates(
-                                        const QString& image_asset_name ) const
-{
-  AssetStateMap::const_iterator asset_state_it =
-    Rogue::getAssetStateMap().find( image_asset_name );
-
-  if( asset_state_it == Rogue::getAssetStateMap().end() )
-  {
-    qFatal( "Rogue Error: Cannot get image asset states because image asset "
-            "%s is not used by the Rogue!",
-            image_asset_name.toStdString().c_str() );
-  }
-
-  return asset_state_it.value();
-}
-
-// Initialize rogue stats
-void Rogue::initializeStats()
-{
-  this->setBaseStrength( 25 );
-  this->setBaseMagic( 15 );
-  this->setBaseDexterity( 30 );
-  this->setBaseVitality( 20 );
-
-  this->handleLevelUp( 1 );
-  
-  this->restoreHealth();
-  this->restoreMana();
-}
-
-// Get the number of sprite sheet frames per direction
-int Rogue::getSpriteSheetFramesPerDirection( const States& states ) const
-{
-  if( states.in_town )
-  {
-    if( states.actor_state == Actor::Standing )
-      return 20;
-    else if( states.actor_state == Actor::Walking )
-      return 8;
-    else
-    {
-      qFatal( "Rogue Error: actor state %i is not valid in town!",
-              states.actor_state );
-      return 0;
-    }
-  }
-  else
-  {
-    switch( states.actor_state )
-    {
-      case Actor::Standing:
-        return 8;
-      case Actor::Walking:
-        return 8;
-      case Actor::Attacking:
-      {
-        if( states.weapon_state == Inventory::AxeEquiped )
-          return 22;
-        else if( states.weapon_state == Inventory::BowEquiped )
-          return 12;
-        else
-          return 18;
-      }
-      case Actor::RecoilingFromHit:
-        return 7;
-      case Actor::CastingSpell:
-        return 16;
-      case Actor::Dying:
-        return 20;
-      default:
-      {
-        qFatal( "Rogue Error: actor state %i does not have frames per "
-                "direction info!", states.actor_state );
-        return 0;
-      }
-    }
-  }
-}
-
-void Rogue::handleStrengthChange( int )
-{
-  this->calculateBaseDamage();
-}
-
-void Rogue::handleDexterityChange( int total_dexterity )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  d_base_armor_class = total_dexterity / 5;
-}
-
-void Rogue::handleVitalityChange( int, int )
-{
-  this->calculateBaseHealth();
-}
-
-void Rogue::handleMagicChange( int, int )
-{
-  this->calculateBaseMana();
-  this->calculateBaseChanceToHitWithSpell();
-}
-
-void Rogue::handleLevelUp( const int )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  this->calculateBaseChanceToHitWithSpell();
-  this->calculateBaseDamage();
-  this->calculateBaseHealth();
-  this->calculateBaseMana();
-
-  this->updateStats();
-}
-
-void Rogue::calculateBaseChanceToHitWithMelee()
-{
-  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
-}
-
-void Rogue::calculateBaseChanceToHitWithRanged()
-{
-  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
-}
-
-void Rogue::calculateBaseChanceToHitWithSpell()
-{
-  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
-}
-
-void Rogue::calculateBaseDamage()
-{
-  d_base_damage = (this->getStrength() + this->getDexterity()) * this->getLevel() / 200;
-}
-
-void Rogue::calculateBaseHealth()
-{
-  d_base_health = 1 * this->getBaseVitality() + 1.5 * this->getInventory().calculateVitalityModifier() + 2 * this->getLevel() + 23;
-}
-
-void Rogue::calculateBaseMana()
-{
-  d_base_mana = this->getBaseMagic() + 1.5 * this->getInventory().calculateMagicModifier() + 2 * this->getLevel() + 5;
-}
-
-void Rogue::connectStatChangeSignalToRogueSlots()
-{
-  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
-                    this, SLOT( handleStrengthChange( int ) ) );
-  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
-                    this, SLOT( handleDexterityChange( int ) ) );
-  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
-                    this, SLOT( handleVitalityChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
-                    this, SLOT( handleMagicChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( levelUp( const int ) ),
-                    this, SLOT( handleLevelUp( const int ) ) );
 }
 
 QML_REGISTER_META_TYPE( Rogue );

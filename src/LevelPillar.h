@@ -78,6 +78,9 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Check if the object can be attacked
+  bool canBeAttacked() const override;
+
   //! Clone the level pillar
   virtual LevelPillar* clone() const = 0;
 

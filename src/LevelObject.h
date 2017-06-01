@@ -18,12 +18,16 @@
 #include <QMap>
 #include <QVector>
 
+// QtD1 Includes
+#include "QMLRegistrationHelper.h"
+
 namespace QtD1{
 
 //! The level object base class
 class LevelObject: public QGraphicsObject
 {
   Q_OBJECT
+  Q_IMPORT_ALIAS( "QtD1", 1, 0, "LevelObject" )
   
 public:
 
@@ -72,9 +76,14 @@ public:
   
   //! Dump the image assets
   virtual void dumpImageAssets() = 0;
+
+  //! Check if the object can be attacked
+  virtual bool canBeAttacked() const = 0;
 };
   
 } // end QtD1 namespace
+
+Q_DECLARE_METATYPE( QtD1::LevelObject* )
 
 #endif // end LEVEL_OBJECT_H
 

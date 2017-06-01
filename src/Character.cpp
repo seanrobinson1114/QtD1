@@ -64,11 +64,51 @@ Character::Character( const QString& name,
   this->connectSpellBookSignalsToCharacterSlots();
 }
 
+// Copy constructor
+/*! \details The copy constructor should only be used by the QML engine
+ */
+Character::Character( const Character& other_character )
+  : Actor( other_character.parentObject() ),
+    d_name( other_character.d_name ),
+    d_experience( other_character.d_experience ),
+    d_next_level_experience_threshold( other_character.d_next_level_experience_threshold ),
+    d_gold( other_character.d_gold ),
+    d_strength( other_character.d_strength ),
+    d_magic( other_character.d_magic ),
+    d_dexterity( other_character.d_dexterity ),
+    d_vitality( other_character.d_vitality ),
+    d_max_health( other_character.d_max_health ),
+    d_max_mana( other_character.d_max_mana ),
+    d_magic_resistance_fraction( other_character.d_magic_resistance_fraction ),
+    d_fire_resistance_fraction( other_character.d_fire_resistance_fraction ),
+    d_lightning_resistance_fraction( other_character.d_lightning_resistance_fraction ),
+    d_armor_class( other_character.d_armor_class ),
+    d_minimum_damage( other_character.d_minimum_damage ),
+    d_maximum_damage( other_character.d_maximum_damage ),
+    d_chance_to_hit_with_melee( other_character.d_chance_to_hit_with_melee ),
+    d_chance_to_hit_with_ranged( other_character.d_chance_to_hit_with_ranged ),
+    d_chance_to_hit_with_spell( other_character.d_chance_to_hit_with_spell ),
+    d_inventory( NULL ),
+    d_spell_book( NULL ),
+    d_quest_log( NULL ),
+    d_dungeon_sprites(),
+    d_town_sprites(),
+    d_direction_sprites(),
+    d_sprites_loaded( false ),
+    d_active_armor_state( Inventory::LowClassArmorEquiped ),
+    d_active_weapon_state( Inventory::NothingEquiped ),
+    d_active_spell_state( SpellBook::NoSpellEquiped ),
+    d_in_town( true )
+{
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
 // Destructor
-/*! \details If the inventory and/or the spell book have a parent widget
- * set, that parent will take care of destroying it/them when it is closed.
- * If that is the case, the inventory and/or the spell book will already be
- * null pointers once this destructor is invoked.
+/*! \details If the inventory and/or the spell book and/or quest log have a 
+ * parent widget set, that parent will take care of destroying it/them when it
+ * is closed. If one or more of them haven't been destroyed by the time this
+ * destructor is invoked, they will be destroyed in the destructor.
  */
 Character::~Character()
 {
@@ -77,6 +117,9 @@ Character::~Character()
 
   if( d_spell_book )
       d_spell_book->close();
+
+  if( d_quest_log )
+    d_quest_log->close();
 }
 
 // Get the name
@@ -215,10 +258,22 @@ qreal Character::getChanceToHitWithSpell() const
   return d_chance_to_hit_with_spell;
 }
 
+// Get the movement speed (pixels per game tic)
+qreal Character::getMovementSpeed() const
+{
+  return 0.1;
+}
+  
 // Get the gold amount
 int Character::getGold()
 {
   return d_gold;
+}
+
+// Check if the character is in town
+bool Character::inTown() const
+{
+  return d_in_town;
 }
 
 // Get the inventory
@@ -318,8 +373,8 @@ void Character::loadTownStateGameSprites(
                                   const Inventory::ChestArmorState armor_state,
                                   const Actor::State actor_state )
 {
-  std::shared_ptr<Actor::StateDirectionGameSpriteMap>& actor_state_direction_sprite_map =
-    this->getCharacterData()->getCharacterTownSprites()[weapon_state][armor_state];
+  std::shared_ptr<Actor::StateDirectionGameSpriteMap>&
+    actor_state_direction_sprite_map = d_town_sprites[weapon_state][armor_state];
 
   if( !actor_state_direction_sprite_map )
   {
@@ -327,7 +382,7 @@ void Character::loadTownStateGameSprites(
                                       new Actor::StateDirectionGameSpriteMap );
   }
 
-  std::shared_ptr<Actor::DirectionGameSpriteMap>&
+  std::shared_ptr<BasicActor::DirectionGameSpriteMap>&
     direction_game_sprites = (*actor_state_direction_sprite_map)[actor_state];
 
   this->loadDirectionGameSprites( image_asset_name,
@@ -347,7 +402,7 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
 {
   // Set the no spell equiped state
   std::shared_ptr<Actor::StateDirectionGameSpriteMap>& no_spell_state_direction_sprite_map =
-    this->getCharacterData()->getCharacterDungeonSprites()[SpellBook::NoSpellEquiped][weapon_state][armor_state];
+    d_dungeon_sprites[SpellBook::NoSpellEquiped][weapon_state][armor_state];
 
   if( !no_spell_state_direction_sprite_map )
   {
@@ -364,8 +419,8 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
                                   direction_game_sprites );
 
   // Set the non-elemental spell equiped state
-  std::shared_ptr<Actor::StateDirectionGameSpriteMap>&
-    non_elemental_spell_state_direction_game_sprite_map = this->getCharacterData()->getCharacterDungeonSprites()[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
+  std::shared_ptr<Actor::StateDirectionGameSpriteMap>& non_elemental_spell_state_direction_game_sprite_map =
+    d_dungeon_sprites[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
 
   if( !non_elemental_spell_state_direction_game_sprite_map )
   {
@@ -377,8 +432,8 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
     direction_game_sprites;
 
   // Set the fire spell equiped state
-  std::shared_ptr<Actor::StateDirectionGameSpriteMap>&
-    fire_spell_state_direction_game_sprite_map = this->getCharacterData()->getCharacterDungeonSprites()[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
+  std::shared_ptr<Actor::StateDirectionGameSpriteMap>& fire_spell_state_direction_game_sprite_map =
+    d_dungeon_sprites[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
 
   if( !fire_spell_state_direction_game_sprite_map )
   {
@@ -390,8 +445,8 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
     direction_game_sprites;
 
   // Set the lightning spell equiped state
-  std::shared_ptr<Actor::StateDirectionGameSpriteMap>&
-    lightning_spell_state_direction_game_sprite_map = this->getCharacterData()->getCharacterDungeonSprites()[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
+  std::shared_ptr<Actor::StateDirectionGameSpriteMap>& lightning_spell_state_direction_game_sprite_map =
+    d_dungeon_sprites[SpellBook::NonElementalSpellEquiped][weapon_state][armor_state];
 
   if( !lightning_spell_state_direction_game_sprite_map )
   {
@@ -412,8 +467,8 @@ void Character::loadSpellCastDungeonStateGameSprites(
                                  const Inventory::WeaponState weapon_state,
                                  const Inventory::ChestArmorState armor_state )
 {
-  std::shared_ptr<Actor::StateDirectionGameSpriteMap>&
-    spell_cast_state_direction_game_sprite_map = this->getCharacterData()->getCharacterDungeonSprites()[spell_state][weapon_state][armor_state];
+  std::shared_ptr<Actor::StateDirectionGameSpriteMap>& spell_cast_state_direction_game_sprite_map =
+    d_dungeon_sprites[spell_state][weapon_state][armor_state];
 
   if( !spell_cast_state_direction_game_sprite_map )
   {
@@ -506,8 +561,7 @@ void Character::loadDirectionGameSprites(
                          (*direction_game_sprites)[Southeast] );
 
   // Cache these sprites for quick lookup later
-  this->getCharacterData()->getDirectionSprites()[source] =
-    direction_game_sprites;
+  d_direction_sprites[source] = direction_game_sprites;
 }
 
 // Load the game sprites 
@@ -589,7 +643,7 @@ void Character::exitTown()
 }
 
 // Update the active actor sprites
-void CharacterData::updateActorSprites()
+void Character::updateActorSprites()
 {
   if( d_in_town )
   {
@@ -741,7 +795,7 @@ void Character::handleSpellChanged( const SpellBook::SpellState state )
 // Connect to base stats changed signal
 void Character::connectToBaseStatsChangedSignal()
 {
-  QObject::connect( this, SIGNAL(baseStatsChanged),
+  QObject::connect( this, SIGNAL(baseStatsChanged()),
                     this, SLOT(updateStats()) );
 }
 
@@ -767,30 +821,6 @@ void Character::connectSpellBookSignalsToCharacterSlots()
 {
   QObject::connect( d_spell_book, SIGNAL(spellChanged(const SpellBook::SpellState)),
                     this, SLOT(handleSpellChanged(const SpellBook::SpellState)) );
-}
-
-// Create the transition to the attacking state
-QAbstractTransition* Character::createTransitionToAttackingState()
-{
-
-}
-
-// Create the transition to the walking state
-QAbstractTransition* Character::createTransitionToWalkingState()
-{
-
-}
-
-// Create the transition to the standing state
-QAbstractTransition* Character::createTransitionToStandingState()
-{
-
-}
-
-// Create the transition to the casting state
-QAbstractTransition* Character::createTransitionToCastingState()
-{
-
 }
 
 QML_REGISTER_BASE_TYPE( Character );

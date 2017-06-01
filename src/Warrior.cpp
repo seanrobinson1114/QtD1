@@ -16,6 +16,307 @@ namespace QtD1{
 // Initialize static member data
 Warrior::AssetStateMap Warrior::s_asset_state_map;
 
+// Get the asset state map
+const Warrior::AssetStateMap& Warrior::getAssetStateMap()
+{
+  // Just-in-time initialization
+  if( Warrior::s_asset_state_map.size() == 0 )
+    Warrior::initializeAssetStateMap();
+
+  return Warrior::s_asset_state_map;
+}
+
+// Default Constructor
+/*! \details This constructor should only be used by the qml engine.
+ */
+Warrior::Warrior( QGraphicsObject* parent )
+  : Warrior( "", parent )
+{
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
+// Copy constructor
+/*! \details This constructor should only be used by the qml engine.
+ */
+Warrior::Warrior( const Warrior& other_warrior )
+  : Character( other_warrior ),
+    d_base_health( other_warrior.d_base_health ),
+    d_base_mana( other_warrior.d_base_mana ),
+    d_base_damage( other_warrior.d_base_damage ),
+    d_base_armor_class( other_warrior.d_base_armor_class ),
+    d_base_chance_to_hit_with_melee( other_warrior.d_base_chance_to_hit_with_melee ),
+    d_base_chance_to_hit_with_ranged( other_warrior.d_base_chance_to_hit_with_ranged ),
+    d_base_chance_to_hit_with_spell( other_warrior.d_base_chance_to_hit_with_spell )
+{
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+  
+// Constructor
+Warrior::Warrior( const QString& name, QGraphicsObject* parent )
+  : Character( name, new WarriorInventory, new WarriorSpellBook, parent ),
+    d_base_health( 1 ),
+    d_base_mana( 1 ),
+    d_base_damage( 0 ),
+    d_base_armor_class( 0 ),
+    d_base_chance_to_hit_with_melee( 0.0 ),
+    d_base_chance_to_hit_with_ranged( 0.0 ),
+    d_base_chance_to_hit_with_spell( 0.0 )
+{
+  this->connectStatChangeSignalToWarriorSlots();
+  this->initializeStats();
+}
+
+// Get the character type
+Character::Type Warrior::getType() const
+{
+  return Character::Warrior;
+}
+
+// Get the base health
+int Warrior::getBaseHealth() const
+{
+  return d_base_health;
+}
+
+int Warrior::getBaseMana() const
+{
+  return d_base_mana;
+}
+
+int Warrior::getBaseDamage() const
+{
+  return d_base_damage;
+}
+
+int Warrior::getBaseArmorClass() const
+{
+  return d_base_armor_class;
+}
+
+// Get the base percent chance to hit with melee
+qreal Warrior::getBaseChanceToHitWithMeleeWeapon() const
+{
+  return d_base_chance_to_hit_with_melee;
+}
+
+// Get the base percent chance to hit with ranged
+qreal Warrior::getBaseChanceToHitWithRangedWeapon() const
+{
+  return d_base_chance_to_hit_with_ranged;
+}
+
+// Get the base percent chance to hit with spell
+qreal Warrior::getBaseChanceToHitWithSpell() const
+{
+  return d_base_chance_to_hit_with_spell;
+}
+
+// Get the number of image assets used by the object
+int Warrior::getNumberOfImageAssets() const
+{
+  return Warrior::getAssetStateMap().size();
+}
+
+// Get the image asset names used by the object
+void Warrior::getImageAssetNames( QSet<QString>& image_asset_names ) const
+{
+  Warrior::AssetStateMap::const_iterator asset_state_it, asset_state_end;
+  asset_state_it = Warrior::getAssetStateMap().begin();
+  asset_state_end = Warrior::getAssetStateMap().end();
+
+  while( asset_state_it != asset_state_end )
+  {
+    image_asset_names.insert( asset_state_it.key() );
+    
+    ++asset_state_it;
+  }
+}
+
+// Check if an image asset is used
+bool Warrior::isImageAssetUsed( const QString& image_asset_name ) const
+{
+  return Warrior::getAssetStateMap().find( image_asset_name ) !=
+    Warrior::getAssetStateMap().end();
+}
+
+// Get the states associated with the image asset
+const Character::States& Warrior::getImageAssetStates(
+                                        const QString& image_asset_name ) const
+{
+  Warrior::AssetStateMap::const_iterator asset_state_it =
+    Warrior::getAssetStateMap().find( image_asset_name );
+
+  if( asset_state_it == Warrior::getAssetStateMap().end() )
+  {
+    qFatal( "Warrior Error: Cannot get image asset states because image asset "
+            "%s is not used by the Warrior!",
+            image_asset_name.toStdString().c_str() );
+  }
+
+  return asset_state_it.value();
+}
+
+void Warrior::handleStrengthChange( int )
+{
+  this->calculateBaseDamage();
+}
+
+void Warrior::handleDexterityChange( int total_dexterity )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  d_base_armor_class = total_dexterity / 5;
+}
+
+void Warrior::handleVitalityChange( int, int )
+{
+  this->calculateBaseHealth();
+}
+
+void Warrior::handleMagicChange( int, int )
+{
+  this->calculateBaseMana();
+  this->calculateBaseChanceToHitWithSpell();
+}
+
+void Warrior::handleLevelUp( const int )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  this->calculateBaseChanceToHitWithSpell();
+  this->calculateBaseDamage();
+  this->calculateBaseHealth();
+  this->calculateBaseMana();
+
+  this->updateStats();
+}
+
+// Initialize warrior stats
+void Warrior::initializeStats()
+{
+  // Set the character's stats
+  this->setBaseStrength( 30 );
+  this->setBaseMagic( 10 );
+  this->setBaseDexterity( 20 );
+  this->setBaseVitality( 25 );
+
+  this->handleLevelUp( 1 );
+  
+  this->restoreHealth();
+  this->restoreMana();
+}
+
+void Warrior::calculateBaseChanceToHitWithMelee()
+{
+  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
+}
+
+void Warrior::calculateBaseChanceToHitWithRanged()
+{
+  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
+}
+
+void Warrior::calculateBaseChanceToHitWithSpell()
+{
+  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
+}
+
+void Warrior::calculateBaseDamage()
+{
+  d_base_damage = this->getStrength() * this->getLevel() / 100;
+}
+
+void Warrior::calculateBaseHealth()
+{
+  d_base_health = 2 * this->getVitality() + 2 * this->getLevel() + 18;
+}
+
+void Warrior::calculateBaseMana()
+{
+  d_base_mana = this->getMagic() + this->getLevel() - 1;
+}
+
+// Get the number of sprite sheet frames per direction
+int Warrior::getSpriteSheetFramesPerDirection( const States& states ) const
+{
+  if( states.in_town )
+  {
+    if( states.actor_state == Actor::Standing )
+      return 20;
+    else if( states.actor_state == Actor::Walking )
+      return 8;
+    else
+    {
+      qFatal( "Warrior Error: actor state %i is not valid in town!",
+              states.actor_state );
+      return 0;
+    }
+  }
+  else
+  {
+    switch( states.actor_state )
+    {
+      case Actor::Standing:
+      {
+        if( states.weapon_state == Inventory::BowEquiped )
+          return 8;
+        else
+          return 10;
+      }
+      case Actor::Walking:
+        return 8;
+      case Actor::Attacking:
+      {
+        if( states.weapon_state == Inventory::AxeEquiped )
+          return 20;
+        else
+          return 16;
+      }
+      case Actor::RecoilingFromHit:
+        return 6;
+      case Actor::CastingSpell:
+      {
+        if( states.spell_state == SpellBook::LightningSpellEquiped &&
+            states.weapon_state == Inventory::NothingEquiped &&
+            states.armor_state == Inventory::LowClassArmorEquiped )
+          return 21;
+        else
+          return 20;
+      }
+      case Actor::Dying:
+      {
+        if( states.armor_state == Inventory::LowClassArmorEquiped )
+          return 20;
+        else
+          return 15;
+      }
+      default:
+      {
+        qFatal( "Warrior Error: actor state %i does not have frames per "
+                "direction info!", states.actor_state );
+        return 0;
+      }
+    }
+  }
+}
+
+// Connect the stats changed signal to warrior slots
+void Warrior::connectStatChangeSignalToWarriorSlots()
+{
+  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
+                    this, SLOT( handleStrengthChange( int ) ) );
+  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
+                    this, SLOT( handleDexterityChange( int ) ) );
+  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
+                    this, SLOT( handleVitalityChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
+                    this, SLOT( handleMagicChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( levelUp( const int ) ),
+                    this, SLOT( handleLevelUp( const int ) ) );
+}
+
 // Initialize asset state map
 void Warrior::initializeAssetStateMap()
 {
@@ -318,279 +619,6 @@ void Warrior::initializeAssetStateMap()
   Warrior::s_asset_state_map["/plrgfx/warrior/wln/wlnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   Warrior::s_asset_state_map["/plrgfx/warrior/wln/wlnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   Warrior::s_asset_state_map["/plrgfx/warrior/wln/wlndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-}
-
-// Get the asset state map
-const Warrior::AssetStateMap& Warrior::getAssetStateMap()
-{
-  // Just-in-time initialization
-  if( Warrior::s_asset_state_map.size() == 0 )
-    Warrior::initializeAssetStateMap();
-
-  return Warrior::s_asset_state_map;
-}
-
-// Default Constructor
-Warrior::Warrior( QGraphicsObject* parent )
-  : Warrior( "", parent )
-{ /* ... */ }
-  
-// Constructor
-Warrior::Warrior( const QString& name, QGraphicsObject* parent )
-  : Character( name, new WarriorInventory, new WarriorSpellBook, parent ),
-    d_base_health( 1 ),
-    d_base_mana( 1 ),
-    d_base_damage( 0 ),
-    d_base_armor_class( 0 ),
-    d_base_chance_to_hit_with_melee( 0.0 ),
-    d_base_chance_to_hit_with_ranged( 0.0 ),
-    d_base_chance_to_hit_with_spell( 0.0 )
-{
-  this->connectStatChangeSignalToWarriorSlots();
-  this->initializeStats();
-}
-
-// Get the base health
-int Warrior::getBaseHealth() const
-{
-  return d_base_health;
-}
-
-int Warrior::getBaseMana() const
-{
-  return d_base_mana;
-}
-
-int Warrior::getBaseDamage() const
-{
-  return d_base_damage;
-}
-
-int Warrior::getBaseArmorClass() const
-{
-  return d_base_armor_class;
-}
-
-// Get the base percent chance to hit with melee
-qreal Warrior::getBaseChanceToHitWithMeleeWeapon() const
-{
-  return d_base_chance_to_hit_with_melee;
-}
-
-// Get the base percent chance to hit with ranged
-qreal Warrior::getBaseChanceToHitWithRangedWeapon() const
-{
-  return d_base_chance_to_hit_with_ranged;
-}
-
-// Get the base percent chance to hit with spell
-qreal Warrior::getBaseChanceToHitWithSpell() const
-{
-  return d_base_chance_to_hit_with_spell;
-}
-
-// Get the number of image assets used by the object
-int Warrior::getNumberOfImageAssets() const
-{
-  return Warrior::getAssetStateMap().size();
-}
-
-// Get the image asset names used by the object
-void Warrior::getImageAssetNames( QSet<QString>& image_asset_names ) const
-{
-  Warrior::AssetStateMap::const_iterator asset_state_it, asset_state_end;
-  asset_state_it = Warrior::getAssetStateMap().begin();
-  asset_state_end = Warrior::getAssetStateMap().end();
-
-  while( asset_state_it != asset_state_end )
-  {
-    image_asset_names.insert( asset_state_it.key() );
-    
-    ++asset_state_it;
-  }
-}
-
-// Check if an image asset is used
-bool Warrior::isImageAssetUsed( const QString& image_asset_name ) const
-{
-  return Warrior::getAssetStateMap().find( image_asset_name ) !=
-    Warrior::getAssetStateMap().end();
-}
-
-// Get the states associated with the image asset
-const Character::States& Warrior::getImageAssetStates(
-                                        const QString& image_asset_name ) const
-{
-  Warrior::AssetStateMap::const_iterator asset_state_it =
-    Warrior::getAssetStateMap().find( image_asset_name );
-
-  if( asset_state_it == Warrior::getAssetStateMap().end() )
-  {
-    qFatal( "Warrior Error: Cannot get image asset states because image asset "
-            "%s is not used by the Warrior!",
-            image_asset_name.toStdString().c_str() );
-  }
-
-  return asset_state_it.value();
-}
-
-void Warrior::handleStrengthChange( int )
-{
-  this->calculateBaseDamage();
-}
-
-void Warrior::handleDexterityChange( int total_dexterity )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  d_base_armor_class = total_dexterity / 5;
-}
-
-void Warrior::handleVitalityChange( int, int )
-{
-  this->calculateBaseHealth();
-}
-
-void Warrior::handleMagicChange( int, int )
-{
-  this->calculateBaseMana();
-  this->calculateBaseChanceToHitWithSpell();
-}
-
-void Warrior::handleLevelUp( const int )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  this->calculateBaseChanceToHitWithSpell();
-  this->calculateBaseDamage();
-  this->calculateBaseHealth();
-  this->calculateBaseMana();
-
-  this->updateStats();
-}
-
-// Initialize warrior stats
-void Warrior::initializeStats()
-{
-  // Set the character's stats
-  this->setBaseStrength( 30 );
-  this->setBaseMagic( 10 );
-  this->setBaseDexterity( 20 );
-  this->setBaseVitality( 25 );
-
-  this->handleLevelUp( 1 );
-  
-  this->restoreHealth();
-  this->restoreMana();
-}
-
-void Warrior::calculateBaseChanceToHitWithMelee()
-{
-  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
-}
-
-void Warrior::calculateBaseChanceToHitWithRanged()
-{
-  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
-}
-
-void Warrior::calculateBaseChanceToHitWithSpell()
-{
-  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
-}
-
-void Warrior::calculateBaseDamage()
-{
-  d_base_damage = this->getStrength() * this->getLevel() / 100;
-}
-
-void Warrior::calculateBaseHealth()
-{
-  d_base_health = 2 * this->getVitality() + 2 * this->getLevel() + 18;
-}
-
-void Warrior::calculateBaseMana()
-{
-  d_base_mana = this->getMagic() + this->getLevel() - 1;
-}
-
-// Get the number of sprite sheet frames per direction
-int Warrior::getSpriteSheetFramesPerDirection( const States& states ) const
-{
-  if( states.in_town )
-  {
-    if( states.actor_state == Actor::Standing )
-      return 20;
-    else if( states.actor_state == Actor::Walking )
-      return 8;
-    else
-    {
-      qFatal( "Warrior Error: actor state %i is not valid in town!",
-              states.actor_state );
-      return 0;
-    }
-  }
-  else
-  {
-    switch( states.actor_state )
-    {
-      case Actor::Standing:
-      {
-        if( states.weapon_state == Inventory::BowEquiped )
-          return 8;
-        else
-          return 10;
-      }
-      case Actor::Walking:
-        return 8;
-      case Actor::Attacking:
-      {
-        if( states.weapon_state == Inventory::AxeEquiped )
-          return 20;
-        else
-          return 16;
-      }
-      case Actor::RecoilingFromHit:
-        return 6;
-      case Actor::CastingSpell:
-      {
-        if( states.spell_state == SpellBook::LightningSpellEquiped &&
-            states.weapon_state == Inventory::NothingEquiped &&
-            states.armor_state == Inventory::LowClassArmorEquiped )
-          return 21;
-        else
-          return 20;
-      }
-      case Actor::Dying:
-      {
-        if( states.armor_state == Inventory::LowClassArmorEquiped )
-          return 20;
-        else
-          return 15;
-      }
-      default:
-      {
-        qFatal( "Warrior Error: actor state %i does not have frames per "
-                "direction info!", states.actor_state );
-        return 0;
-      }
-    }
-  }
-}
-
-// Connect the stats changed signal to warrior slots
-void Warrior::connectStatChangeSignalToWarriorSlots()
-{
-  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
-                    this, SLOT( handleStrengthChange( int ) ) );
-  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
-                    this, SLOT( handleDexterityChange( int ) ) );
-  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
-                    this, SLOT( handleVitalityChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
-                    this, SLOT( handleMagicChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( levelUp( const int ) ),
-                    this, SLOT( handleLevelUp( const int ) ) );
 }
 
 QML_REGISTER_META_TYPE( Warrior );

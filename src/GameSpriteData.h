@@ -52,6 +52,18 @@ public:
   //! Check if the data is ready
   bool isReady() const;
 
+  //! Set the duration of the sprite (in game tics)
+  void setDuration( const int duration );
+
+  //! Get the duration of the sprite (in game tics)
+  int getDuration() const;
+
+  //! Set the duration of each sprite frame (in game tics)
+  void setFrameDuration( const int duration );
+
+  //! Get the duration of each sprite frame (in game tics)
+  int getFrameDuration() const;
+
   //! Get the number of frames
   int getNumberOfFrames() const;
 
@@ -80,6 +92,9 @@ private:
 
   // The sprite frames
   QVector<Frame> d_frames;
+
+  // The duration of each sprite frame (in game tics)
+  int d_game_tics_per_frame;
 };
   
 } // end QtD1 namespace

@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // Qt Includes
 #include <QImageReader>
 
@@ -67,7 +70,6 @@ void Level::addLevelObject( LevelObject* level_object,
 // Add an actor
 void Level::addActor( Actor* actor,
                       const QPointF& location,
-                      const Actor::State state,
                       const Direction direction )
 {
   d_level_objects << actor;
@@ -75,7 +77,7 @@ void Level::addActor( Actor* actor,
   this->addItem( actor );
 
   actor->setPos( location );
-  actor->setStateAndDirection( state, direction );
+  actor->setDirection( direction );
 }
 
 // Insert the character
@@ -88,7 +90,7 @@ void Level::insertCharacter( Character* character,
   this->addItem( character );
 
   character->setPos( location );
-  character->setStateAndDirection( Actor::Standing, direction );
+  character->setDirection( direction );
 }
 
 // Remove the character
@@ -354,6 +356,42 @@ void Level::handleImageAssetLoadingFinished( const int number_of_assets_loaded )
   d_needs_restore = false;
 
   emit assetLoadingFinished( number_of_assets_loaded );
+}
+
+// Handle mouse press events in a custom way
+void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
+{
+  if( d_character )
+  {
+    // Check if there is a level object where the mouse was pressed
+    LevelObject* object = NULL;
+
+    {
+      QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
+      std::cout << "target object: " << raw_object << std::endl;
+      if( raw_object )
+        object = dynamic_cast<LevelObject*>( raw_object );
+    }
+
+    if( object )
+    {
+      if( mouse_event->button() == Qt::LeftButton )
+      {
+        std::cout << "setting new character target: " << object << std::endl;
+        d_character->setTarget( object );
+      }
+      else if( mouse_event->button() == Qt::RightButton )
+      {
+        if( d_character->inTown() )
+        {
+          //d_character->playICantSound();
+          std::cout << "can't cast a spell in town!" << std::endl;
+        }
+        else
+          d_character->castSpellAt( object );
+      }
+    }
+  }
 }
 
 // Connect the image asset loader signals to the level slots

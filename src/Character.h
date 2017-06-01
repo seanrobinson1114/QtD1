@@ -111,8 +111,14 @@ public:
   //! Get the chance to hit with a spell
   qreal getChanceToHitWithSpell() const override;
 
+  //! Get the movement speed (pixels per game tic)
+  qreal getMovementSpeed() const override;
+
   //! Get the gold amount
   int getGold();
+
+  //! Check if the character is in town
+  bool inTown() const;
 
   //! Get the inventory
   const Inventory& getInventory() const;
@@ -215,7 +221,7 @@ protected:
   };
 
   // The armor class state sprites type
-  typedef QMap<Inventory::ChestArmorState,std::shared_ptr<ActorData::StateDirectionGameSpriteMap> > ArmorClassStateGameSpriteMap;
+  typedef QMap<Inventory::ChestArmorState,std::shared_ptr<Actor::StateDirectionGameSpriteMap> > ArmorClassStateGameSpriteMap;
 
   // The weapon state sprites type
   typedef QMap<Inventory::WeaponState,ArmorClassStateGameSpriteMap> WeaponAndArmorClassStateGameSpriteMap;
@@ -229,8 +235,8 @@ protected:
              SpellBook* spell_book,
              QGraphicsObject* parent = 0 );
 
-  //! Update character stats
-  void updateStats();
+  //! Copy constructor
+  Character( const Character& other_character );
 
   //! Get the states associated with the image asset
   virtual const States& getImageAssetStates(
@@ -241,27 +247,9 @@ protected:
 
 private:
 
-  //! Copy constructor
-  Character( const Character& other_character );
-
   //! Assignment operator
   Character& operator=( const Character& other_character );
 
-  //! Initialize the state machine
-  void initializeStateMachine( QStateMachine& state_machine ) override;
-
-  //! Create the transition to the attacking state
-  QAbstractTransition* createTransitionToAttackingState() override;
-
-  //! Create the transition to the walking state
-  QAbstractTransition* createTransitionToWalkingState() override;
-
-  //! Create the transition to the standing state
-  QAbstractTransition* createTransitionToStandingState() override;
-
-  //! Create the transition to the casting state
-  QAbstractTransition* createTransitionToCastingState() override;
-  
   // Connect to base stats changed signal
   void connectToBaseStatsChangedSignal();
 
@@ -311,9 +299,6 @@ private:
                         const int frames_per_direction,
                         const int offset,
                         GameSprite& game_sprite );
-
-  // Update the actor sprites
-  void updateActorSprites();
 
   // The character name
   QString d_name;
@@ -388,7 +373,7 @@ private:
   WeaponAndArmorClassStateGameSpriteMap d_town_sprites;
 
   // The direction sprites
-  QMap<QString,std::shared_ptr<ActorData::DirectionGameSpriteMap> >
+  QMap<QString,std::shared_ptr<BasicActor::DirectionGameSpriteMap> >
   d_direction_sprites;
 
   // Records if the sprites have been loaded

@@ -22,8 +22,11 @@ class Rogue : public Character
 
 public:
 
-  //! Constructor
+  //! Default constructor
   Rogue( QGraphicsObject* parent = 0 );
+
+  //! Copy constructor
+  Rogue( const Rogue& other_rogue );
 
   //! Constructor
   Rogue( const QString& name, QGraphicsObject* parent = 0 );
@@ -31,6 +34,9 @@ public:
   //! Destructor
   ~Rogue()
   { /* ... */ }
+
+  //! Get the character type
+  Character::Type getType() const override;
 
   //! Get the max health
   int getBaseHealth() const override;
@@ -92,7 +98,7 @@ private:
   int getSpriteSheetFramesPerDirection( const States& states ) const override;
 
   // Connect the stats changed signal to warrior slots
-  void connectStatChangeSignalToRoguerSlots();
+  void connectStatChangeSignalToRogueSlots();
 
   // Calculate the base chance to hit with a melee weapon
   void calculateBaseChanceToHitWithMelee();

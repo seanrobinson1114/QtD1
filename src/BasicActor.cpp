@@ -13,7 +13,8 @@ namespace QtD1{
 
 // Constructor
 BasicActor::BasicActor( QGraphicsObject* parent )
-  : d_active_sprites( NULL ),
+  : InteractiveLevelObject( parent ),
+    d_active_sprites(),
     d_active_direction_sprite( std::make_pair( South, (GameSprite*)0 ) ),
     d_state_machine()
 { /* ... */ }
@@ -21,8 +22,11 @@ BasicActor::BasicActor( QGraphicsObject* parent )
 // Set the direction of the basic actor
 void BasicActor::setDirection( const Direction direction )
 {
-  d_active_direction_sprite.first = direction;
-  d_active_direction_sprite.second = &(*d_active_sprites)[direction];
+  if( direction != d_active_direction_sprite.first )
+  {
+    d_active_direction_sprite.first = direction;
+    d_active_direction_sprite.second = &(*d_active_sprites)[direction];
+  }
 }
 
 // Get the direction of the basic actor
@@ -58,13 +62,19 @@ void BasicActor::advance( int phase )
   {
     if( d_active_direction_sprite.second )
     {
-      d_active_direction_sprite.second->incrementFrame();
-      this->update( d_active_direction_sprite.second->boundingRect() );
+      bool screen_update_required = 
+        d_active_direction_sprite.second->incrementElapsedGameTics();
 
-      emit timeStateAdvanced();
-
-      if( d_active_direction_sprite.second->getFrame() == 0 )
+      // A complete loop of the sprite has been completed
+      if( screen_update_required && d_active_direction_sprite.second->getFrame() == 0 )
         emit allActiveFramesShown();
+
+      screen_update_required = screen_update_required ||
+        this->updateTimeDependentStates();
+
+      // Only request a screen update if it is necessary
+      if( screen_update_required )
+        this->update( d_active_direction_sprite.second->boundingRect() );
     }    
   }
 }
@@ -100,13 +110,14 @@ void BasicActor::startStateMachine()
 
   if( needs_start )
   {
-    this->initializeStateMachine( *state_machine );
-    state_machine->start();
+    this->initializeStateMachine( *d_state_machine );
+    d_state_machine->start();
   }
 }
 
 // Set the active sprites
-void BasicActor::setActiveSprites( DirectionGameSpriteMap* active_sprites )
+void BasicActor::setActiveSprites(
+                const std::shared_ptr<DirectionGameSpriteMap>& active_sprites )
 {
   if( active_sprites )
   {

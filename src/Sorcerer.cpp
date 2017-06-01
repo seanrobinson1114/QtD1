@@ -16,6 +16,284 @@ namespace QtD1{
 // Initialize static member data
 Sorcerer::AssetStateMap Sorcerer::s_asset_state_map;
 
+// Get the asset state map
+const Sorcerer::AssetStateMap& Sorcerer::getAssetStateMap()
+{
+  // Just-in-time initialization
+  if( Sorcerer::s_asset_state_map.size() == 0 )
+    Sorcerer::initializeAssetStateMap();
+
+  return Sorcerer::s_asset_state_map;
+}
+
+// Constructor
+/*! \details This constructor should only be used by the qml engine.
+ */
+Sorcerer::Sorcerer( QGraphicsObject* parent )
+  : Sorcerer( "", parent )
+{ 
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
+// Copy constructor
+/*! \details This constructor should only be used by the QML engine.
+ */
+Sorcerer::Sorcerer( const Sorcerer& other_sorcerer )
+  : Character( other_sorcerer ),
+    d_base_health( other_sorcerer.d_base_health ),
+    d_base_mana( other_sorcerer.d_base_mana ),
+    d_base_damage( other_sorcerer.d_base_damage ),
+    d_base_armor_class( other_sorcerer.d_base_armor_class ),
+    d_base_chance_to_hit_with_melee( other_sorcerer.d_base_chance_to_hit_with_melee ),
+    d_base_chance_to_hit_with_ranged( other_sorcerer.d_base_chance_to_hit_with_ranged ),
+    d_base_chance_to_hit_with_spell( other_sorcerer.d_base_chance_to_hit_with_spell )
+{
+  // When created by the QML engine no sprites will be loaded
+  this->setFlag( QGraphicsItem::ItemHasNoContents, true );
+}
+
+// Constructor
+Sorcerer::Sorcerer( const QString& name, QGraphicsObject* parent )
+  : Character( name, new SorcererInventory, new SorcererSpellBook, parent )
+{
+  this->connectStatChangeSignalToSorcererSlots();
+  this->initializeStats();
+}
+
+// Get the character type
+Character::Type Sorcerer::getType() const
+{
+  return Character::Sorcerer;
+}
+
+// Get the base health
+int Sorcerer::getBaseHealth() const
+{
+  return d_base_health;
+}
+
+int Sorcerer::getBaseMana() const
+{
+  return d_base_mana;
+}
+
+int Sorcerer::getBaseDamage() const
+{
+  return d_base_damage;
+}
+
+int Sorcerer::getBaseArmorClass() const
+{
+  return d_base_armor_class;
+}
+
+// Get the base percent chance to hit with melee
+qreal Sorcerer::getBaseChanceToHitWithMeleeWeapon() const
+{
+  return d_base_chance_to_hit_with_melee;
+}
+
+// Get the base percent chance to hit with ranged
+qreal Sorcerer::getBaseChanceToHitWithRangedWeapon() const
+{
+  return d_base_chance_to_hit_with_ranged;
+}
+
+// Get the base percent chance to hit with spell
+qreal Sorcerer::getBaseChanceToHitWithSpell() const
+{
+  return d_base_chance_to_hit_with_spell;
+}
+
+// Get the number of image assets used by the object
+int Sorcerer::getNumberOfImageAssets() const
+{
+  return Sorcerer::getAssetStateMap().size();
+}
+
+// Get the image asset names used by the object
+void Sorcerer::getImageAssetNames( QSet<QString>& image_asset_names ) const
+{
+  Sorcerer::AssetStateMap::const_iterator asset_state_it, asset_state_end;
+  asset_state_it = Sorcerer::getAssetStateMap().begin();
+  asset_state_end = Sorcerer::getAssetStateMap().end();
+
+  while( asset_state_it != asset_state_end )
+  {
+    image_asset_names.insert( asset_state_it.key() );
+    
+    ++asset_state_it;
+  }
+}
+
+// Check if an image asset is used
+bool Sorcerer::isImageAssetUsed( const QString& image_asset_name ) const
+{
+  return Sorcerer::getAssetStateMap().find( image_asset_name ) !=
+    Sorcerer::getAssetStateMap().end();
+}
+
+// Get the states associated with the image asset
+const Character::States& Sorcerer::getImageAssetStates(
+                                        const QString& image_asset_name ) const
+{
+  AssetStateMap::const_iterator asset_state_it =
+    Sorcerer::getAssetStateMap().find( image_asset_name );
+
+  if( asset_state_it == Sorcerer::getAssetStateMap().end() )
+  {
+    qFatal( "Sorcerer Error: Cannot get image asset states because image asset "
+            "%s is not used by the Sorcerer!",
+            image_asset_name.toStdString().c_str() );
+  }
+
+  return asset_state_it.value();
+}
+
+// Initialize sorcerer stats
+void Sorcerer::initializeStats()
+{
+  this->setBaseStrength( 15 );
+  this->setBaseMagic( 35 );
+  this->setBaseDexterity( 15 );
+  this->setBaseVitality( 15 );
+
+  this->handleLevelUp( 1 );
+  
+  this->restoreHealth();
+  this->restoreMana();
+}
+
+// Get the number of sprite sheet frames per direction
+int Sorcerer::getSpriteSheetFramesPerDirection( const States& states ) const
+{
+  if( states.in_town )
+  {
+    if( states.actor_state == Actor::Standing )
+      return 20;
+    else if( states.actor_state == Actor::Walking )
+      return 8;
+    else
+    {
+      qFatal( "Sorcerer Error: actor state %i is not valid in town!",
+              states.actor_state );
+      return 0;
+    }
+  }
+  else
+  {
+    switch( states.actor_state )
+    {
+      case Actor::Standing:
+        return 8;
+      case Actor::Walking:
+        return 8;
+      case Actor::Attacking:
+      {
+        if( states.weapon_state == Inventory::AxeEquiped )
+          return 24;
+        else if( states.weapon_state == Inventory::BowEquiped ||
+                 states.weapon_state == Inventory::NothingEquiped )
+          return 20;
+        else
+          return 16;
+      }
+      case Actor::RecoilingFromHit:
+        return 8;
+      case Actor::CastingSpell:
+        return 12;
+      case Actor::Dying:
+        return 20;
+      default:
+      {
+        qFatal( "Sorcerer Error: actor state %i does not have frames per "
+                "direction info!", states.actor_state );
+        return 0;
+      }
+    }
+  }
+}
+
+void Sorcerer::handleStrengthChange( int )
+{
+  this->calculateBaseDamage();
+}
+
+void Sorcerer::handleDexterityChange( int total_dexterity )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  d_base_armor_class = total_dexterity / 5;
+}
+
+void Sorcerer::handleVitalityChange( int, int )
+{
+  this->calculateBaseHealth();
+}
+
+void Sorcerer::handleMagicChange( int, int )
+{
+  this->calculateBaseMana();
+  this->calculateBaseChanceToHitWithSpell();
+}
+
+void Sorcerer::handleLevelUp( const int )
+{
+  this->calculateBaseChanceToHitWithMelee();
+  this->calculateBaseChanceToHitWithRanged();
+  this->calculateBaseChanceToHitWithSpell();
+  this->calculateBaseDamage();
+  this->calculateBaseHealth();
+  this->calculateBaseMana();
+
+  this->updateStats();
+}
+
+void Sorcerer::connectStatChangeSignalToSorcererSlots()
+{
+  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
+                    this, SLOT( handleStrengthChange( int ) ) );
+  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
+                    this, SLOT( handleDexterityChange( int ) ) );
+  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
+                    this, SLOT( handleVitalityChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
+                    this, SLOT( handleMagicChange( int, int ) ) );
+  QObject::connect( this, SIGNAL( levelUp( const int ) ),
+                    this, SLOT( handleLevelUp( const int ) ) );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithMelee()
+{
+  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithRanged()
+{
+  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
+}
+
+void Sorcerer::calculateBaseChanceToHitWithSpell()
+{
+  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
+}
+
+void Sorcerer::calculateBaseDamage()
+{
+  d_base_damage = this->getStrength() * this->getLevel() / 200;
+}
+
+void Sorcerer::calculateBaseHealth()
+{
+  d_base_health = this->getVitality() + this->getLevel() + 9;
+}
+
+void Sorcerer::calculateBaseMana()
+{
+  d_base_mana = 2 * this->getMagic() + 2 * this->getLevel() - 2;
+}
+
 // Initialize asset state map
 void Sorcerer::initializeAssetStateMap()
 {
@@ -318,272 +596,6 @@ void Sorcerer::initializeAssetStateMap()
   Sorcerer::s_asset_state_map["/plrgfx/sorceror/sln/slnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   Sorcerer::s_asset_state_map["/plrgfx/sorceror/sln/slnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   Sorcerer::s_asset_state_map["/plrgfx/sorceror/sln/slndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-}
-
-// Get the asset state map
-const Sorcerer::AssetStateMap& Sorcerer::getAssetStateMap()
-{
-  // Just-in-time initialization
-  if( Sorcerer::s_asset_state_map.size() == 0 )
-    Sorcerer::initializeAssetStateMap();
-
-  return Sorcerer::s_asset_state_map;
-}
-
-// Constructor
-/*! \details This constructor should only be used by the qml engine.
- */
-Sorcerer::Sorcerer( QGraphicsObject* parent )
-  : Sorcerer( "", parent )
-{ /* ... */ }
-
-// Constructor
-Sorcerer::Sorcerer( const QString& name, QGraphicsObject* parent )
-  : Character( name, new SorcererInventory, new SorcererSpellBook, parent )
-{
-  this->connectStatChangeSignalToSorcererSlots();
-  this->initializeStats();
-}
-
-// Get the base health
-int Sorcerer::getBaseHealth() const
-{
-  return d_base_health;
-}
-
-int Sorcerer::getBaseMana() const
-{
-  return d_base_mana;
-}
-
-int Sorcerer::getBaseDamage() const
-{
-  return d_base_damage;
-}
-
-int Sorcerer::getBaseArmorClass() const
-{
-  return d_base_armor_class;
-}
-
-// Get the base percent chance to hit with melee
-qreal Sorcerer::getBaseChanceToHitWithMeleeWeapon() const
-{
-  return d_base_chance_to_hit_with_melee;
-}
-
-// Get the base percent chance to hit with ranged
-qreal Sorcerer::getBaseChanceToHitWithRangedWeapon() const
-{
-  return d_base_chance_to_hit_with_ranged;
-}
-
-// Get the base percent chance to hit with spell
-qreal Sorcerer::getBaseChanceToHitWithSpell() const
-{
-  return d_base_chance_to_hit_with_spell;
-}
-
-// Get the number of image assets used by the object
-int Sorcerer::getNumberOfImageAssets() const
-{
-  return Sorcerer::getAssetStateMap().size();
-}
-
-// Get the image asset names used by the object
-void Sorcerer::getImageAssetNames( QSet<QString>& image_asset_names ) const
-{
-  Sorcerer::AssetStateMap::const_iterator asset_state_it, asset_state_end;
-  asset_state_it = Sorcerer::getAssetStateMap().begin();
-  asset_state_end = Sorcerer::getAssetStateMap().end();
-
-  while( asset_state_it != asset_state_end )
-  {
-    image_asset_names.insert( asset_state_it.key() );
-    
-    ++asset_state_it;
-  }
-}
-
-// Check if an image asset is used
-bool Sorcerer::isImageAssetUsed( const QString& image_asset_name ) const
-{
-  return Sorcerer::getAssetStateMap().find( image_asset_name ) !=
-    Sorcerer::getAssetStateMap().end();
-}
-
-// Clone the Sorcerer
-/*! \details The returned pointer is heap allocated
- */
-Sorcerer* Sorcerer::clone( QGraphicsObject* parent ) const
-{
-  Sorcerer* new_sorcerer = new Sorcerer( this->getName(), parent );
-
-  // Deep copy the warrior data
-  *dynamic_cast<SorcererData*>(new_sorcerer->getCharacterData()) =
-    *dynamic_cast<const SorcererData*>(this->getCharacterData());
-
-  return new_sorcerer;
-}
-
-// Get the states associated with the image asset
-const Character::States& Sorcerer::getImageAssetStates(
-                                        const QString& image_asset_name ) const
-{
-  AssetStateMap::const_iterator asset_state_it =
-    Sorcerer::getAssetStateMap().find( image_asset_name );
-
-  if( asset_state_it == Sorcerer::getAssetStateMap().end() )
-  {
-    qFatal( "Sorcerer Error: Cannot get image asset states because image asset "
-            "%s is not used by the Sorcerer!",
-            image_asset_name.toStdString().c_str() );
-  }
-
-  return asset_state_it.value();
-}
-
-// Initialize sorcerer stats
-void Sorcerer::initializeStats()
-{
-  this->setBaseStrength( 15 );
-  this->setBaseMagic( 35 );
-  this->setBaseDexterity( 15 );
-  this->setBaseVitality( 15 );
-
-  this->handleLevelUp( 1 );
-  
-  this->restoreHealth();
-  this->restoreMana();
-}
-
-// Get the number of sprite sheet frames per direction
-int Sorcerer::getSpriteSheetFramesPerDirection( const States& states ) const
-{
-  if( states.in_town )
-  {
-    if( states.actor_state == Actor::Standing )
-      return 20;
-    else if( states.actor_state == Actor::Walking )
-      return 8;
-    else
-    {
-      qFatal( "Sorcerer Error: actor state %i is not valid in town!",
-              states.actor_state );
-      return 0;
-    }
-  }
-  else
-  {
-    switch( states.actor_state )
-    {
-      case Actor::Standing:
-        return 8;
-      case Actor::Walking:
-        return 8;
-      case Actor::Attacking:
-      {
-        if( states.weapon_state == Inventory::AxeEquiped )
-          return 24;
-        else if( states.weapon_state == Inventory::BowEquiped ||
-                 states.weapon_state == Inventory::NothingEquiped )
-          return 20;
-        else
-          return 16;
-      }
-      case Actor::RecoilingFromHit:
-        return 8;
-      case Actor::CastingSpell:
-        return 12;
-      case Actor::Dying:
-        return 20;
-      default:
-      {
-        qFatal( "Sorcerer Error: actor state %i does not have frames per "
-                "direction info!", states.actor_state );
-        return 0;
-      }
-    }
-  }
-}
-
-void Sorcerer::handleStrengthChange( int )
-{
-  this->calculateBaseDamage();
-}
-
-void Sorcerer::handleDexterityChange( int total_dexterity )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  d_base_armor_class = total_dexterity / 5;
-}
-
-void Sorcerer::handleVitalityChange( int, int )
-{
-  this->calculateBaseHealth();
-}
-
-void Sorcerer::handleMagicChange( int, int )
-{
-  this->calculateBaseMana();
-  this->calculateBaseChanceToHitWithSpell();
-}
-
-void Sorcerer::handleLevelUp( const int )
-{
-  this->calculateBaseChanceToHitWithMelee();
-  this->calculateBaseChanceToHitWithRanged();
-  this->calculateBaseChanceToHitWithSpell();
-  this->calculateBaseDamage();
-  this->calculateBaseHealth();
-  this->calculateBaseMana();
-
-  this->updateStats();
-}
-
-void Sorcerer::connectStatChangeSignalToSorcererSlots()
-{
-  QObject::connect( this, SIGNAL( strengthChanged( int ) ),
-                    this, SLOT( handleStrengthChange( int ) ) );
-  QObject::connect( this, SIGNAL( dexterityChanged( int ) ),
-                    this, SLOT( handleDexterityChange( int ) ) );
-  QObject::connect( this, SIGNAL( vitalityChanged( int, int ) ),
-                    this, SLOT( handleVitalityChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( magicChanged( int, int ) ),
-                    this, SLOT( handleMagicChange( int, int ) ) );
-  QObject::connect( this, SIGNAL( levelUp( const int ) ),
-                    this, SLOT( handleLevelUp( const int ) ) );
-}
-
-void Sorcerer::calculateBaseChanceToHitWithMelee()
-{
-  d_base_chance_to_hit_with_melee = std::min( 50.0 + this->getDexterity() / 2.0 + this->getLevel(), 100.0 );
-}
-
-void Sorcerer::calculateBaseChanceToHitWithRanged()
-{
-  d_base_chance_to_hit_with_ranged = std::min( 50.0 + this->getDexterity() + this->getLevel(), 100.0 );
-}
-
-void Sorcerer::calculateBaseChanceToHitWithSpell()
-{
-  d_base_chance_to_hit_with_spell = std::min( 50.0 + this->getMagic(), 100.0 );
-}
-
-void Sorcerer::calculateBaseDamage()
-{
-  d_base_damage = this->getStrength() * this->getLevel() / 200;
-}
-
-void Sorcerer::calculateBaseHealth()
-{
-  d_base_health = this->getVitality() + this->getLevel() + 9;
-}
-
-void Sorcerer::calculateBaseMana()
-{
-  d_base_mana = 2 * this->getMagic() + 2 * this->getLevel() - 2;
 }
 
 QML_REGISTER_META_TYPE( Sorcerer );

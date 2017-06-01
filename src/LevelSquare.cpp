@@ -119,6 +119,12 @@ void LevelSquare::paint( QPainter*,
                          QWidget* )
 { /* ... */ }
 
+// Check if the object can be attacked
+bool LevelSquare::canBeAttacked() const
+{
+  return false;
+}
+
 // Clone the level square
 LevelSquare* LevelSquare::clone()
 {
