@@ -515,8 +515,8 @@ bool Actor::updateTimeDependentStates()
     if( d_target->scenePos() != this->scenePos() )
     {
       // Calculate the movement direction
-      Direction direction =
-        calculateDiscreteDirection( this->scenePos(), d_target->scenePos() );
+      Direction direction = calculateNearestDiscreteDirection(
+                                      this->scenePos(), d_target->scenePos() );
       std::cout << "raw direction: (" << d_target->scenePos().x() - this->scenePos().x() << "," << d_target->scenePos().y() - this->scenePos().y() << std::endl;
       std::cout << "movement direction: " << direction << std::endl;
       if( direction != this->getDirection() )
