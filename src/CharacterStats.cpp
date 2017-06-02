@@ -15,12 +15,14 @@
 
 // QtD1 Includes
 #include "CharacterStats.h"
+#include "Character.h"
 
 namespace QtD1{
 
 // Constructor
-CharacterStats::CharacterStats( QWidget* parent )
-  : QWidget( parent )
+CharacterStats::CharacterStats( Character* character, QWidget* parent )
+  : QWidget( parent ),
+    d_character( character )
 {
   // Load the character stats menu image
   QImage background_image( "/data/char.cel+levels/towndata/town.pal" );

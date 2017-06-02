@@ -21,6 +21,8 @@
 
 namespace QtD1{
 
+class CharacterData;
+
 //! The spell book class
 class CharacterStats : public QWidget
 {
@@ -29,7 +31,7 @@ class CharacterStats : public QWidget
 public:
 
   //! Constructor
-  CharacterStats( QWidget* parent = 0 );
+  CharacterStats( Character* character, QWidget* parent = 0 );
 
   //! Destructor
   ~CharacterStats()
@@ -40,6 +42,8 @@ signals:
 public slots:
 
 private:
+
+  Character* d_character;
 
 };
 

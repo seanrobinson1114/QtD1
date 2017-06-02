@@ -12,6 +12,7 @@
 // QtD1 Includes
 #include "QMLRegistrationHelper.h"
 #include "Actor.h"
+#include "CharacterStats.h"
 #include "Inventory.h"
 #include "SpellBook.h"
 #include "QuestLog.h"
@@ -95,6 +96,12 @@ public:
 
   //! Get the gold amount
   int getGold();
+
+  //! Get the character stats
+  const CharacterStats& getCharacterStats() const;
+
+  //! Get the character stats
+  CharacterStats& getCharacterStats();
 
   //! Get the inventory
   const Inventory& getInventory() const;
@@ -223,7 +230,7 @@ private:
                             std::shared_ptr<Actor::DirectionGameSpriteMap>&
                             direction_game_sprites );
 
-  // Load the game sprites 
+  // Load the game sprites
   void loadGameSprites( const QString& source,
                         const QVector<QPixmap>& image_asset_frames,
                         const int frames_per_direction,

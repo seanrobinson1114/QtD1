@@ -48,9 +48,10 @@ CharacterData::CharacterData( const QString& character_name,
     d_chance_to_hit_with_melee( 0.0 ),
     d_chance_to_hit_with_ranged( 0.0 ),
     d_chance_to_hit_with_spell( 0.0 ),
+    d_character_stats( new CharacterStats( this ) ),
     d_inventory( NULL ),
     d_spell_book( NULL ),
-    d_quest_log( NULL ),
+    d_quest_log( new QuestLog ),
     d_dungeon_sprites(),
     d_town_sprites(),
     d_direction_sprites(),
@@ -86,9 +87,6 @@ CharacterData::CharacterData( const QString& character_name,
       qFatal( "CharacterData Error: Unsupported character type!" );
     }
   }
-
-  // Create the quest log
-  d_quest_log = new QuestLog;
 
   // Initialize the spell book pages
   d_spell_book->initializePages();
@@ -323,6 +321,18 @@ qreal CharacterData::getChanceToHitWithRangedWeapon() const
 qreal CharacterData::getChanceToHitWithSpell() const
 {
   return d_chance_to_hit_with_spell;
+}
+
+// Get the character stats
+const CharacterStats& CharacterData::getCharacterStats() const
+{
+  return *d_character_stats;
+}
+
+// Get the character stats
+CharacterStats& CharacterData::getCharacterStats()
+{
+  return *d_character_stats;
 }
 
 // Get the inventory

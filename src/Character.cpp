@@ -120,6 +120,18 @@ int Character::getGold()
   return this->getCharacterData()->getGold();
 }
 
+// Get the character stats
+const CharacterStats& Character::getCharacterStats() const
+{
+  return this->getCharacterData()->getCharacterStats();
+}
+
+// Get the character stats
+CharacterStats& Character::getCharacterStats()
+{
+  return this->getCharacterData()->getCharacterStats();
+}
+
 // Get the inventory
 const Inventory& Character::getInventory() const
 {
@@ -363,7 +375,7 @@ void Character::loadDirectionGameSprites(
                          frames_per_direction,
                          offset,
                          (*direction_game_sprites)[West] );
-  
+
   offset += frames_per_direction;
 
   this->loadGameSprites( source,
@@ -373,7 +385,7 @@ void Character::loadDirectionGameSprites(
                          (*direction_game_sprites)[Northwest] );
 
   offset += frames_per_direction;
-  
+
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
@@ -409,7 +421,7 @@ void Character::loadDirectionGameSprites(
     direction_game_sprites;
 }
 
-// Load the game sprites 
+// Load the game sprites
 void Character::loadGameSprites( const QString& source,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
@@ -420,10 +432,10 @@ void Character::loadGameSprites( const QString& source,
   if( game_sprite.getNumberOfFrames() == 0 )
   {
     QVector<int> source_frame_indices( frames_per_direction );
-    
+
     for( int i = 0; i < frames_per_direction; ++i )
       source_frame_indices[i] = i + offset;
-      
+
     game_sprite = GameSprite( source, source_frame_indices );
   }
 
@@ -457,11 +469,11 @@ void Character::dumpImageAssets()
       while( direction_sprite_it != direction_sprite_end )
       {
         direction_sprite_it.value().dumpAsset();
-        
+
         ++direction_sprite_it;
       }
     }
-    
+
     ++asset_sprite_it;
   }
 

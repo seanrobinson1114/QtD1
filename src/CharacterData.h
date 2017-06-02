@@ -20,6 +20,7 @@
 // QtD1 Includes
 #include "Character.h"
 #include "ActorData.h"
+#include "CharacterStats.h"
 #include "Inventory.h"
 #include "SpellBook.h"
 #include "QuestLog.h"
@@ -118,6 +119,12 @@ public:
 
   //! Get the chance to hit with a spell
   qreal getChanceToHitWithSpell() const override;
+
+  //! Get the character stats
+  CharacterStats& getCharacterStats();
+
+  //! Get the character stats
+  const CharacterStats& getCharacterStats() const;
 
   //! Get the inventory
   Inventory& getInventory();
@@ -285,6 +292,9 @@ private:
 
   // The chance to hit with spell
   qreal d_chance_to_hit_with_spell;
+
+  // The character stats
+  CharacterStats* d_character_stats;
 
   // The inventory
   Inventory* d_inventory;
