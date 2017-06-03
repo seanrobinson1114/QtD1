@@ -177,7 +177,7 @@ void Actor::setBaseVitality( const int vitality )
 // Get the base vitality
 int Actor::getBaseVitality() const
 {
-  return 1;
+  return d_base_vitality;
 }
 
 // Get the vitality
