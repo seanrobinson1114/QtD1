@@ -344,8 +344,6 @@ void CharacterStats::updateLabels()
   d_character_current_vitality->setText( QString::number( this->getVitality() ) );
   d_character_base_health->setText( QString::number( this->getBaseHealth() ) );
   d_character_current_health->setText( QString::number( this->getHealth() ) );
-  if( this->getHealth() != 0 )
-    std::cout << "!0" << std::endl;
   d_character_base_mana->setText( QString::number( this->getBaseMana() ) );
   d_character_current_mana->setText( QString::number( this->getMana() ) );
   d_character_magic_resistance->setText( QString::number( this->getMagicResistance() ) );
