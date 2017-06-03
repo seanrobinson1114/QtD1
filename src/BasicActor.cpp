@@ -65,16 +65,17 @@ void BasicActor::advance( int phase )
       bool screen_update_required = 
         d_active_direction_sprite.second->incrementElapsedGameTics();
 
-      // A complete loop of the sprite has been completed
-      if( screen_update_required && d_active_direction_sprite.second->getFrame() == 0 )
-        emit allActiveFramesShown();
-
-      screen_update_required = screen_update_required ||
+      if( screen_update_required )
+      {
+        if( d_active_direction_sprite.second->getFrame() == 0 )
+          emit allActiveFramesShown();
+        
+        // Only update time dependent states when the sprite frame changes
         this->updateTimeDependentStates();
 
-      // Only request a screen update if it is necessary
-      if( screen_update_required )
+        // Only request a screen update if it is necessary
         this->update( d_active_direction_sprite.second->boundingRect() );
+      }
     }    
   }
 }

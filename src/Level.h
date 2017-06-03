@@ -149,6 +149,9 @@ private slots:
   // Handle image asset loading finished
   void handleImageAssetLoadingFinished( const int number_of_assets_loaded );
 
+  // Handle character position changed
+  void handleCharacterPositionChanged();
+
 private:
 
   // Reset the asset data
@@ -169,6 +172,12 @@ private:
 
   // Connect the image asset loader signals to the level slots
   void connectImageAssetLoaderSignalsToLevelSlots() const;
+
+  // Connect character signals to level slots
+  void connectCharacterSignalsToLevelSlots() const;
+
+  // Disconnect character signals from level slots
+  void disconnectCharacterSignalsFromLevelSlots() const;
 
   // The character
   Character* d_character;

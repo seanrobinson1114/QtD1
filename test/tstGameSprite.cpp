@@ -109,11 +109,64 @@ void isReady()
 }
 
 //---------------------------------------------------------------------------//
+// Check that the duration of the sprite can be set
+void setDuration()
+{
+  QtD1::GameSprite sprite( t_loader.getLoadedAssets()->begin().key(),
+                           {0, 1, 2, 3, 4, 5, 6, 7} );
+
+  sprite.setAsset( t_loader.getLoadedAssets()->begin().key(),
+                   t_loader.getLoadedAssets()->begin().value() );
+
+  sprite.setDuration( 1 );
+
+  QCOMPARE( sprite.getDuration(), 8 );
+
+  sprite.setDuration( 9 );
+
+  QCOMPARE( sprite.getDuration(), 8 );
+
+  sprite.setDuration( 16 );
+
+  QCOMPARE( sprite.getDuration(), 16 );
+
+  sprite.setDuration( 23 );
+
+  QCOMPARE( sprite.getDuration(), 16 );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the duration of each sprite frame can be set
+void setFrameDuration()
+{
+  QtD1::GameSprite sprite( t_loader.getLoadedAssets()->begin().key(),
+                           {0, 1, 2, 3, 4, 5, 6, 7} );
+
+  sprite.setAsset( t_loader.getLoadedAssets()->begin().key(),
+                   t_loader.getLoadedAssets()->begin().value() );
+
+  sprite.setFrameDuration( 0 );
+
+  QCOMPARE( sprite.getFrameDuration(), 1 );
+  QCOMPARE( sprite.getDuration(), 8 );
+
+  sprite.setFrameDuration( 1 );
+
+  QCOMPARE( sprite.getFrameDuration(), 1 );
+  QCOMPARE( sprite.getDuration(), 8 );
+
+  sprite.setFrameDuration( 2 );
+
+  QCOMPARE( sprite.getFrameDuration(), 2 );
+  QCOMPARE( sprite.getDuration(), 16 );
+}
+
+//---------------------------------------------------------------------------//
 // Check that the sprite frame can be set
 void setFrame()
 {
   QtD1::GameSprite sprite( t_loader.getLoadedAssets()->begin().key(),
-                               {0, 1, 2, 3, 4, 5, 6, 7} );
+                           {0, 1, 2, 3, 4, 5, 6, 7} );
 
   sprite.setAsset( t_loader.getLoadedAssets()->begin().key(),
                    t_loader.getLoadedAssets()->begin().value() );
@@ -143,7 +196,7 @@ void setFrame()
 void incrementFrame()
 {
   QtD1::GameSprite sprite( t_loader.getLoadedAssets()->begin().key(),
-                               {0, 1, 2, 3, 4, 5, 6, 7} );
+                           {0, 1, 2, 3, 4, 5, 6, 7} );
 
   sprite.setAsset( t_loader.getLoadedAssets()->begin().key(),
                    t_loader.getLoadedAssets()->begin().value() );
@@ -183,6 +236,66 @@ void incrementFrame()
   QCOMPARE( sprite.getFrame(), 0 );
 
   sprite.incrementFrame();
+
+  QCOMPARE( sprite.getFrame(), 1 );
+}
+
+//---------------------------------------------------------------------------//
+// Check that the sprite frame can be incremented
+void incrementElapsedGameTics()
+{
+  QtD1::GameSprite sprite( t_loader.getLoadedAssets()->begin().key(),
+                           {0, 1, 2, 3, 4, 5, 6, 7} );
+
+  sprite.setAsset( t_loader.getLoadedAssets()->begin().key(),
+                   t_loader.getLoadedAssets()->begin().value() );
+  sprite.setFrameDuration( 2 );
+  
+  QCOMPARE( sprite.getFrame(), 0 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QCOMPARE( sprite.getFrame(), 0 );
+
+  QVERIFY( sprite.incrementElapsedGameTics() );
+  QCOMPARE( sprite.getFrame(), 1 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 2 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 3 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 4 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 5 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 6 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 7 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
+
+  QCOMPARE( sprite.getFrame(), 0 );
+
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 1 );
 }

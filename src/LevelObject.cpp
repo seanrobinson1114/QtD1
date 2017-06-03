@@ -90,7 +90,7 @@ void LevelObject::loadImageAssets(
   }
 }
 
-QML_REGISTER_BASE_TYPE( LevelObject );
+QML_REGISTER_BASE_META_TYPE( LevelObject );
   
 } // end QtD1 namespace
 

@@ -532,9 +532,6 @@ void Game::handleTownAssetLoadFinished()
   // Connect the character signals to the game slots
   this->connectCharacterSignalsToGameSlots();
 
-  // Center the level viewer on the character
-  d_level_viewer->centerOn( d_character.get() );
-
   // Activate the character
   d_character->activate();
   d_character->startStateMachine();
