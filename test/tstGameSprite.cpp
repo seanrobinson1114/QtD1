@@ -253,51 +253,49 @@ void incrementElapsedGameTics()
   
   QCOMPARE( sprite.getFrame(), 0 );
 
-  sprite.incrementElapsedGameTics();
-
+  QVERIFY( !sprite.incrementElapsedGameTics() );
   QCOMPARE( sprite.getFrame(), 0 );
 
-  sprite.incrementElapsedGameTics();
-
+  QVERIFY( sprite.incrementElapsedGameTics() );
   QCOMPARE( sprite.getFrame(), 1 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 2 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 3 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 4 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 5 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 6 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 7 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 0 );
 
-  sprite.incrementElapsedGameTics();
-  sprite.incrementElapsedGameTics();
+  QVERIFY( !sprite.incrementElapsedGameTics() );
+  QVERIFY( sprite.incrementElapsedGameTics() );
 
   QCOMPARE( sprite.getFrame(), 1 );
 }

@@ -89,13 +89,19 @@ void Level::insertCharacter( Character* character,
 
   this->addItem( character );
 
+  this->connectCharacterSignalsToLevelSlots();
+
   character->setPos( location );
   character->setDirection( direction );
+
+  this->handleCharacterPositionChanged();
 }
 
 // Remove the character
 void Level::removeCharacter()
 {
+  this->disconnectCharacterSignalsFromLevelSlots();
+  
   this->removeItem( d_character );
 }
 
@@ -358,6 +364,18 @@ void Level::handleImageAssetLoadingFinished( const int number_of_assets_loaded )
   emit assetLoadingFinished( number_of_assets_loaded );
 }
 
+// Handle character position changed
+void Level::handleCharacterPositionChanged()
+{
+  // Re-center the character in the view
+  QList<QGraphicsView*> views = this->views();
+
+  // There should only be a single view but just to be safe we will loop over
+  // the entire list
+  for( int i = 0; i < views.size(); ++i )
+    views[i]->centerOn( d_character );
+}
+
 // Handle mouse press events in a custom way
 void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 {
@@ -368,7 +386,7 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 
     {
       QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
-      std::cout << "target object: " << raw_object << std::endl;
+      
       if( raw_object )
         object = dynamic_cast<LevelObject*>( raw_object );
     }
@@ -377,7 +395,6 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
     {
       if( mouse_event->button() == Qt::LeftButton )
       {
-        std::cout << "setting new character target: " << object << std::endl;
         d_character->setTarget( object );
       }
       else if( mouse_event->button() == Qt::RightButton )
@@ -403,6 +420,24 @@ void Level::connectImageAssetLoaderSignalsToLevelSlots() const
                     this, SLOT(handleImageAssetLoaded(const int, const QString, const QVector<QImage>)) );
   QObject::connect( d_image_asset_loader.get(), SIGNAL(assetLoadingFinished(const int)),
                     this, SLOT(handleImageAssetLoadingFinished(const int)) );
+}
+
+// Connect character signals to level slots
+void Level::connectCharacterSignalsToLevelSlots() const
+{
+  QObject::connect( d_character, SIGNAL(xChanged()),
+                    this, SLOT(handleCharacterPositionChanged()) );
+  QObject::connect( d_character, SIGNAL(yChanged()),
+                    this, SLOT(handleCharacterPositionChanged()) );
+}
+
+// Connect character signals from level slots
+void Level::disconnectCharacterSignalsFromLevelSlots() const
+{
+  QObject::disconnect( d_character, SIGNAL(xChanged()),
+                       this, SLOT(handleCharacterPositionChanged()) );
+  QObject::disconnect( d_character, SIGNAL(yChanged()),
+                       this, SLOT(handleCharacterPositionChanged()) );
 }
 
 } // end QtD1 namespace

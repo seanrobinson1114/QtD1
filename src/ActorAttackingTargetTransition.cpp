@@ -29,7 +29,7 @@ bool ActorAttackingTargetTransition::eventTest( QEvent* event )
 
   QStateMachine::SignalEvent* signal_event =
     dynamic_cast<QStateMachine::SignalEvent*>( event );
-
+  
   LevelObject* target = signal_event->arguments().at(0).value<LevelObject*>();
 
   return target->canBeAttacked();

@@ -493,7 +493,6 @@ void Actor::setTarget( LevelObject* target )
   if( target )
   {
     d_target = target;
-    std::cout << "actor target set: " << target << std::endl;
     emit targetSet( target );
   }
 }
@@ -510,40 +509,57 @@ void Actor::castSpellAt( LevelObject* target )
  */
 bool Actor::updateTimeDependentStates()
 {
+  bool update_required = false;
+  
   if( d_target )
   {
-    if( d_target->scenePos() != this->scenePos() )
+    if( d_active_state == Walking )
     {
-      // Calculate the movement direction
-      Direction direction = calculateNearestDiscreteDirection(
-                                      this->scenePos(), d_target->scenePos() );
-      std::cout << "raw direction: (" << d_target->scenePos().x() - this->scenePos().x() << "," << d_target->scenePos().y() - this->scenePos().y() << std::endl;
-      std::cout << "movement direction: " << direction << std::endl;
-      if( direction != this->getDirection() )
+      bool destination_reached = false;
+      
+      double x_distance = d_target->scenePos().x()-this->scenePos().x();
+      double y_distance = d_target->scenePos().y()-this->scenePos().y();
+      
+      double distance = sqrt( x_distance*x_distance + y_distance*y_distance );
+      
+      if( distance > 0 )
       {
-        // Get the movement direction enum
-        this->setDirection( direction );
-
-        QPointF direction_vector = getDirectionVector( direction );
+        update_required = true;
         
-        // Calculate the velocity
-        double speed = this->getMovementSpeed();
-        d_x_velocity = direction_vector.x()*speed;
-        d_y_velocity = direction_vector.y()*speed;
+        // Calculate the movement direction
+        Direction direction = calculateNearestDiscreteDirection(
+                                      this->scenePos(), d_target->scenePos() );
 
-        // Only move the actor if it is in the walking state
-        if( d_active_state == Walking )
-          this->moveBy( d_x_velocity, d_y_velocity );
+        // Calculate the velocity of the actor
+        if( direction != this->getDirection() )
+        {
+          // Get the movement direction enum
+          this->setDirection( direction );
 
-        if( d_target->scenePos() == this->scenePos() )
-          emit targetReached( d_target );
+          QPointF direction_vector = getDirectionVector( direction );
+        
+          // Calculate the velocity
+          double speed = this->getMovementSpeed();
 
-        return true;
+          if( distance < speed )
+          {
+            speed = distance;
+            destination_reached = true;
+          }
+          
+          d_x_velocity = direction_vector.x()*speed;
+          d_y_velocity = direction_vector.y()*speed;
+        }
       }
+
+      this->moveBy( d_x_velocity, d_y_velocity );
+      
+      if( destination_reached )
+        emit targetReached( d_target );
     }
   }
   
-  return false;
+  return update_required;
 }
 
 // Set the actor sprites
@@ -693,6 +709,7 @@ void Actor::createAliveStates( QState* alive_parent_state )
 // Handle standing state entered
 void Actor::handleStandingStateEntered()
 {
+  std::cout << "standing state entered" << std::endl;
   d_active_state = Standing;
   
   this->setActiveSprites( (*d_sprites)[Standing] );
@@ -703,6 +720,7 @@ void Actor::handleStandingStateEntered()
 // Handle walking state entered
 void Actor::handleWalkingStateEntered()
 {
+  std::cout << "walking state entered" << std::endl;
   d_active_state = Walking;
 
   this->setActiveSprites( (*d_sprites)[Walking] );
@@ -730,9 +748,6 @@ void Actor::handleAttackingStateEntered()
 void Actor::handleAttackingStateExited()
 {
   this->restartActiveSprite();
-
-  // Remove the target
-  d_target = NULL;
 }
 
 // Handle casting state entered
@@ -754,9 +769,6 @@ void Actor::handleRecoilingStateEntered()
   this->setActiveSprites( (*d_sprites)[RecoilingFromHit] );
 
   this->update( this->boundingRect() );
-
-  // Remove the target
-  d_target = NULL;
 }
 
 // Handle casting state exited

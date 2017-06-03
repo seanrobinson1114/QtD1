@@ -35,7 +35,7 @@
   static const int meta_type_ptr_id;                                    
 
 /*! Macro used to register a base type with qml
- * \details This macro should appear in a classes implementation file.
+ * \details This macro should appear in a class's implementation file.
  */
 #define QML_REGISTER_BASE_TYPE( Type )          \
   const int Type::qml_type_id =                 \
@@ -48,7 +48,7 @@
                                                         
 
 /*! Macro used to register a type with qml
- * \details This macro should appear in a classes implementation file.
+ * \details This macro should appear in a class's implementation file.
  */
 #define QML_REGISTER_TYPE( Type )                                       \
   const int Type::qml_type_id =                      \
@@ -58,8 +58,17 @@
                                                   Type::qmlLibVersionMinor(), \
                                                   Type::qmlName() )
 
-/*! Macro usec to register a type with qml and with the meta type system
- * \details This macro should appear in a classes implemenetation file.
+/*! Macro used to register a base type with qml and with the meta type system
+ * \details This macro should appear in a class's implementation file.
+ */
+#define QML_REGISTER_BASE_META_TYPE( Type )          \
+  QML_REGISTER_BASE_TYPE( Type );                    \
+                                                                        \
+  const int Type::meta_type_ptr_id =                                    \
+    QtD1::QMLRegistrationHelper::registerMetaTypePtr<Type>(Type::qmlName())
+
+/*! Macro used to register a type with qml and with the meta type system
+ * \details This macro should appear in a class's implementation file.
  */
 #define QML_REGISTER_META_TYPE( Type )          \
   QML_REGISTER_TYPE( Type );                    \
