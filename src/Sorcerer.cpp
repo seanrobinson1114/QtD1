@@ -215,6 +215,12 @@ int Sorcerer::getSpriteSheetFramesPerDirection( const States& states ) const
   }
 }
 
+// Get the duration of a sprite sheet frame (in game tics)
+int Sorcerer::getSpriteSheetFrameDuration( const States& ) const
+{
+  return 50;
+}
+
 void Sorcerer::handleStrengthChange( int )
 {
   this->calculateBaseDamage();

@@ -101,6 +101,9 @@ private:
   // Get the number of sprite sheet frames per direction
   int getSpriteSheetFramesPerDirection( const States& states ) const override;
 
+  // Get the duration of a sprite sheet frame (in game tics)
+  int getSpriteSheetFrameDuration( const States& states ) const override;
+
   // Connect the stats changed signal to warrior slots
   void connectStatChangeSignalToWarriorSlots();
 

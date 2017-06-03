@@ -252,6 +252,9 @@ protected:
   //! Get the number of sprite sheet frames per direction
   virtual int getSpriteSheetFramesPerDirection( const States& states ) const = 0;
 
+  //! Get the duration of a sprite sheet frame (in game tics)
+  virtual int getSpriteSheetFrameDuration( const States& states ) const = 0;
+
 private:
 
   //! Assignment operator
@@ -270,6 +273,7 @@ private:
   void loadTownStateGameSprites( const QString& image_asset_name,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
+                                 const int frame_duration,
                                  const Inventory::WeaponState weapon_state,
                                  const Inventory::ChestArmorState armor_state,
                                  const Actor::State actor_state );
@@ -279,6 +283,7 @@ private:
                                  const QString& image_asset_name,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
+                                 const int frame_duration,
                                  const Inventory::WeaponState weapon_state,
                                  const Inventory::ChestArmorState armor_state,
                                  const Actor::State actor_state );
@@ -288,6 +293,7 @@ private:
                                 const QString& image_asset_name,
                                 const QVector<QPixmap>& image_asset_frames,
                                 const int frames_per_direction,
+                                const int frame_duration,
                                 const SpellBook::SpellState spell_state,
                                 const Inventory::WeaponState weapon_state,
                                 const Inventory::ChestArmorState armor_state );
@@ -297,6 +303,7 @@ private:
                             const QString& source,
                             const QVector<QPixmap>& image_asset_frames,
                             const int frames_per_direction,
+                            const int frame_duration,
                             std::shared_ptr<Actor::DirectionGameSpriteMap>&
                             direction_game_sprites );
 
@@ -304,6 +311,7 @@ private:
   void loadGameSprites( const QString& source,
                         const QVector<QPixmap>& image_asset_frames,
                         const int frames_per_direction,
+                        const int frame_duration,
                         const int offset,
                         GameSprite& game_sprite );
 

@@ -262,7 +262,7 @@ qreal Character::getChanceToHitWithSpell() const
 // Get the movement speed (pixels per game tic)
 qreal Character::getMovementSpeed() const
 {
-  return 0.1;
+  return 8.0;
 }
 
 // Get the gold amount
@@ -345,6 +345,7 @@ void Character::loadImageAsset( const QString& image_asset_name,
                   image_asset_name,
                   image_asset_frames,
                   this->getSpriteSheetFramesPerDirection( image_asset_states ),
+                  this->getSpriteSheetFrameDuration( image_asset_states ),
                   image_asset_states.weapon_state,
                   image_asset_states.armor_state,
                   image_asset_states.actor_state );
@@ -359,6 +360,7 @@ void Character::loadImageAsset( const QString& image_asset_name,
                   image_asset_name,
                   image_asset_frames,
                   this->getSpriteSheetFramesPerDirection( image_asset_states ),
+                  this->getSpriteSheetFrameDuration( image_asset_states ),
                   image_asset_states.weapon_state,
                   image_asset_states.armor_state,
                   image_asset_states.actor_state );
@@ -370,6 +372,7 @@ void Character::loadImageAsset( const QString& image_asset_name,
                   image_asset_name,
                   image_asset_frames,
                   this->getSpriteSheetFramesPerDirection( image_asset_states ),
+                  this->getSpriteSheetFrameDuration( image_asset_states ),
                   image_asset_states.spell_state,
                   image_asset_states.weapon_state,
                   image_asset_states.armor_state );
@@ -382,6 +385,7 @@ void Character::loadTownStateGameSprites(
                                   const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames,
                                   const int frames_per_direction,
+                                  const int frame_duration,
                                   const Inventory::WeaponState weapon_state,
                                   const Inventory::ChestArmorState armor_state,
                                   const Actor::State actor_state )
@@ -401,6 +405,7 @@ void Character::loadTownStateGameSprites(
   this->loadDirectionGameSprites( image_asset_name,
                                   image_asset_frames,
                                   frames_per_direction,
+                                  frame_duration,
                                   direction_game_sprites );
 }
 
@@ -409,6 +414,7 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
                                   const QString& image_asset_name,
                                   const QVector<QPixmap>& image_asset_frames,
                                   const int frames_per_direction,
+                                  const int frame_duration,
                                   const Inventory::WeaponState weapon_state,
                                   const Inventory::ChestArmorState armor_state,
                                   const Actor::State actor_state )
@@ -429,6 +435,7 @@ void Character::loadNonSpellCastDungeonStateGameSprites(
   this->loadDirectionGameSprites( image_asset_name,
                                   image_asset_frames,
                                   frames_per_direction,
+                                  frame_duration,
                                   direction_game_sprites );
 
   // Set the non-elemental spell equiped state
@@ -476,6 +483,7 @@ void Character::loadSpellCastDungeonStateGameSprites(
                                  const QString& image_asset_name,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
+                                 const int frame_duration,
                                  const SpellBook::SpellState spell_state,
                                  const Inventory::WeaponState weapon_state,
                                  const Inventory::ChestArmorState armor_state )
@@ -495,6 +503,7 @@ void Character::loadSpellCastDungeonStateGameSprites(
   this->loadDirectionGameSprites( image_asset_name,
                                   image_asset_frames,
                                   frames_per_direction,
+                                  frame_duration,
                                   direction_game_sprites );
 }
 
@@ -503,6 +512,7 @@ void Character::loadDirectionGameSprites(
                             const QString& source,
                             const QVector<QPixmap>& image_asset_frames,
                             const int frames_per_direction,
+                            const int frame_duration,
                             std::shared_ptr<Actor::DirectionGameSpriteMap>&
                             direction_game_sprites )
 {
@@ -514,6 +524,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[South] );
 
@@ -522,6 +533,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[Southwest] );
 
@@ -530,6 +542,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[West] );
 
@@ -538,6 +551,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[Northwest] );
 
@@ -546,6 +560,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[North] );
 
@@ -554,6 +569,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[Northeast] );
 
@@ -562,6 +578,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[East] );
 
@@ -570,6 +587,7 @@ void Character::loadDirectionGameSprites(
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
+                         frame_duration,
                          offset,
                          (*direction_game_sprites)[Southeast] );
 
@@ -581,6 +599,7 @@ void Character::loadDirectionGameSprites(
 void Character::loadGameSprites( const QString& source,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
+                                 const int frame_duration,
                                  const int offset,
                                  GameSprite& game_sprite )
 {
@@ -596,6 +615,7 @@ void Character::loadGameSprites( const QString& source,
   }
 
   game_sprite.setAsset( source, image_asset_frames );
+  game_sprite.setFrameDuration( frame_duration );
 }
 
 // Finalize image asset loading

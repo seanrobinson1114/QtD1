@@ -302,6 +302,20 @@ int Warrior::getSpriteSheetFramesPerDirection( const States& states ) const
   }
 }
 
+// Get the duration of a sprite sheet frame (in game tics)
+int Warrior::getSpriteSheetFrameDuration( const States& states ) const
+{
+  switch( states.actor_state )
+  {
+    case Actor::Standing:
+      return 10;
+    case Actor::Walking:
+      return 5;
+    default:
+      return 1;
+  }
+}
+
 // Connect the stats changed signal to warrior slots
 void Warrior::connectStatChangeSignalToWarriorSlots()
 {

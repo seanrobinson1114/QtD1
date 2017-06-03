@@ -94,8 +94,11 @@ private:
   const Character::States& getImageAssetStates(
                               const QString& image_asset_name ) const override;
 
-  //! Get the number of sprite sheet frames per direction
+  // Get the number of sprite sheet frames per direction
   int getSpriteSheetFramesPerDirection( const States& states ) const override;
+
+  // Get the duration of a sprite sheet frame (in game tics)
+  int getSpriteSheetFrameDuration( const States& states ) const override;
 
   // Connect the stats changed signal to warrior slots
   void connectStatChangeSignalToRogueSlots();

@@ -221,6 +221,12 @@ int Rogue::getSpriteSheetFramesPerDirection( const States& states ) const
   }
 }
 
+// Get the duration of a sprite sheet frame (in game tics)
+int Rogue::getSpriteSheetFrameDuration( const States& ) const
+{
+  return 50;
+}
+
 void Rogue::handleStrengthChange( int )
 {
   this->calculateBaseDamage();
