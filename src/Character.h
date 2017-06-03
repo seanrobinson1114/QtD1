@@ -12,6 +12,7 @@
 // QtD1 Includes
 #include "QMLRegistrationHelper.h"
 #include "Actor.h"
+#include "CharacterStats.h"
 #include "Inventory.h"
 #include "SpellBook.h"
 #include "QuestLog.h"
@@ -119,6 +120,12 @@ public:
 
   //! Check if the character is in town
   bool inTown() const;
+
+  //! Get the character stats
+  const CharacterStats& getCharacterStats() const;
+
+  //! Get the character stats
+  CharacterStats& getCharacterStats();
 
   //! Get the inventory
   const Inventory& getInventory() const;
@@ -293,7 +300,7 @@ private:
                             std::shared_ptr<Actor::DirectionGameSpriteMap>&
                             direction_game_sprites );
 
-  // Load the game sprites 
+  // Load the game sprites
   void loadGameSprites( const QString& source,
                         const QVector<QPixmap>& image_asset_frames,
                         const int frames_per_direction,
@@ -356,6 +363,9 @@ private:
 
   // The chance to hit with spell
   qreal d_chance_to_hit_with_spell;
+
+  // The character stats
+  CharacterStats* d_character_stats;
 
   // The inventory
   Inventory* d_inventory;

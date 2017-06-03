@@ -45,8 +45,8 @@ Game* Game::getInstance()
     d_game_timer_id( -1 ),
     d_game_paused( true ),
     d_loading_screen( new LoadingScreen( this ) ),
-    d_game_control_panel( new QDeclarativeView( this ) ),
-    d_character_stats( new QDeclarativeView( this ) ),
+    //d_game_control_panel( new QDeclarativeView( this ) ),
+    d_game_control_panel( new ControlPanel( this ) ),
     d_game_menu( new QDeclarativeView( this ) ),
     d_game_options_menu( new QDeclarativeView( this ) ),
     d_level( new Town ),
@@ -319,17 +319,15 @@ void Game::showCharacterStats()
 {
   emit characterStatsWidgetActivated();
 
-  d_character_stats->show();
-  d_character_stats->raise();
+  d_character->getCharacterStats().show();
+  d_character->getCharacterStats().raise();
   d_game_control_panel->raise();
 }
 
 // Hide the character stats
 void Game::hideCharacterStats()
 {
-  d_character_stats->hide();
-
-  emit characterStatsWidgetDeactivated();
+  d_character->getCharacterStats().hide();
 }
 
 // Show the quest log
@@ -362,11 +360,12 @@ void Game::showGameMenu()
 void Game::hideGameMenu()
 {
   d_game_menu->hide();
-
   emit gameMenuWidgetDeactivated();
 
   this->setFocus();
   this->resume();
+  this->hideGameOptionsMenu();
+  d_game_control_panel->hideMenuButton();
 }
 
 // Show the game options menu
@@ -389,8 +388,6 @@ void Game::hideGameOptionsMenu()
 
   d_game_menu->raise();
   d_game_menu->setFocus();
-  //this->setFocus();
-  //this->resume();
 }
 
 // Handle show events
@@ -402,7 +399,6 @@ void Game::showEvent( QShowEvent* event )
   d_game_control_panel->hide();
   d_game_menu->hide();
   d_game_options_menu->hide();
-  d_character_stats->hide();
   d_loading_screen->hide();
   d_level_viewer->hide();
 
@@ -487,7 +483,6 @@ void Game::handleTownAssetLoadStarted()
 void Game::handleTownAssetLoadFinished()
 {
   // Load the control panel
-  d_game_control_panel->setSource( QUrl( GAME_CONTROL_PANEL_QML_PATH ) );
   d_game_control_panel->setAutoFillBackground( false );
   d_game_control_panel->setAttribute(  Qt::WA_TranslucentBackground );
   d_game_control_panel->move( 80, 456 );
@@ -495,20 +490,8 @@ void Game::handleTownAssetLoadFinished()
   QPixmap pixmap = QPixmap::grabWidget( d_game_control_panel );
   d_game_control_panel->setMask( pixmap.createHeuristicMask() );
 
-  GameFrontendProxy::connectToBackend(
-                                     d_game_control_panel,
-                                     SIGNAL(controlPanelWidgetActivated()),
-                                     SIGNAL(controlPanelWidgetDeactivated()) );
-
-  // Load the character stats menu
-  d_character_stats->setSource( QUrl( CHARACTER_STATS_QML_PATH ) );
-  d_character_stats->move( 80, 119 );
-
-  CharacterFrontendProxy::connectToBackend( d_character_stats, d_character.get() );
-  GameFrontendProxy::connectToBackend(
-                                   d_character_stats,
-                                   SIGNAL(characterStatsWidgetActivated()),
-                                   SIGNAL(characterStatsWidgetDeactivated()) );
+  // Connect the control panel signals to the game slots
+  this->connectControlPanelSignalsToGameSlots();
 
   // Load the game menu
   d_game_menu->setSource( QUrl( GAME_MENU_QML_PATH ) );
@@ -526,15 +509,13 @@ void Game::handleTownAssetLoadFinished()
                                        SIGNAL(gameOptionsMenuWidgetActivated()),
                                        SIGNAL(gameOptionsMenuWidgetDeactivated()) );
 
-  // Connecting the control panel to the game menu widget signals will ensure
-  // that the menu button will behave correctly
-  GameFrontendProxy::connectToBackend( d_game_control_panel,
-                                       SIGNAL(gameMenuWidgetActivated()),
-                                       SIGNAL(gameMenuWidgetDeactivated()) );
-
   // Make the control panel have focus by default
   d_level_viewer->setFocusProxy( d_game_control_panel );
   this->setFocusProxy( d_game_control_panel );
+
+  // Assign the character stats widget to the frontend widget
+  d_character->getCharacterStats().setParent( this );
+  d_character->getCharacterStats().move( 80, 119 );
 
   // Assign the inventory widget to the frontend widget
   d_character->getInventory().setParent( this );
@@ -589,6 +570,40 @@ void Game::connectCharacterSignalsToGameSlots()
                     this, SLOT(handleCharacterLevelUp(const int)) );
   QObject::connect( d_character.get(), SIGNAL(death()),
                     this, SLOT(handleCharacterDeath()) );
+}
+
+// Connect Control panel signals to game slots
+void Game::connectControlPanelSignalsToGameSlots()
+{
+  QObject::connect( d_game_control_panel, SIGNAL( showCharacterStats() ),
+                    this, SLOT( showCharacterStats() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( hideCharacterStats() ),
+                    this, SLOT( hideCharacterStats() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( showQuestLog() ),
+                    this, SLOT( showQuestLog() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( hideQuestLog() ),
+                    this, SLOT( hideQuestLog() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( showGameMenu() ),
+                    this, SLOT( showGameMenu() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( hideGameMenu() ),
+                    this, SLOT( hideGameMenu() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( showInventory() ),
+                    this, SLOT( showCharacterInventory() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( hideInventory() ),
+                    this, SLOT( hideCharacterInventory() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( showSpellBook() ),
+                    this, SLOT( showCharacterSpellBook() ) );
+
+  QObject::connect( d_game_control_panel, SIGNAL( hideSpellBook() ),
+                    this, SLOT( hideCharacterSpellBook() ) );
 }
 
 } // end QtD1 namespace

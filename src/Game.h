@@ -22,6 +22,7 @@
 #include "LoadingScreen.h"
 #include "Character.h"
 #include "Sound.h"
+#include "ControlPanel.h"
 
 namespace QtD1{
 
@@ -222,6 +223,9 @@ private:
                                  const char* activated_signal,
                                  const char* deactivated_signal );
 
+  // Connect the control panel signals to the game
+  void connectControlPanelSignalsToGameSlots();
+
   // The game state refresh delay time (ms)
   static const int s_refresh_delay_time = 10;
 
@@ -241,10 +245,7 @@ private:
   LoadingScreen* d_loading_screen;
 
   // The game control panel
-  QDeclarativeView* d_game_control_panel;
-
-  // The character stats
-  QDeclarativeView* d_character_stats;
+  ControlPanel* d_game_control_panel;
 
   // The game menu
   QDeclarativeView* d_game_menu;

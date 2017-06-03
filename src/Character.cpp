@@ -39,6 +39,7 @@ Character::Character( const QString& name,
     d_chance_to_hit_with_melee( 0.0 ),
     d_chance_to_hit_with_ranged( 0.0 ),
     d_chance_to_hit_with_spell( 0.0 ),
+    d_character_stats( new CharacterStats( this ) ),
     d_inventory( inventory ),
     d_spell_book( spell_book ),
     d_quest_log( new QuestLog ),
@@ -50,7 +51,7 @@ Character::Character( const QString& name,
     d_active_weapon_state( Inventory::NothingEquiped ),
     d_active_spell_state( SpellBook::NoSpellEquiped ),
     d_in_town( true )
-{ 
+{
   // Initialize the spell book pages
   d_spell_book->initializePages();
 
@@ -105,7 +106,7 @@ Character::Character( const Character& other_character )
 }
 
 // Destructor
-/*! \details If the inventory and/or the spell book and/or quest log have a 
+/*! \details If the inventory and/or the spell book and/or quest log have a
  * parent widget set, that parent will take care of destroying it/them when it
  * is closed. If one or more of them haven't been destroyed by the time this
  * destructor is invoked, they will be destroyed in the destructor.
@@ -263,7 +264,7 @@ qreal Character::getMovementSpeed() const
 {
   return 0.1;
 }
-  
+
 // Get the gold amount
 int Character::getGold()
 {
@@ -274,6 +275,18 @@ int Character::getGold()
 bool Character::inTown() const
 {
   return d_in_town;
+}
+
+// Get the character stats
+const CharacterStats& Character::getCharacterStats() const
+{
+  return *d_character_stats;
+}
+
+// Get the character stats
+CharacterStats& Character::getCharacterStats()
+{
+  return *d_character_stats;
 }
 
 // Get the inventory
@@ -519,7 +532,7 @@ void Character::loadDirectionGameSprites(
                          frames_per_direction,
                          offset,
                          (*direction_game_sprites)[West] );
-  
+
   offset += frames_per_direction;
 
   this->loadGameSprites( source,
@@ -529,7 +542,7 @@ void Character::loadDirectionGameSprites(
                          (*direction_game_sprites)[Northwest] );
 
   offset += frames_per_direction;
-  
+
   this->loadGameSprites( source,
                          image_asset_frames,
                          frames_per_direction,
@@ -564,7 +577,7 @@ void Character::loadDirectionGameSprites(
   d_direction_sprites[source] = direction_game_sprites;
 }
 
-// Load the game sprites 
+// Load the game sprites
 void Character::loadGameSprites( const QString& source,
                                  const QVector<QPixmap>& image_asset_frames,
                                  const int frames_per_direction,
@@ -575,10 +588,10 @@ void Character::loadGameSprites( const QString& source,
   if( game_sprite.getNumberOfFrames() == 0 )
   {
     QVector<int> source_frame_indices( frames_per_direction );
-    
+
     for( int i = 0; i < frames_per_direction; ++i )
       source_frame_indices[i] = i + offset;
-      
+
     game_sprite = GameSprite( source, source_frame_indices );
   }
 
@@ -613,11 +626,11 @@ void Character::dumpImageAssets()
       while( direction_sprite_it != direction_sprite_end )
       {
         direction_sprite_it.value().dumpAsset();
-        
+
         ++direction_sprite_it;
       }
     }
-    
+
     ++asset_sprite_it;
   }
 
@@ -667,7 +680,7 @@ void Character::updateStats()
   // Update magic
   int magic_modifier = d_inventory->calculateMagicModifier();
   d_magic = this->getBaseMagic() + magic_modifier;
-  
+
   emit magicChanged( this->getBaseMagic(), magic_modifier );
 
   // Update dexterity
@@ -678,22 +691,22 @@ void Character::updateStats()
   // Update vitality
   int vitality_modifier = d_inventory->calculateVitalityModifier();
   d_vitality = this->getBaseVitality() + vitality_modifier;
-    
+
   emit vitalityChanged( this->getBaseVitality(), vitality_modifier );
 
   // Update max health
   int health_modifier = d_inventory->calculateHealthModifier();
-  d_max_health = this->getBaseHealth() + health_modifier;    
-  
+  d_max_health = this->getBaseHealth() + health_modifier;
+
   if( d_max_health < this->getHealth() )
     this->setHealth( d_max_health );
-  
+
   emit maxHealthChanged( this->getBaseHealth(), health_modifier );
 
   // Update max mana
   int mana_modifier = d_inventory->calculateManaModifier();
   d_max_mana = this->getBaseMana() + mana_modifier;
-      
+
   if( d_max_mana < this->getMana() )
     this->setMana( d_max_mana );
 
