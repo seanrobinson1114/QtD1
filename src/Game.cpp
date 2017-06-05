@@ -493,6 +493,9 @@ void Game::handleTownAssetLoadFinished()
   // Connect the control panel signals to the game slots
   this->connectControlPanelSignalsToGameSlots();
 
+  // Connect the level signals to the game slots
+  this->connectLevelSignalsToControlPanelSlots();
+
   // Load the game menu
   d_game_menu->setSource( QUrl( GAME_MENU_QML_PATH ) );
   d_game_menu->setStyleSheet( QString("background: transparent") );
@@ -601,6 +604,15 @@ void Game::connectControlPanelSignalsToGameSlots()
 
   QObject::connect( d_game_control_panel, SIGNAL( hideSpellBook() ),
                     this, SLOT( hideCharacterSpellBook() ) );
+}
+
+void Game::connectLevelSignalsToControlPanelSlots()
+{
+  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ),
+                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QString ) ) );
+
+  // QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStopped() ),
+  //                   this, SLOT( changeControlPanelObjectDescription() ) ):
 }
 
 } // end QtD1 namespace

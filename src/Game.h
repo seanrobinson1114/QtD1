@@ -226,6 +226,9 @@ private:
   // Connect the control panel signals to the game
   void connectControlPanelSignalsToGameSlots();
 
+  // Connect the level signals to the game
+  void connectLevelSignalsToControlPanelSlots();
+
   // The game state refresh delay time (ms)
   static const int s_refresh_delay_time = 10;
 

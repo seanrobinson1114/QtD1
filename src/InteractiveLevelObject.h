@@ -33,8 +33,23 @@ public:
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Check if object is interactive
+  bool isInteractive() const override;
+
+  //! Get a description of the object
+  virtual QString getDescription() const = 0;
+
+signals:
+
+  //! Object is being hovered over
+  void hoveringStarted( QString object_description );
+
+  //! Object is no longer being hovered over
+  void hoveringStopped();
+
+
 public slots:
-  
+
   //! Activate the object
   void activate();
 
@@ -71,7 +86,7 @@ private:
   // Records if the object should be painted with its path
   bool d_paint_with_path;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end INTERACTIVE_LEVEL_OBJECT_H

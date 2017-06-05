@@ -71,6 +71,9 @@ public slots:
   //! Check the status of the spell button and emit signal
   void toggleSpellBook();
 
+  //! Change object description display
+  void changeObjectDescriptionDisplay( QString objectDescription );
+
 private:
 
   //! Initialize the control panel buttons

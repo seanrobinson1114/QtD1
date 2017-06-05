@@ -96,6 +96,12 @@ signals:
   //! Asset loading finished
   void assetLoadingFinished( const int number_of_assets_loaded );
 
+  //! Interactive object is being hovered on
+  void interactiveLevelObjectHoveringStarted( QString object_description );
+
+  //! Interactive level object is no longer being hovered on
+  void interactiveLevelObjectHoveringStopped();
+
 public slots:
 
   //! Load the level image assets
@@ -126,7 +132,7 @@ protected:
 
   //! Constructor
   Level( QObject* parent = 0 );
-  
+
   //! Constructor
   Level( QObject* parent, const QString& level_music_file_name );
 
@@ -178,6 +184,9 @@ private:
 
   // Disconnect character signals from level slots
   void disconnectCharacterSignalsFromLevelSlots() const;
+
+  // Connect interactiveLevelObject signals to Level signals
+  void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
   // The character
   Character* d_character;

@@ -28,7 +28,7 @@ class LevelObject: public QGraphicsObject
 {
   Q_OBJECT
   Q_IMPORT_ALIAS( "QtD1", 1, 0, "LevelObject" )
-  
+
 public:
 
   //! Constructor
@@ -37,6 +37,9 @@ public:
   //! Destructor
   virtual ~LevelObject()
   { /* ... */ }
+
+  //! Check if object is interactive
+  virtual bool isInteractive() const;
 
   //! Get the number of image assets used by the object
   virtual int getNumberOfImageAssets() const = 0;
@@ -73,14 +76,14 @@ public:
   //! Finalize image asset loading
   virtual void finalizeImageAssetLoading()
   { /* ... */ }
-  
+
   //! Dump the image assets
   virtual void dumpImageAssets() = 0;
 
   //! Check if the object can be attacked
   virtual bool canBeAttacked() const = 0;
 };
-  
+
 } // end QtD1 namespace
 
 Q_DECLARE_METATYPE( QtD1::LevelObject* )

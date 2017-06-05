@@ -143,6 +143,12 @@ void ControlPanel::toggleSpellBook()
   }
 }
 
+// Change object description display
+void ControlPanel::changeObjectDescriptionDisplay( QString objectDescription )
+{
+  std::cout << "control panel object description display placeholder" << std::endl;
+}
+
 void ControlPanel::loadControlPanelButtons()
 {
   // Create the tab buttons

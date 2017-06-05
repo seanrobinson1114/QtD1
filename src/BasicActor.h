@@ -40,6 +40,9 @@ public:
   virtual ~BasicActor()
   { /* ... */ }
 
+  //! Get the description of the basic actor
+  virtual QString getDescription() const;
+
   //! Get the direction of the basic actor
   Direction getDirection() const;
 

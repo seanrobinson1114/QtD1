@@ -19,6 +19,12 @@ BasicActor::BasicActor( QGraphicsObject* parent )
     d_state_machine()
 { /* ... */ }
 
+// Get the description of the basic actor
+QString BasicActor::getDescription() const
+{
+  return QString( "No Description Beyond BasicActor Found!" );
+}
+
 // Set the direction of the basic actor
 void BasicActor::setDirection( const Direction direction )
 {
@@ -62,21 +68,21 @@ void BasicActor::advance( int phase )
   {
     if( d_active_direction_sprite.second )
     {
-      bool screen_update_required = 
+      bool screen_update_required =
         d_active_direction_sprite.second->incrementElapsedGameTics();
 
       if( screen_update_required )
       {
         if( d_active_direction_sprite.second->getFrame() == 0 )
           emit allActiveFramesShown();
-        
+
         // Only update time dependent states when the sprite frame changes
         this->updateTimeDependentStates();
 
         // Only request a screen update if it is necessary
         this->update( d_active_direction_sprite.second->boundingRect() );
       }
-    }    
+    }
   }
 }
 
@@ -95,11 +101,11 @@ void BasicActor::paintImpl( QPainter* painter,
 void BasicActor::startStateMachine()
 {
   bool needs_start = false;
-  
+
   if( !d_state_machine )
   {
     d_state_machine.reset( new QStateMachine( this ) );
-    
+
     needs_start = true;
   }
   else if( !d_state_machine->isRunning() )
@@ -135,7 +141,7 @@ void BasicActor::restartActiveSprite()
   if( d_active_direction_sprite.second )
     d_active_direction_sprite.second->setFrame( 0 );
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

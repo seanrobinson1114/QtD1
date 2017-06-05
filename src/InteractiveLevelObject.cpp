@@ -39,6 +39,12 @@ void InteractiveLevelObject::paint( QPainter* painter,
   this->paintImpl( painter, option, widget );
 }
 
+// Check if the object is interactive
+bool InteractiveLevelObject::isInteractive() const
+{
+  return true;
+}
+
 // Activate the object
 void InteractiveLevelObject::activate()
 {
@@ -55,7 +61,10 @@ void InteractiveLevelObject::deactivate()
 void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 {
   d_paint_with_path = true;
-  
+
+  // notify level of hover
+  emit hoveringStarted( this->getDescription() );
+
   this->update();
 }
 
@@ -64,20 +73,23 @@ void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
 {
   d_paint_with_path = false;
 
+  // notify level of hover exit
+  emit hoveringStopped();
+
   this->update();
 }
 
 // Handle mouse press events
 void InteractiveLevelObject::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
-  
+
 }
 
 // Handle mouse release events
 void InteractiveLevelObject::mouseReleaseEvent(
                                              QGraphicsSceneMouseEvent * event )
 {
-  
+
 }
 
 // Generate the hover outline pen
@@ -89,7 +101,7 @@ QPen InteractiveLevelObject::generateHoverOutlinePen()
 
   return pen;
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

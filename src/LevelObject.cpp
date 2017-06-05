@@ -20,6 +20,12 @@ LevelObject::LevelObject( QGraphicsObject* parent )
   : QGraphicsObject( parent )
 { /* ... */ }
 
+// Get if the object is isInteractive
+bool LevelObject::isInteractive() const
+{
+  return false;
+}
+
 // Load the raw image asset
 void LevelObject::loadRawImageAsset( const QString& image_asset_name,
                                      const QVector<QImage>& image_asset_frames )
@@ -47,7 +53,7 @@ void LevelObject::loadRawImageAssets(
   {
     QMap<QString,QVector<QImage> >::const_iterator asset_map_it =
       image_assets.find( *image_asset_name_it );
-    
+
     if( asset_map_it == image_assets.end() )
     {
       qFatal( "LevelObject Error: Required image asset %s is not present in "
@@ -56,7 +62,7 @@ void LevelObject::loadRawImageAssets(
     }
 
     this->loadRawImageAsset( asset_map_it.key(), asset_map_it.value() );
-    
+
     ++image_asset_name_it;
   }
 }
@@ -76,7 +82,7 @@ void LevelObject::loadImageAssets(
   {
     QMap<QString,QVector<QPixmap> >::const_iterator asset_map_it =
       image_assets.find( *image_asset_name_it );
-    
+
     if( asset_map_it == image_assets.end() )
     {
       qFatal( "LevelObject Error: Required image asset %s is not present in "
@@ -85,13 +91,13 @@ void LevelObject::loadImageAssets(
     }
 
     this->loadImageAsset( asset_map_it.key(), asset_map_it.value() );
-    
+
     ++image_asset_name_it;
   }
 }
 
 QML_REGISTER_BASE_META_TYPE( LevelObject );
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

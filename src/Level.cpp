@@ -65,6 +65,10 @@ void Level::addLevelObject( LevelObject* level_object,
   this->addItem( level_object );
 
   level_object->setPos( location );
+
+  // Notify game instance if object is interactive
+  if( level_object->isInteractive() )
+    this->connectInteractiveLevelObjectSignalsToLevelSignals( level_object );
 }
 
 // Add an actor
@@ -95,13 +99,17 @@ void Level::insertCharacter( Character* character,
   character->setDirection( direction );
 
   this->handleCharacterPositionChanged();
+
+  // Check that character is interactive
+  if( character->isInteractive() )
+    this->connectInteractiveLevelObjectSignalsToLevelSignals( character );
 }
 
 // Remove the character
 void Level::removeCharacter()
 {
   this->disconnectCharacterSignalsFromLevelSlots();
-  
+
   this->removeItem( d_character );
 }
 
@@ -386,7 +394,7 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 
     {
       QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
-      
+
       if( raw_object )
         object = dynamic_cast<LevelObject*>( raw_object );
     }
@@ -438,6 +446,15 @@ void Level::disconnectCharacterSignalsFromLevelSlots() const
                        this, SLOT(handleCharacterPositionChanged()) );
   QObject::disconnect( d_character, SIGNAL(yChanged()),
                        this, SLOT(handleCharacterPositionChanged()) );
+}
+
+void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const
+{
+  QObject::connect( level_object, SIGNAL( hoveringStarted( QString ) ),
+                    this, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ) );
+
+  QObject::connect( level_object, SIGNAL( hoveringStopped() ),
+                    this, SIGNAL( interactiveLevelObjectHoveringStopped() ) );
 }
 
 } // end QtD1 namespace
