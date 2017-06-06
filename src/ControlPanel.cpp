@@ -36,7 +36,8 @@ ControlPanel::ControlPanel( QWidget* parent )
     d_quest_button( NULL ),
     d_menu_button( NULL ),
     d_inv_button( NULL ),
-    d_spell_button( NULL )
+    d_spell_button( NULL ),
+    d_hover_display( NULL )
 {
   // Load the control panel image
   QImage background_image( "/ctrlpan/panel8.cel+levels/towndata/town.pal" );
@@ -46,6 +47,7 @@ ControlPanel::ControlPanel( QWidget* parent )
   this->setFixedSize( control_panel_image->size() );
 
   this->loadControlPanelButtons();
+  this->loadHoverDisplay();
 }
 
 // Check status of the char button and emit signal
@@ -146,7 +148,8 @@ void ControlPanel::toggleSpellBook()
 // Change object description display
 void ControlPanel::changeObjectDescriptionDisplay( QString objectDescription )
 {
-  std::cout << "control panel object description display placeholder" << std::endl;
+  //std::cout << objectDescription.toUtf8().constData() << std::endl;
+  d_hover_display->setText( objectDescription );
 }
 
 void ControlPanel::loadControlPanelButtons()
@@ -178,6 +181,17 @@ void ControlPanel::loadControlPanelButtons()
   d_menu_button->move( 10, 116 );
   d_inv_button->move( 560, 24 );
   d_spell_button->move( 560, 50 );
+}
+
+void ControlPanel::loadHoverDisplay()
+{
+  d_hover_display = new QLabel( this );
+  d_hover_display->setFocusProxy( this );
+  d_hover_display->resize( 250, 65 );
+  d_hover_display->setStyleSheet( QString( "background: transparent; color: white" ) );
+  d_hover_display->setAlignment( Qt::AlignCenter );
+  d_hover_display->setWordWrap( true );
+  d_hover_display->move( 200, 58 );
 }
 
 // Initialize tab button

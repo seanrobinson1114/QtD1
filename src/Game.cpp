@@ -611,8 +611,8 @@ void Game::connectLevelSignalsToControlPanelSlots()
   QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ),
                     d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QString ) ) );
 
-  // QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStopped() ),
-  //                   this, SLOT( changeControlPanelObjectDescription() ) ):
+  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStopped( QString ) ),
+                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QString ) ) );
 }
 
 } // end QtD1 namespace

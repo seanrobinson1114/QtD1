@@ -45,7 +45,7 @@ signals:
   void hoveringStarted( QString object_description );
 
   //! Object is no longer being hovered over
-  void hoveringStopped();
+  void hoveringStopped( QString empty_string );
 
 
 public slots:

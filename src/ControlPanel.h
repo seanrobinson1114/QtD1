@@ -79,6 +79,9 @@ private:
   //! Initialize the control panel buttons
   void loadControlPanelButtons();
 
+  //! Initialize the control panel hover display
+  void loadHoverDisplay();
+
   // Initialize tab button
   void initializeControlPanelButton( QPushButton** panel_button,
                                           const QImage& image );
@@ -106,6 +109,9 @@ private:
 
   // The spell button
   QPushButton* d_spell_button;
+
+  // The hovered object display
+  QLabel* d_hover_display;
 };
 
 } // end QtD1 namespace

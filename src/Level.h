@@ -100,7 +100,7 @@ signals:
   void interactiveLevelObjectHoveringStarted( QString object_description );
 
   //! Interactive level object is no longer being hovered on
-  void interactiveLevelObjectHoveringStopped();
+  void interactiveLevelObjectHoveringStopped( QString empty_string );
 
 public slots:
 

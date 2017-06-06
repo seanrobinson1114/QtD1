@@ -74,7 +74,7 @@ void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
   d_paint_with_path = false;
 
   // notify level of hover exit
-  emit hoveringStopped();
+  emit hoveringStopped( QString( "" ) );
 
   this->update();
 }

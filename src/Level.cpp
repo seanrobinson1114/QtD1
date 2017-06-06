@@ -453,8 +453,8 @@ void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* lev
   QObject::connect( level_object, SIGNAL( hoveringStarted( QString ) ),
                     this, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ) );
 
-  QObject::connect( level_object, SIGNAL( hoveringStopped() ),
-                    this, SIGNAL( interactiveLevelObjectHoveringStopped() ) );
+  QObject::connect( level_object, SIGNAL( hoveringStopped( QString ) ),
+                    this, SIGNAL( interactiveLevelObjectHoveringStopped( QString ) ) );
 }
 
 } // end QtD1 namespace
