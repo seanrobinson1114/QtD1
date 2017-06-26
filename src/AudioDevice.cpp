@@ -266,7 +266,9 @@ void AudioDevice::setHaltChannelCallback(
 {
   d_halt_channel_callback = callback;
 
-  Mix_ChannelFinished( *d_halt_channel_callback.target<void(int)>() );
+
+  typedef void function_t(int);
+  Mix_ChannelFinished( *d_halt_channel_callback.target<function_t*>() );
 }
 
 // Play a mix chunk
@@ -415,7 +417,8 @@ void AudioDevice::setHaltMusicCallback( std::function<void(void)>& callback )
 {
   d_halt_music_callback = callback;
 
-  Mix_HookMusicFinished( *d_halt_music_callback.target<void(void)>() );
+  typedef void function_t(void);
+  Mix_HookMusicFinished( *d_halt_music_callback.target<function_t*>() );
 }
 
 // Stop the custom music player (haltMusic will not work)
