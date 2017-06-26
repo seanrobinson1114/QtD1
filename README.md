@@ -6,6 +6,7 @@
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
 6. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
 7. [StormLib](http://www.zezula.net/en/mpq/stormlib.html)
+    - If the stormlib package cannot be found got to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
 8. [Diablo 1 cd](https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=diablo+1)
 
 All dependencies can be acquired through the package manager in your favorite
