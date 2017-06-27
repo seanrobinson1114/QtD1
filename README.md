@@ -6,7 +6,6 @@
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
 6. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
 7. [StormLib](http://www.zezula.net/en/mpq/stormlib.html)
-    - If the stormlib package cannot be found got to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
 8. [Diablo 1 cd](https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=diablo+1)
 
 All dependencies can be acquired through the package manager in your favorite
@@ -23,6 +22,7 @@ Instructions for other flavors and other OSs will be provided in the future.
 5. run `sudo apt-get install libbz2-dev`
 6. run `sudo apt-get install doxygen`
 7. run `sudo apt-get install stormlib`
+   - Note: If the stormlib package cannot be found go to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
 
 ### Build QtD1
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)
@@ -58,4 +58,4 @@ palette). Check out the screen capture of the viewer tool below.
 ## Acknowledgements
 This project would never have gotten off the ground without the great work from the [Freeablo](https://github.com/wheybags/freeablo) developers. We ultimately decided to go a different direction with the reimplementation of the Diablo 1 game engine by focusing heavily on Qt4.  
 
-Special thanks must also be given to [mewmew](https://github.com/mewmew) who developed the [blizzconv](https://github.com/mewrnd/blizzconv) library. The thorough documentation of the cel and cl2 decoders was extremely helpful. 
+Special thanks must also be given to the [sanctuary](https://github.com/sanctuary) developers who created the [blizzconv](https://github.com/mewrnd/blizzconv) library. The thorough documentation of the cel, cl2, min, til, dun and sol decoders was extremely helpful. 
