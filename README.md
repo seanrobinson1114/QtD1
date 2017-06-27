@@ -5,7 +5,9 @@
 4. [zlib 1.2.8](https://www.zlib.net/)
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
 6. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
-7. [Diablo 1 cd](https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=diablo+1)
+7. [StormLib](http://www.zezula.net/en/mpq/stormlib.html)
+    - If the stormlib package cannot be found got to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
+8. [Diablo 1 cd](https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=diablo+1)
 
 All dependencies can be acquired through the package manager in your favorite
 Linux flavor. Build instructions are only provided for Ubuntu 16.04 currently.
@@ -20,23 +22,21 @@ Instructions for other flavors and other OSs will be provided in the future.
 4. run `sudo apt-get install zlib1g-dev`
 5. run `sudo apt-get install libbz2-dev`
 6. run `sudo apt-get install doxygen`
+7. run `sudo apt-get install stormlib`
 
 ### Build QtD1
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)
 2. Move to the new directory (e.g. run `cd qtd1`)
 3. Download the QtD1 source code: run `git clone git@github.com:seanrobinson1114/QtD1.git`
-4. Move to the QtD1 directory (e.g. run `cd QtD1`)
-5. Download the StormLib source code: run `git submodule init; git submodule update`
-6. Move to the parent directory (e.g. run `cd ../`)
-7. Create a build directory (e.g. run `mkdir build`)
-8. Move to the build directory (e.g. run `cd build`)
-9. Copy game assets (diabdat.mpq) and executable (Diablo.exe) from the Diablo 1
+4. Create a build directory (e.g. run `mkdir build`)
+5. Move to the build directory (e.g. run `cd build`)
+6. Copy game assets (diabdat.mpq) and executable (Diablo.exe) from the Diablo 1
    cd to the build directory
-10. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../QtD1`
-11. build qtd1: run `make -j4`
-12. build qtd1 manual: run `make manual`
-13. run qtd1 tests: run `make test`
-14. install qtd1: run `make install`
+7. configure qtd1: run `cmake -DCMAKE_INSTALL_PREFIX=../ ../QtD1`
+8. build qtd1: run `make -j4`
+9. build qtd1 manual: run `make manual`
+10. run qtd1 tests: run `make test`
+11. install qtd1: run `make install`
 
 After successfully running all of these commands three new directories will be
 present in the parent directory: doc, lib and bin. The doc directory contains
