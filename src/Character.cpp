@@ -129,6 +129,11 @@ QString Character::getName() const
   return d_name;
 }
 
+QString Character::getDescription() const
+{
+  return QString( "Default description for a character" );
+}
+
 // Increment the level
 void Character::incrementLevel()
 {

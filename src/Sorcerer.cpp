@@ -31,7 +31,7 @@ const Sorcerer::AssetStateMap& Sorcerer::getAssetStateMap()
  */
 Sorcerer::Sorcerer( QGraphicsObject* parent )
   : Sorcerer( "", parent )
-{ 
+{
   // When created by the QML engine no sprites will be loaded
   this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
@@ -65,6 +65,12 @@ Sorcerer::Sorcerer( const QString& name, QGraphicsObject* parent )
 Character::Type Sorcerer::getType() const
 {
   return Character::Sorcerer;
+}
+
+// Get the sorcerer description
+QString Sorcerer::getDescription() const
+{
+  return QString( "I am a sorcerer!" );
 }
 
 // Get the base health
@@ -122,7 +128,7 @@ void Sorcerer::getImageAssetNames( QSet<QString>& image_asset_names ) const
   while( asset_state_it != asset_state_end )
   {
     image_asset_names.insert( asset_state_it.key() );
-    
+
     ++asset_state_it;
   }
 }
@@ -160,7 +166,7 @@ void Sorcerer::initializeStats()
   this->setBaseVitality( 15 );
 
   this->handleLevelUp( 1 );
-  
+
   this->restoreHealth();
   this->restoreMana();
 }
@@ -313,7 +319,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sha/shafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sha/shalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sha/shaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Bow Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shb/shbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shb/shbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -324,7 +330,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shb/shbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shb/shblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shb/shbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Staff Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sht/shtst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sht/shtwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -335,7 +341,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sht/shtfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sht/shtlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sht/shtqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Sword and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shd/shdst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shd/shdwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -346,7 +352,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shd/shdfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shd/shdlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shd/shdqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Mace and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shh/shhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shh/shhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -357,7 +363,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shh/shhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shh/shhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shh/shhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Sword Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shs/shsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shs/shswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -368,7 +374,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shs/shsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shs/shslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shs/shsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Mace Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shm/shmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shm/shmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -379,7 +385,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shm/shmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shm/shmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shm/shmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shu/shust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shu/shuwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -390,7 +396,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shu/shufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shu/shulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shu/shuqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Nothing Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shn/shnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shn/shnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
@@ -402,7 +408,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shn/shnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shn/shnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/shn/shndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-  
+
   // // Medium class armor: Axe Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sma/smast.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sma/smawl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
@@ -413,7 +419,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sma/smafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sma/smalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sma/smaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Bow Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smb/smbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smb/smbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -424,7 +430,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smb/smbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smb/smblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smb/smbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Staff Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smt/smtst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smt/smtwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -435,7 +441,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smt/smtfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smt/smtlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smt/smtqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Sword and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smd/smdst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smd/smdwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -446,7 +452,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smd/smdfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smd/smdlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smd/smdqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Mace and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smh/smhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smh/smhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -457,7 +463,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smh/smhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smh/smhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smh/smhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Sword Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sms/smsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sms/smswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -468,7 +474,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sms/smsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sms/smslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sms/smsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Mace Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smm/smmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smm/smmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -479,7 +485,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smm/smmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smm/smmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smm/smmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smu/smust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smu/smuwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -490,7 +496,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smu/smufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smu/smulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smu/smuqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Nothing Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smn/smnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smn/smnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
@@ -502,7 +508,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smn/smnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smn/smnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/smn/smndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-  
+
   // // Low class armor: Axe Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sla/slast.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sla/slawl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
@@ -513,7 +519,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sla/slafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sla/slalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sla/slaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Bow Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slb/slbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slb/slbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -524,7 +530,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slb/slbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slb/slblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slb/slbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Staff Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slt/sltst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slt/sltwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -535,7 +541,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slt/sltfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slt/sltlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slt/sltqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Sword and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sld/sldst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sld/sldwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -546,7 +552,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sld/sldfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sld/sldlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sld/sldqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Mace and Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slh/slhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slh/slhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -557,7 +563,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slh/slhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slh/slhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slh/slhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Sword Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sls/slsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sls/slswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -568,7 +574,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sls/slsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sls/slslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/sls/slsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Mace Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slm/slmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slm/slmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -579,7 +585,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slm/slmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slm/slmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slm/slmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Shield Equiped
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slu/slust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slu/sluwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -590,7 +596,7 @@ void Sorcerer::initializeAssetStateMap()
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slu/slufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slu/slulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Sorcerer::s_asset_state_map["/plrgfx/sorceror/slu/sluqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // Low class armor: Nothing Equiped
   Sorcerer::s_asset_state_map["/plrgfx/sorceror/sln/slnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   Sorcerer::s_asset_state_map["/plrgfx/sorceror/sln/slnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };

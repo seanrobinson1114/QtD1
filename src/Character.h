@@ -58,6 +58,9 @@ public:
   //! Get the character type
   virtual Type getType() const = 0;
 
+  //! Get the characters description
+  virtual QString getDescription() const override;
+
   //! Get the experience
   int getExperience() const;
 

@@ -19,7 +19,7 @@ class Sorcerer : public Character
 {
   Q_OBJECT
   Q_IMPORT_ALIAS( "QtD1", 1, 0, "Sorcerer" )
-  
+
 public:
 
   //! Default constructor
@@ -37,6 +37,9 @@ public:
 
   //! Get the character type
   Character::Type getType() const override;
+
+  //! Get the sorcerer description
+  QString getDescription() const override;
 
   //! Get the max health
   int getBaseHealth() const override;

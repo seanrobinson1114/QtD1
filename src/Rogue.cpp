@@ -31,7 +31,7 @@ const Rogue::AssetStateMap& Rogue::getAssetStateMap()
  */
 Rogue::Rogue( QGraphicsObject* parent )
   : Rogue( "", parent )
-{ 
+{
   // When created by the QML engine no sprites will be loaded
   this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
@@ -48,7 +48,7 @@ Rogue::Rogue( const Rogue& other_rogue )
     d_base_chance_to_hit_with_melee( other_rogue.d_base_chance_to_hit_with_melee ),
     d_base_chance_to_hit_with_ranged( other_rogue.d_base_chance_to_hit_with_ranged ),
     d_base_chance_to_hit_with_spell( other_rogue.d_base_chance_to_hit_with_spell )
-{ 
+{
   // When created by the QML engine no sprites will be loaded
   this->setFlag( QGraphicsItem::ItemHasNoContents, true );
 }
@@ -72,6 +72,12 @@ Rogue::Rogue( const QString& name, QGraphicsObject* parent )
 Character::Type Rogue::getType() const
 {
   return Character::Rogue;
+}
+
+// Get the rogue description
+QString Rogue::getDescription() const
+{
+  return QString( "I am a rogue" );
 }
 
 // Get the base health
@@ -129,7 +135,7 @@ void Rogue::getImageAssetNames( QSet<QString>& image_asset_names ) const
   while( asset_state_it != asset_state_end )
   {
     image_asset_names.insert( asset_state_it.key() );
-    
+
     ++asset_state_it;
   }
 }
@@ -167,7 +173,7 @@ void Rogue::initializeStats()
   this->setBaseVitality( 20 );
 
   this->handleLevelUp( 1 );
-  
+
   this->restoreHealth();
   this->restoreMana();
 }
@@ -319,7 +325,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rha/rhafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rha/rhalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rha/rhaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Bow Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhb/rhbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhb/rhbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -330,7 +336,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhb/rhbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhb/rhblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhb/rhbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Staff Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rht/rhtst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rht/rhtwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -341,7 +347,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rht/rhtfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rht/rhtlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rht/rhtqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Sword and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhd/rhdst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhd/rhdwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -352,7 +358,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhd/rhdfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhd/rhdlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhd/rhdqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Mace and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhh/rhhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhh/rhhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -363,7 +369,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhh/rhhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhh/rhhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhh/rhhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Sword Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhs/rhsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhs/rhswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -374,7 +380,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhs/rhsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhs/rhslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhs/rhsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Mace Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhm/rhmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhm/rhmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -385,7 +391,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhm/rhmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhm/rhmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhm/rhmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhu/rhust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhu/rhuwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -396,7 +402,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhu/rhufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhu/rhulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhu/rhuqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // High class armor: Nothing Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhn/rhnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhn/rhnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
@@ -408,7 +414,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhn/rhnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhn/rhnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rhn/rhndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::HighClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-  
+
   // // Medium class armor: Axe Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rma/rmast.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rma/rmawl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
@@ -419,7 +425,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rma/rmafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rma/rmalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rma/rmaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Bow Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmb/rmbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmb/rmbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -430,7 +436,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmb/rmbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmb/rmblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmb/rmbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Staff Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmt/rmtst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmt/rmtwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -441,7 +447,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmt/rmtfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmt/rmtlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmt/rmtqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Sword and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmd/rmdst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmd/rmdwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -452,7 +458,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmd/rmdfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmd/rmdlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmd/rmdqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Mace and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmh/rmhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmh/rmhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -463,7 +469,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmh/rmhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmh/rmhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmh/rmhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Sword Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rms/rmsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rms/rmswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -474,7 +480,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rms/rmsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rms/rmslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rms/rmsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Mace Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmm/rmmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmm/rmmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -485,7 +491,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmm/rmmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmm/rmmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmm/rmmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmu/rmust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmu/rmuwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -496,7 +502,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmu/rmufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmu/rmulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmu/rmuqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Medium class armor: Nothing Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmn/rmnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmn/rmnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
@@ -508,7 +514,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmn/rmnlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmn/rmnqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NonElementalSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rmn/rmndt.cl2+levels/towndata/town.pal"] = { Actor::Dying, false, Inventory::MediumClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
-  
+
   // // Low class armor: Axe Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rla/rlast.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rla/rlawl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NoSpellEquiped };
@@ -519,7 +525,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rla/rlafm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rla/rlalm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rla/rlaqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::AxeEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Bow Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlb/rlbst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlb/rlbwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NoSpellEquiped };
@@ -530,7 +536,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlb/rlbfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlb/rlblm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlb/rlbqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::BowEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Staff Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlt/rltst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlt/rltwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NoSpellEquiped };
@@ -541,7 +547,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlt/rltfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlt/rltlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlt/rltqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::StaffEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Sword and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rld/rldst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rld/rldwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -552,7 +558,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rld/rldfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rld/rldlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rld/rldqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Mace and Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlh/rlhst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlh/rlhwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NoSpellEquiped };
@@ -563,7 +569,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlh/rlhfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlh/rlhlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlh/rlhqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceAndShieldEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Sword Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rls/rlsst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rls/rlswl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NoSpellEquiped };
@@ -574,7 +580,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rls/rlsfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rls/rlslm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rls/rlsqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::SwordEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Mace Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlm/rlmst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlm/rlmwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -585,7 +591,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlm/rlmfm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlm/rlmlm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlm/rlmqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // // Low class armor: Shield Equiped
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlu/rlust.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlu/rluwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NoSpellEquiped };
@@ -596,7 +602,7 @@ void Rogue::initializeAssetStateMap()
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlu/rlufm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::FireSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlu/rlulm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::LightningSpellEquiped };
   // Rogue::s_asset_state_map["/plrgfx/rogue/rlu/rluqm.cl2+levels/towndata/town.pal"] = { Actor::CastingSpell, false, Inventory::LowClassArmorEquiped, Inventory::MaceEquiped, SpellBook::NonElementalSpellEquiped };
-  
+
   // Low class armor: Nothing Equiped
   Rogue::s_asset_state_map["/plrgfx/rogue/rln/rlnst.cl2+levels/towndata/town.pal"] = { Actor::Standing, true, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };
   Rogue::s_asset_state_map["/plrgfx/rogue/rln/rlnwl.cl2+levels/towndata/town.pal"] = { Actor::Walking, true, Inventory::LowClassArmorEquiped, Inventory::NothingEquiped, SpellBook::NoSpellEquiped };

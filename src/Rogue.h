@@ -38,6 +38,9 @@ public:
   //! Get the character type
   Character::Type getType() const override;
 
+  //! Get the rogue description
+  QString getDescription() const override;
+
   //! Get the max health
   int getBaseHealth() const override;
 
