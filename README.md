@@ -1,11 +1,11 @@
 ## Dependencies {#mainpage}
 1. [Qt 4.8+](http://doc.qt.io/qt-4.8/)
-2. [SDL Mixer 2.0+](https://www.libsdl.org/projects/SDL_mixer/)
-3. [FFmpeg 2.8+](https://ffmpeg.org/download.html)
-4. [zlib 1.2.8](https://www.zlib.net/)
+2. [Boost 1.58+](http://www.boost.org/doc/libs/1_58_0/)
+3. [SDL Mixer 2.0+](https://www.libsdl.org/projects/SDL_mixer/)
+4. [FFmpeg 2.8+](https://ffmpeg.org/download.html)
 5. [bzip2 1.0.6](http://www.bzip.org/downloads.html)
-6. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
-7. [StormLib](http://www.zezula.net/en/mpq/stormlib.html)
+6. [StormLib](http://www.zezula.net/en/mpq/stormlib.html)
+7. [doxygen 1.8.10+](http://www.stack.nl/~dimitri/doxygen/)
 8. [Diablo 1 cd](https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=diablo+1)
 
 All dependencies can be acquired through the package manager in your favorite
@@ -16,13 +16,13 @@ Instructions for other flavors and other OSs will be provided in the future.
 
 ### Install Dependencies
 1. run `sudo apt-get install libqt4-dev`
-2. run `sudo apt-get install libsdl2-mixer-dev`
-3. run `sudo apt-get install libavcodec-dev libswresample-dev libswscale-dev`
-4. run `sudo apt-get install zlib1g-dev`
+2. run `sudo apt-get install libboost-dev`
+3. run `sudo apt-get install libsdl2-mixer-dev`
+4. run `sudo apt-get install libavcodec-dev libswresample-dev libswscale-dev`
 5. run `sudo apt-get install libbz2-dev`
-6. run `sudo apt-get install doxygen`
-7. run `sudo apt-get install stormlib`
+6. run `sudo apt-get install stormlib`
    - Note: If the stormlib package cannot be found go to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
+7. run `sudo apt-get install doxygen`
 
 ### Build QtD1
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)

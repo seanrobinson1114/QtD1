@@ -88,6 +88,18 @@ LINK_LIBRARIES(Qt4::QtGui Qt4::QtDeclarative)
 ADD_DEFINITIONS("-DQT_STATICPLUGIN")
 
 ##---------------------------------------------------------------------------##
+## Configure Boost support
+##---------------------------------------------------------------------------##
+IF(DEFINED BOOST_PREFIX)
+  SET(BOOST_ROOT ${BOOST_PREFIX})
+  SET(Boost_NO_SYSTEM_PATHS ON)
+ENDIF()
+
+FIND_PACKAGE(Boost 1.58.0 REQUIRED)
+
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+##---------------------------------------------------------------------------##
 ## Configure SDL2 mixer support
 ##---------------------------------------------------------------------------##
 IF(DEFINED SDL2_MIXER_PREFIX)
