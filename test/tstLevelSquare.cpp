@@ -93,7 +93,7 @@ private:
       pillar_blocks[15].frame_index = 263;
       pillar_blocks[15].type = 1;
 
-      *top_pillar = new QtD1::TownLevelPillar( pillar_blocks );
+      *top_pillar = new QtD1::TownLevelPillar( pillar_blocks, QtD1::LevelPillar::Properties() );
     }
 
     // Create the right pillar
@@ -135,7 +135,7 @@ private:
       pillar_blocks[15].frame_index = 268;
       pillar_blocks[15].type = 3;
 
-      *right_pillar = new QtD1::TownLevelPillar( pillar_blocks );
+      *right_pillar = new QtD1::TownLevelPillar( pillar_blocks, QtD1::LevelPillar::Properties() );
     }
 
     // Create the left pillar
@@ -178,7 +178,7 @@ private:
       pillar_blocks[15].frame_index = 273;
       pillar_blocks[15].type = 3;
 
-      *left_pillar = new QtD1::TownLevelPillar( pillar_blocks );
+      *left_pillar = new QtD1::TownLevelPillar( pillar_blocks, QtD1::LevelPillar::Properties() );
     }
 
     // Create the bottom pillar
@@ -209,7 +209,7 @@ private:
       pillar_blocks[15].frame_index = 275;
       pillar_blocks[15].type = 3;
 
-      *bottom_pillar = new QtD1::TownLevelPillar( pillar_blocks );
+      *bottom_pillar = new QtD1::TownLevelPillar( pillar_blocks, QtD1::LevelPillar::Properties() );
     }
   }
 
@@ -416,6 +416,7 @@ void paint_58()
   
   {
     QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                             "/levels/towndata/town.sol",
                                              "/levels/towndata/town.til" );
 
     QList<std::shared_ptr<QtD1::LevelSquare> > squares =
@@ -451,6 +452,7 @@ void paint_21()
   
   {
     QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                             "/levels/towndata/town.sol",
                                              "/levels/towndata/town.til" );
 
     QList<std::shared_ptr<QtD1::LevelSquare> > squares =

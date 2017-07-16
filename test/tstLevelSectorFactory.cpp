@@ -45,6 +45,7 @@ private slots:
 void createLevelSector()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
 
@@ -61,16 +62,14 @@ void createLevelSector()
 void createLevelSector_cached_squares()
 {
   QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til" );
 
   QList<std::shared_ptr<QtD1::LevelSquare> > squares =
     square_factory.createLevelSquares();
 
-  QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
-                                           "/levels/towndata/town.til",
-                                           "/levels/towndata/sector1s.dun" );
-
-  QtD1::LevelSector* sector = sector_factory.createLevelSector( squares );
+  QtD1::LevelSector* sector =
+    QtD1::LevelSectorFactory::createLevelSector( "/levels/towndata/sector1s.dun", squares );
 
   QVERIFY( sector != NULL );
   

@@ -108,7 +108,8 @@ private slots:
 // Check that a level pillar can be constructed
 void constructor()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
   QRectF pillar_rect = pillar.boundingRect();
   
   QCOMPARE( pillar_rect.width(), 64. );
@@ -119,7 +120,8 @@ void constructor()
 // Check that the number of image assets used can be returned
 void getNumberOfImageAssets()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   QCOMPARE( pillar.getNumberOfImageAssets(), 1 );
 }
@@ -128,7 +130,8 @@ void getNumberOfImageAssets()
 // Check that the image assets used by the pillar can be returned
 void getImageAssetNames()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   QSet<QString> image_asset_names;
 
@@ -142,7 +145,8 @@ void getImageAssetNames()
 // Check if the image asset is used by the pillar
 void isImageAssetUsed()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   QVERIFY( pillar.isImageAssetUsed( "/levels/towndata/town.cel+levels/towndata/town.pal" ) );
   QVERIFY( !pillar.isImageAssetUsed( "/dummy_file" ) );
@@ -152,7 +156,8 @@ void isImageAssetUsed()
 // Check that the image asset can be loaded by the pillar
 void loadImageAsset()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   QVERIFY( !pillar.imageAssetsLoaded() );
   
@@ -166,7 +171,8 @@ void loadImageAsset()
 // Check that the image asset can be dumped by the pillar
 void dumpImageAssets()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   QVERIFY( !pillar.imageAssetsLoaded() );
   
@@ -184,7 +190,8 @@ void dumpImageAssets()
 // Check that the pillar can be cloned
 void clone()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   pillar.loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
                          t_image_asset_frames );
@@ -203,7 +210,8 @@ void clone()
 // Check that the shape of the pillar is valid
 void shape()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   pillar.loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
                          t_image_asset_frames );
@@ -215,7 +223,8 @@ void shape()
 // Check that the pillar can be painted
 void paint()
 {
-  QtD1::TownLevelPillar pillar( t_pillar_blocks );
+  QtD1::TownLevelPillar pillar( t_pillar_blocks,
+                                QtD1::LevelPillar::Properties() );
 
   pillar.loadImageAsset( "/levels/towndata/town.cel+levels/towndata/town.pal",
                          t_image_asset_frames );

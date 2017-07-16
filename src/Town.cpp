@@ -65,6 +65,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
   {
     LevelSquareFactory level_square_factory( level_min_file_name,
+                                             level_sol_file_name,
                                              level_til_file_name );
 
     level_squares = level_square_factory.createLevelSquares();
@@ -72,31 +73,23 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
   // Create the top sector first
   LevelSector* top_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector4s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector4s.dun",
+                                           level_squares );
 
   // Create the left sector
   LevelSector* left_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector3s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector3s.dun",
+                                           level_squares );
 
   // Create the right sector
   LevelSector* right_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector2s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector2s.dun",
+                                           level_squares );
 
   // Create the bottom sector
   LevelSector* bottom_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector1s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector1s.dun",
+                                           level_squares );
 
   // Resize the town bounding rect
   int town_width = left_sector->boundingRect().width()+
@@ -127,20 +120,6 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   sectors.clear();
 
   sectors << top_sector << left_sector << right_sector << bottom_sector;
-}
-
-// Create a sector
-LevelSector* Town::createSector(
-                    const QString& level_min_file_name,
-                    const QString& level_til_file_name,
-                    const QString& level_dun_file_name,
-                    const QList<std::shared_ptr<LevelSquare> >& level_squares )
-{
-  LevelSectorFactory sector_factory( level_min_file_name,
-                                     level_til_file_name,
-                                     level_dun_file_name );
-
-  return sector_factory.createLevelSector( level_squares );
 }
 
 } // end QtD1 namespace

@@ -21,19 +21,29 @@ namespace QtD1{
 
 // Constructor
 LevelSquareFactory::LevelSquareFactory( const QString& level_min_file_name,
+                                        const QString& level_sol_file_name,
                                         const QString& level_til_file_name )
   : d_level_min_file_name( level_min_file_name ),
+    d_level_sol_file_name( level_sol_file_name ),
     d_level_til_file_name( level_til_file_name )
 {
   if( !level_min_file_name.contains( ".min" ) )
   {
-    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .min files "
+    qFatal( "LevelSquareFactory Error: cannot parse file %s (only .min files "
             "can be parsed)!",
             level_min_file_name.toStdString().c_str() );
   }
+
+  if( !level_sol_file_name.contains( ".sol" ) )
+  {
+    qFatal( "LevelSquareFactory Error: cannot parse file %s (only .sol files "
+            "can be parsed)!",
+            level_sol_file_name.toStdString().c_str() );
+  }
+  
   if( !level_til_file_name.contains( ".til" ) )
   {
-    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .til files "
+    qFatal( "LevelSquareFactory Error: cannot parse file %s (only .til files "
             "can be parsed)!",
             level_til_file_name.toStdString().c_str() );
   }
@@ -47,24 +57,29 @@ LevelSquareFactory::createLevelSquares() const
   QList<std::shared_ptr<LevelPillar> > level_pillars;
 
   {
-    LevelPillarFactory pillar_factory( d_level_min_file_name );
+    LevelPillarFactory pillar_factory( d_level_min_file_name,
+                                       d_level_sol_file_name );
 
     level_pillars = pillar_factory.createLevelPillars();
   }
 
-  return this->createLevelSquares( level_pillars );
+  return this->createLevelSquares( d_level_til_file_name, level_pillars );
 }
 
 // Create the level squares (advanced)
+/*! \details You must ensure that the pillars are valid and associated with
+ * the til file of interest.
+ */
 QList<std::shared_ptr<LevelSquare> >
 LevelSquareFactory::createLevelSquares(
-              const QList<std::shared_ptr<LevelPillar> >& level_pillars ) const
+                    const QString& level_til_file_name,
+                    const QList<std::shared_ptr<LevelPillar> >& level_pillars )
 {
   // Create a new square list
   QList<std::shared_ptr<LevelSquare> > level_squares;
 
   // Open the til file
-  QFile til_file( d_level_til_file_name );
+  QFile til_file( level_til_file_name );
   til_file.open( QIODevice::ReadOnly );
 
   // Extract the til file data

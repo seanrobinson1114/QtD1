@@ -24,27 +24,35 @@ namespace QtD1{
 
 // Constructor
 LevelSectorFactory::LevelSectorFactory( const QString& level_min_file_name,
+                                        const QString& level_sol_file_name,
                                         const QString& level_til_file_name,
                                         const QString& level_dun_file_name )
   : d_level_min_file_name( level_min_file_name ),
+    d_level_sol_file_name( level_sol_file_name ),
     d_level_til_file_name( level_til_file_name ),
     d_level_dun_file_name( level_dun_file_name )
 {
   if( !level_min_file_name.contains( ".min" ) )
   {
-    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .min files "
+    qFatal( "LevelSectorFactory Error: cannot parse file %s (only .min files "
             "can be parsed)!",
             level_min_file_name.toStdString().c_str() );
   }
+  if( !level_sol_file_name.contains( ".sol" ) )
+  {
+    qFatal( "LevelSectorFactory Error: cannot parse file %s (only .sol files "
+            "can be parsed)!",
+            level_sol_file_name.toStdString().c_str() );
+  }
   if( !level_til_file_name.contains( ".til" ) )
   {
-    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .til files "
+    qFatal( "LevelSectorFactory Error: cannot parse file %s (only .til files "
             "can be parsed)!",
             level_til_file_name.toStdString().c_str() );
   }
   if( !level_dun_file_name.contains( ".dun" ) )
   {
-    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .dun files "
+    qFatal( "LevelSectorFactory Error: cannot parse file %s (only .dun files "
             "can be parsed)!",
             level_dun_file_name.toStdString().c_str() );
   }
@@ -58,20 +66,25 @@ LevelSector* LevelSectorFactory::createLevelSector() const
 
   {
     LevelSquareFactory square_factory( d_level_min_file_name,
+                                       d_level_sol_file_name,
                                        d_level_til_file_name );
 
     level_squares = square_factory.createLevelSquares();
   }
 
-  return this->createLevelSector( level_squares );
+  return this->createLevelSector( d_level_dun_file_name, level_squares );
 }
 
 // Create the level sector (advanced)
+/*! \details You must ensure that the squares are valid and associated with
+ * the dun file of interest.
+ */
 LevelSector* LevelSectorFactory::createLevelSector(
-                    const QList<std::shared_ptr<LevelSquare> >& squares ) const
+                          const QString& level_dun_file_name,
+                          const QList<std::shared_ptr<LevelSquare> >& squares )
 {
   // Open the dun file
-  QFile dun_file( d_level_dun_file_name );
+  QFile dun_file( level_dun_file_name );
   dun_file.open( QIODevice::ReadOnly );
 
   // Extract the dun file data
@@ -98,7 +111,7 @@ LevelSector* LevelSectorFactory::createLevelSector(
       {
         qFatal( "LevelSectorFactory Error: Unexpected end of dun file %s "
                 "(row=%i,col=%i)!",
-                d_level_dun_file_name.toStdString().c_str(), j, i );
+                level_dun_file_name.toStdString().c_str(), j, i );
       }
 
       // Get the square index

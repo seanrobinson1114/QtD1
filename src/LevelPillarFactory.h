@@ -45,7 +45,7 @@ private:
   typedef std::function<int()> LevelPillarNumBlocksFunction;
 
   // The level pillar creation function typedef
-  typedef std::function<std::shared_ptr<LevelPillar>(const QVector<LevelPillar::Block>&)>
+  typedef std::function<std::shared_ptr<LevelPillar>(const QVector<LevelPillar::Block>&, const LevelPillar::Properties&)>
   LevelPillarCreationFunction;
 
   // Get the number of blocks in a town pillar
@@ -64,19 +64,32 @@ private:
   static int getNumberOfBlocksInHellPillar();
 
   // Create a town pillar
-  static std::shared_ptr<LevelPillar> createTownPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createTownPillar(
+                                   const QVector<LevelPillar::Block>& blocks,
+                                   const LevelPillar::Properties& properties );
 
   // Create a cathedral pillar
-  static std::shared_ptr<LevelPillar> createCathedralPillar( const QVector<LevelPillar::Block>&  blocks );
+  static std::shared_ptr<LevelPillar> createCathedralPillar(
+                                   const QVector<LevelPillar::Block>& blocks,
+                                   const LevelPillar::Properties& properties );
 
   // Create a catacomb pillar
-  static std::shared_ptr<LevelPillar> createCatacombPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createCatacombPillar(
+                                   const QVector<LevelPillar::Block>& blocks,
+                                   const LevelPillar::Properties& properties );
 
   // Create a cave pillar
-  static std::shared_ptr<LevelPillar> createCavePillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createCavePillar(
+                                   const QVector<LevelPillar::Block>& blocks,
+                                   const LevelPillar::Properties& properties );
 
   // Create a hell pillar
-  static std::shared_ptr<LevelPillar> createHellPillar( const QVector<LevelPillar::Block>& blocks );
+  static std::shared_ptr<LevelPillar> createHellPillar(
+                                   const QVector<LevelPillar::Block>& blocks,
+                                   const LevelPillar::Properties& properties );
+
+  // Get the pillar properties
+  QVector<LevelPillar::Properties> getLevelPillarProperties() const;
 
   // Get the number of pillar blocks function
   LevelPillarNumBlocksFunction getLevelPillarNumBlocksFunction() const;

@@ -43,7 +43,8 @@ private slots:
 // Check that level pillars can be constructed
 void createLevelPillars()
 {
-  QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min" );
+  QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol" );
 
   QList<std::shared_ptr<QtD1::LevelPillar> > pillars =
     pillar_factory.createLevelPillars();

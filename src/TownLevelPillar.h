@@ -24,7 +24,8 @@ public:
   TownLevelPillar();
   
   //! Constructor
-  TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks );
+  TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks,
+                   const LevelPillar::Properties& properties );
 
   //! Copy constructor
   TownLevelPillar( const TownLevelPillar& other_pillar );

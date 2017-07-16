@@ -68,6 +68,7 @@ private slots:
 void constructor()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -83,6 +84,7 @@ void constructor()
 void getNumberOfImageAssets()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -97,6 +99,7 @@ void getNumberOfImageAssets()
 void getImageAssetNames()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -116,6 +119,7 @@ void getImageAssetNames()
 void isImageAssetUsed()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -131,6 +135,7 @@ void isImageAssetUsed()
 void loadImageAsset()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -150,6 +155,7 @@ void loadImageAsset()
 void dumpImageAssets()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -169,10 +175,11 @@ void dumpImageAssets()
 }
 
 //---------------------------------------------------------------------------//
-// Check that the square can be painted
+// Check that the sector can be painted
 void paint_1()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector1s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -197,10 +204,11 @@ void paint_1()
 }
 
 //---------------------------------------------------------------------------//
-// Check that the square can be painted
+// Check that the sector can be painted
 void paint_2()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector2s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -225,10 +233,11 @@ void paint_2()
 }
 
 //---------------------------------------------------------------------------//
-// Check that the square can be painted
+// Check that the sector can be painted
 void paint_3()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector3s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();
@@ -253,10 +262,11 @@ void paint_3()
 }
 
 //---------------------------------------------------------------------------//
-// Check that the square can be painted
+// Check that the sector can be painted
 void paint_4()
 {
   QtD1::LevelSectorFactory sector_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til",
                                            "/levels/towndata/sector4s.dun" );
   QtD1::LevelSector* sector = sector_factory.createLevelSector();

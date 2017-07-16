@@ -17,8 +17,9 @@ TownLevelPillar::TownLevelPillar()
 
 // Constructor
 TownLevelPillar::TownLevelPillar(
-                        const QVector<LevelPillar::Block>& level_image_blocks )
-  : LevelPillar( level_image_blocks )
+                         const QVector<LevelPillar::Block>& level_image_blocks,
+                         const LevelPillar::Properties& properties )
+  : LevelPillar( level_image_blocks, properties )
 { /* ... */ }
 
 // Copy constructor

@@ -45,6 +45,7 @@ private slots:
 void createLevelSquares()
 {
   QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol",
                                            "/levels/towndata/town.til" );
 
   QList<std::shared_ptr<QtD1::LevelSquare> > squares =
@@ -57,16 +58,14 @@ void createLevelSquares()
 // Check that the level squares can be constructed from cached pillars
 void createLevelSquares_cached_pillars()
 {
-  QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min" );
+  QtD1::LevelPillarFactory pillar_factory( "/levels/towndata/town.min",
+                                           "/levels/towndata/town.sol" );
 
   QList<std::shared_ptr<QtD1::LevelPillar> > pillars =
     pillar_factory.createLevelPillars();
 
-  QtD1::LevelSquareFactory square_factory( "/levels/towndata/town.min",
-                                           "/levels/towndata/town.til" );
-
   QList<std::shared_ptr<QtD1::LevelSquare> > squares =
-    square_factory.createLevelSquares( pillars );
+    QtD1::LevelSquareFactory::createLevelSquares( "/levels/towndata/town.til", pillars );
 
   QCOMPARE( squares.size(), 342 );
 }
