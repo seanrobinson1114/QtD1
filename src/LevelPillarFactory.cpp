@@ -13,6 +13,8 @@
 #include <QDataStream>
 #include <QFile>
 #include <QBuffer>
+#include <QList>
+#include <QVector>
 
 // QtD1 Includes
 #include "LevelPillarFactory.h"
@@ -21,14 +23,25 @@
 namespace QtD1{
 
 // Constructor
-LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name )
-  : d_level_min_file_name( level_min_file_name )
+LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name,
+                                        const QString& leveL_sol_file_name )
+  : d_level_min_file_name( level_min_file_name ),
+    d_level_sol_file_name( level_sol_file_name )
 {
+  // Check that the min file name is valid
   if( !level_min_file_name.contains( ".min" ) )
   {
     qFatal( "LevelPillarFactory Error: cannot parse file %s (only .min files "
             "can be parsed)!",
             level_min_file_name.toStdString().c_str() );
+  }
+
+  // Check that the sol file name is valid
+  if( !level_sol_file_name.contains( ".sol" ) )
+  {
+    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .sol files "
+            "can be parsed)!",
+            level_sol_file_name.toStdString().c_str() );
   }
 }
 
@@ -36,8 +49,55 @@ LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name )
 QList<std::shared_ptr<LevelPillar> >
 LevelPillarFactory::createLevelPillars() const
 {
-  // Create a new pillar list
-  QList<std::shared_ptr<LevelPillar> > level_pillars;
+  // Open the sol file
+  QFile sol_file( d_level_sol_file_name );
+  sol_file.open( QIODevice::ReadOnly );
+
+  // Extract the sol file data
+  QDataStream stream( &sol_file );
+  stream.setByteOrder( QDataStream::LittleEndian );
+
+  // Create the properties list
+  QVector<LevelPillar::Properties> level_pillar_properties;
+
+  while( true )
+  {
+    if( stream.atEnd() )
+      break;
+
+    quint8 raw_data;
+
+    stream >> raw_data;
+
+    LevelPillar::Properties
+      properties{false,false,false,false,false,false,false,false};
+
+    if( x & 0x01 != 0 )
+      properties.unknown_0 = true;
+    
+    if( x & 0x02 != 0 )
+      properties.unknown_1 = true;
+
+    if( x & 0x04 != 0 )
+      properties.block_projectiles = true;
+
+    if( x & 0x08 != 0 )
+      properties.transparent_when_hiding_character = true;
+
+    if( x & 0x10 != 0 )
+      properties.unknown_4 = true;
+
+    if( x & 0x20 != 0 )
+      properties.unknown_5 = true;
+
+    if( x & 0x40 != 0 )
+      properties.unknown_6 = true;
+
+    if( x & 0x80 != 0 )
+      properties.unknown_7 = true;
+
+    level_pillar_properties << properties;
+  }
 
   // Open the min file
   QFile min_file( d_level_min_file_name );
@@ -47,8 +107,10 @@ LevelPillarFactory::createLevelPillars() const
   QDataStream stream( &min_file );
   stream.setByteOrder( QDataStream::LittleEndian );
 
-  LevelPillarFactory::LevelPillarNumBlocksFunction blocks_per_pillar =
-    this->getLevelPillarNumBlocksFunction();
+  // Create a new pillar list
+  QList<std::shared_ptr<LevelPillar> > level_pillars;
+
+  const int blocks_per_pillar = this->getLevelPillarNumBlocksFunction()();
 
   LevelPillarCreationFunction create_pillar =
     this->getLevelPillarCreationFunction();
@@ -59,7 +121,7 @@ LevelPillarFactory::createLevelPillars() const
       break;
 
     // Read a section of blocks from the file
-    QVector<LevelPillar::Block> blocks( blocks_per_pillar() );
+    QVector<LevelPillar::Block> blocks( blocks_per_pillar );
 
     for( int i = 0; i < blocks.size(); ++i )
     {

@@ -32,11 +32,24 @@ public:
     int type;
   };
 
+  //! The level pillar properties
+  struct Properties{
+    bool unknown_0;
+    bool unknown_1;
+    bool block_projectiles;
+    bool transparent_when_hiding_character;
+    bool unknown_4;
+    bool unknown_5;
+    bool unknown_6;
+    bool unknown_7;
+  };
+
   //! Constructor
   LevelPillar();
 
   //! Constructor
-  LevelPillar( const QVector<Block>& level_image_blocks );
+  LevelPillar( const QVector<Block>& level_pillar_blocks,
+               const LevelPillar::Properties& level_pillar_properties );
 
   //! Copy constructor
   LevelPillar( const LevelPillar& other_pillar );
@@ -77,6 +90,15 @@ public:
   void paint( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
+
+  //! Check if an actor can pass through the pillar
+  bool blocksActors() const;
+
+  //! Check if a projectile can pass through the pillar
+  bool blocksProjectiles() const;
+
+  //! Check if the pillar will become transparent when hiding the character
+  bool isTransparentWhenHidingCharacter() const;
 
   //! Check if the object can be attacked
   bool canBeAttacked() const override;

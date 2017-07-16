@@ -29,7 +29,8 @@ class LevelPillarFactory
 public:
 
   //! Constructor
-  LevelPillarFactory( const QString& level_min_file_name );
+  LevelPillarFactory( const QString& level_min_file_name,
+                      const QString& level_sol_file_name );
 
   //! Destructor
   ~LevelPillarFactory()
@@ -85,6 +86,9 @@ private:
 
   // The level min file name
   QString d_level_min_file_name;
+
+  // The level sol file name
+  QString d_level_sol_file_name;
 };
 
 } // end QtD1 namespace

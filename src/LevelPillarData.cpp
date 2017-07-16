@@ -26,6 +26,7 @@ LevelPillarData::LevelPillarData()
 // Copy constructor
 LevelPillarData::LevelPillarData( const LevelPillarData& other_data )
   : d_pillar_blocks( other_data.d_pillar_blocks ),
+    d_pillar_properties( other_data.d_pillar_properties ),
     d_pillar_image( other_data.d_pillar_image.copy() ),
     d_pillar_bounding_rect( other_data.d_pillar_bounding_rect ),
     d_pillar_shape( other_data.d_pillar_shape )
@@ -37,6 +38,7 @@ LevelPillarData& LevelPillarData::operator=( const LevelPillarData& other_data )
   if( this != &other_data )
   {
     d_pillar_blocks = other_data.d_pillar_blocks;
+    d_pillar_properties = other_data.d_pillar_properties;
     d_pillar_image = other_data.d_pillar_image.copy();
     d_pillar_bounding_rect = other_data.d_pillar_bounding_rect;
     d_pillar_shape = other_data.d_pillar_shape;
@@ -63,6 +65,19 @@ void LevelPillarData::setBlocks(
 
   // Cache the pillar blocks
   d_pillar_blocks = pillar_blocks;
+}
+
+// Set the pillar properties
+void LevelPillarData::setProperties(
+                                   const LevelPillar::Properties& properties )
+{
+  d_pillar_properties = properties;
+}
+
+// Get the pillar properties
+const LevelPillar::Properties& LevelPillarData::getProperties() const
+{
+  return d_pillar_properties;
 }
   
 // Load the image asset
