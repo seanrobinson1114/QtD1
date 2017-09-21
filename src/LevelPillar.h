@@ -34,7 +34,7 @@ public:
 
   //! The level pillar properties
   struct Properties{
-    bool unknown_0;
+    bool passable;
     bool unknown_1;
     bool block_projectiles;
     bool transparent_when_hiding_character;
@@ -49,7 +49,8 @@ public:
 
   //! Constructor
   LevelPillar( const QVector<Block>& level_pillar_blocks,
-               const LevelPillar::Properties& level_pillar_properties );
+               const LevelPillar::Properties& level_pillar_properties,
+               const QPainterPath& clickable_region );
 
   //! Copy constructor
   LevelPillar( const LevelPillar& other_pillar );
@@ -84,7 +85,7 @@ public:
   QRectF boundingRect() const override;
 
   //! Get the shape of the pillar
-  //QPainterPath shape() const override;
+  QPainterPath shape() const override;
 
   //! Paint the level pillar
   void paint( QPainter* painter,
@@ -102,6 +103,9 @@ public:
 
   //! Check if the object can be attacked
   bool canBeAttacked() const override;
+
+  //! Get the passable property
+  bool isPassable() const;
 
   //! Clone the level pillar
   virtual LevelPillar* clone() const = 0;
@@ -124,7 +128,7 @@ private:
   // The level pillar data
   std::shared_ptr<LevelPillarData> d_data;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_PILLAR_H

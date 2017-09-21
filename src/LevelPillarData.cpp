@@ -79,14 +79,20 @@ const LevelPillar::Properties& LevelPillarData::getProperties() const
 {
   return d_pillar_properties;
 }
-  
+
+//! Set the shape of the clickable region on the pillar
+void LevelPillarData::setShape( const QPainterPath& clickable_region )
+{
+  d_pillar_shape = clickable_region;
+}
+
 // Load the image asset
 void LevelPillarData::loadImageAsset(
                                    const QVector<QPixmap>& image_asset_frames )
 {
   d_pillar_image = QPixmap( d_pillar_bounding_rect.size().toSize() );
   d_pillar_image.fill( Qt::transparent );
-  
+
   // Use a painter to fill the pillar image with the blocks
   QPainter pillar_painter( &d_pillar_image );
 
@@ -100,8 +106,8 @@ void LevelPillarData::loadImageAsset(
                             image_asset_frames,
                             d_pillar_blocks.size()-1 );
 
-  // Get the pillar shape
-  d_pillar_shape.addRegion( d_pillar_image.createHeuristicMask() );
+  // // Get the pillar shape
+  // d_pillar_shape.addRegion( d_pillar_image.createHeuristicMask() );
 }
 
 // Create a pillar column
@@ -194,7 +200,7 @@ QPixmap LevelPillarData::image() const
 {
   return d_pillar_image;
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

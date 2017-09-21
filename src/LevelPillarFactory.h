@@ -16,6 +16,8 @@
 // Qt Includes
 #include <QString>
 #include <QList>
+#include <QImage>
+#include <QPainterPath>
 
 // QtD1 Includes
 #include "LevelPillar.h"
@@ -45,7 +47,7 @@ private:
   typedef std::function<int()> LevelPillarNumBlocksFunction;
 
   // The level pillar creation function typedef
-  typedef std::function<std::shared_ptr<LevelPillar>(const QVector<LevelPillar::Block>&, const LevelPillar::Properties&)>
+  typedef std::function<std::shared_ptr<LevelPillar>(const QVector<LevelPillar::Block>&, const LevelPillar::Properties&, const QPainterPath&)>
   LevelPillarCreationFunction;
 
   // Get the number of blocks in a town pillar
@@ -66,7 +68,11 @@ private:
   // Create a town pillar
   static std::shared_ptr<LevelPillar> createTownPillar(
                                    const QVector<LevelPillar::Block>& blocks,
-                                   const LevelPillar::Properties& properties );
+                                   const LevelPillar::Properties& properties,
+                                   const QPainterPath& clickable_region );
+
+  // Create a pillar heuristic map for clickable area
+  QPainterPath* createPillarPainterPath() const;
 
   // Create a cathedral pillar
   static std::shared_ptr<LevelPillar> createCathedralPillar(
@@ -102,6 +108,8 @@ private:
 
   // The level sol file name
   QString d_level_sol_file_name;
+
+  QImage d_pillar_click_area;
 };
 
 } // end QtD1 namespace

@@ -26,7 +26,8 @@ namespace QtD1{
 LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name,
                                         const QString& level_sol_file_name )
   : d_level_min_file_name( level_min_file_name ),
-    d_level_sol_file_name( level_sol_file_name )
+    d_level_sol_file_name( level_sol_file_name ),
+    d_pillar_click_area( "/data/square.cel+levels/towndata/town.pal" )
 {
   // Check that the min file name is valid
   if( !level_min_file_name.contains( ".min" ) )
@@ -100,8 +101,11 @@ LevelPillarFactory::createLevelPillars() const
       }
     }
 
+    // Get the painter path
+    QPainterPath* path = createPillarPainterPath();
+
     // Create the pillar
-    level_pillars << create_pillar( blocks, pillar_properties[pillar_index] );
+    level_pillars << create_pillar( blocks, pillar_properties[pillar_index], *path );
 
     // Increment the pillar index
     ++pillar_index;
@@ -143,9 +147,51 @@ int LevelPillarFactory::getNumberOfBlocksInHellPillar()
 // Create a town pillar
 std::shared_ptr<LevelPillar> LevelPillarFactory::createTownPillar(
                                     const QVector<LevelPillar::Block>& blocks,
-                                    const LevelPillar::Properties& properties )
+                                    const LevelPillar::Properties& properties,
+                                    const QPainterPath& clickable_region )
 {
-  return std::shared_ptr<LevelPillar>( new TownLevelPillar( blocks, properties ) );
+  return std::shared_ptr<LevelPillar>( new TownLevelPillar( blocks, properties, clickable_region ) );
+}
+
+// Create a pillar heuristic map for clickable area
+QPainterPath* LevelPillarFactory::createPillarPainterPath() const
+{
+  // Scale image to size of bottom of pillar and create binary image of same size
+  // d_pillar_click_area.scaled( 32, 96 );
+  QImage binary_image( 32, 96, QImage::Format_MonoLSB );
+
+  // Set pixels on outside of square to be transparent
+  for( int i = 0; i < binary_image.height(); ++i )
+  {
+    bool inside = false;
+    for( int j = 0; j < binary_image.width(); ++j )
+    {
+      // Get alpha value
+      int alpha = QColor( d_pillar_click_area.pixel( j, i ) ).alpha();
+
+      // Pixel value is transparent
+      if( alpha == 1 && !inside )
+        binary_image.setPixel( j, i, 0 );
+
+      else {
+        // Right side of diamond reached
+        if( alpha == 1 && inside )
+          inside = false;
+
+        // Hitting left side of diamond
+        else
+          inside = true;
+
+        binary_image.setPixel( j, i, 1 );
+      }
+    }
+  }
+
+  // Create painter path
+  QBitmap bitmap = QBitmap::fromImage( binary_image );
+  QPainterPath* path = new QPainterPath();
+  path->addRegion( bitmap );
+  return path;
 }
 
 // Create a cathedral pillar
@@ -212,11 +258,14 @@ QVector<LevelPillar::Properties> LevelPillarFactory::getLevelPillarProperties() 
     stream >> raw_data;
 
     LevelPillar::Properties
-      properties{false,false,false,false,false,false,false,false};
+      properties{true,false,false,false,false,false,false,false};
 
+    // First bit is passable property, 0 is passable
     if( (raw_data & 0x01) != 0 )
-      properties.unknown_0 = true;
-    
+    {
+      properties.passable = false;
+    }
+
     if( (raw_data & 0x02) != 0 )
       properties.unknown_1 = true;
 
@@ -270,14 +319,14 @@ LevelPillarFactory::LevelPillarCreationFunction LevelPillarFactory::getLevelPill
 {
   if( d_level_min_file_name.contains( "town.min" ) )
     return &LevelPillarFactory::createTownPillar;
-  if( d_level_min_file_name.contains( "l1.min" ) )
-    return &LevelPillarFactory::createCathedralPillar;
-  if( d_level_min_file_name.contains( "l2.min" ) )
-    return &LevelPillarFactory::createCatacombPillar;
-  if( d_level_min_file_name.contains( "l3.min" ) )
-    return &LevelPillarFactory::createCavePillar;
-  if( d_level_min_file_name.contains( "l4.min" ) )
-    return &LevelPillarFactory::createHellPillar;
+  // if( d_level_min_file_name.contains( "l1.min" ) )
+  //   return &LevelPillarFactory::createCathedralPillar;
+  // if( d_level_min_file_name.contains( "l2.min" ) )
+  //   return &LevelPillarFactory::createCatacombPillar;
+  // if( d_level_min_file_name.contains( "l3.min" ) )
+  //   return &LevelPillarFactory::createCavePillar;
+  // if( d_level_min_file_name.contains( "l4.min" ) )
+  //   return &LevelPillarFactory::createHellPillar;
   else
   {
     qFatal( "LevelPillarFactory Error: Invalid min file %s!",

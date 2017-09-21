@@ -18,8 +18,9 @@ TownLevelPillar::TownLevelPillar()
 // Constructor
 TownLevelPillar::TownLevelPillar(
                          const QVector<LevelPillar::Block>& level_image_blocks,
-                         const LevelPillar::Properties& properties )
-  : LevelPillar( level_image_blocks, properties )
+                         const LevelPillar::Properties& properties,
+                         const QPainterPath& clickable_region )
+  : LevelPillar( level_image_blocks, properties, clickable_region )
 { /* ... */ }
 
 // Copy constructor
@@ -41,7 +42,7 @@ TownLevelPillar& TownLevelPillar::operator=(
 TownLevelPillar* TownLevelPillar::clone() const
 {
   TownLevelPillar* new_pillar = new TownLevelPillar( *this );
-    
+
   return new_pillar;
 }
 
@@ -50,7 +51,7 @@ QString TownLevelPillar::getRequiredImageAssetName() const
 {
   return "/levels/towndata/town.cel+levels/towndata/town.pal";
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

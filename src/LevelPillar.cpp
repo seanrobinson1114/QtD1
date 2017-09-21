@@ -25,12 +25,14 @@ LevelPillar::LevelPillar()
 
 // Constructor
 LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks,
-                          const LevelPillar::Properties& level_pillar_properties )
+                          const LevelPillar::Properties& level_pillar_properties,
+                          const QPainterPath& clickable_region )
   : LevelObject(),
     d_data( new LevelPillarData )
 {
   d_data->setBlocks( level_image_blocks );
   d_data->setProperties( level_pillar_properties );
+  d_data->setShape( clickable_region );
 }
 
 // Copy constructor
@@ -107,11 +109,11 @@ QRectF LevelPillar::boundingRect() const
   return d_data->boundingRect();
 }
 
-// // Get the shape of the actor
-// QPainterPath LevelPillar::shape() const
-// {
-//   return d_data->shape();
-// }
+// Get the shape of the actor
+QPainterPath LevelPillar::shape() const
+{
+  return d_data->shape();
+}
 
 // Paint the level pillar
 void LevelPillar::paint( QPainter* painter,
@@ -144,6 +146,12 @@ bool LevelPillar::isTransparentWhenHidingCharacter() const
 bool LevelPillar::canBeAttacked() const
 {
   return false;
+}
+
+// Get the passable property
+bool LevelPillar::isPassable() const
+{
+  return d_data->getProperties().passable;
 }
 
 } // end QtD1 namespace
