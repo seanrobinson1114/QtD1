@@ -81,7 +81,8 @@ const LevelPillar::Properties& LevelPillarData::getProperties() const
 }
 
 //! Set the shape of the clickable region on the pillar
-void LevelPillarData::setShape( const QPainterPath& clickable_region )
+void LevelPillarData::setShape(
+                               const QPainterPath& clickable_region )
 {
   d_pillar_shape = clickable_region;
 }
@@ -108,6 +109,7 @@ void LevelPillarData::loadImageAsset(
 
   // // Get the pillar shape
   // d_pillar_shape.addRegion( d_pillar_image.createHeuristicMask() );
+  this->setShape( d_pillar_shape );
 }
 
 // Create a pillar column

@@ -54,8 +54,9 @@ void InteractiveLevelObject::deactivate()
 // Handle hover enter events
 void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 {
+  std::cout << "hovering over interactive object" << std::endl;
   d_paint_with_path = true;
-  
+
   this->update();
 }
 
@@ -70,14 +71,14 @@ void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
 // Handle mouse press events
 void InteractiveLevelObject::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
-  
+
 }
 
 // Handle mouse release events
 void InteractiveLevelObject::mouseReleaseEvent(
                                              QGraphicsSceneMouseEvent * event )
 {
-  
+
 }
 
 // Generate the hover outline pen
@@ -89,7 +90,7 @@ QPen InteractiveLevelObject::generateHoverOutlinePen()
 
   return pen;
 }
-  
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

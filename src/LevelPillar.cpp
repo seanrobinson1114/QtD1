@@ -27,7 +27,7 @@ LevelPillar::LevelPillar()
 LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks,
                           const LevelPillar::Properties& level_pillar_properties,
                           const QPainterPath& clickable_region )
-  : LevelObject(),
+  : InteractiveLevelObject(),
     d_data( new LevelPillarData )
 {
   d_data->setBlocks( level_image_blocks );
@@ -37,7 +37,7 @@ LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks,
 
 // Copy constructor
 LevelPillar::LevelPillar( const LevelPillar& other_pillar )
-  : LevelObject(),
+  : InteractiveLevelObject(),
     d_data( other_pillar.d_data )
 { /* ... */ }
 
@@ -116,7 +116,7 @@ QPainterPath LevelPillar::shape() const
 }
 
 // Paint the level pillar
-void LevelPillar::paint( QPainter* painter,
+void LevelPillar::paintImpl( QPainter* painter,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 {

@@ -31,8 +31,8 @@ LevelSquare::LevelSquare( LevelPillar* top_pillar,
 {
   // Make this the parent of the pillars
   d_top_pillar->setParentItem( this );
-  d_right_pillar->setParentItem( this );
   d_left_pillar->setParentItem( this );
+  d_right_pillar->setParentItem( this );
   d_bottom_pillar->setParentItem( this );
 
   // Reposition the pillars
@@ -132,8 +132,17 @@ LevelSquare* LevelSquare::clone()
                                                d_right_pillar->clone(),
                                                d_left_pillar->clone(),
                                                d_bottom_pillar->clone() );
-  
+
   return square_clone;
+}
+
+// Return the pillars that make square
+QList<LevelPillar*> LevelSquare::getPillars() const
+{
+  QList<LevelPillar*> pillars;
+  pillars << d_top_pillar << d_left_pillar << d_right_pillar << d_bottom_pillar;
+
+  return pillars;
 }
 
 }// end QtD1 namespace

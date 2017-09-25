@@ -381,27 +381,18 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 {
   if( d_character )
   {
+    std::cout << "character z order: " << d_character->zValue() << std::endl;
     // Check if there is a level object where the mouse was pressed
     LevelObject* object = NULL;
-    bool test = false;
-    {
-      // Pillars are QGraphicsItems
-      QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
-      QList<QGraphicsItem*> child_objects = raw_object->childItems();
-      if( child_objects.length() > 0 )
-      {
-        test = dynamic_cast<LevelPillar*>( child_objects[child_objects.length() - 1] )->isPassable();
-        std::cout << "child objects exist: " << test << std::endl;
-      }
 
-      else
-        std::cout << "no child object" << std::endl;
+    {
+      QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
 
       if( raw_object )
         object = dynamic_cast<LevelObject*>( raw_object );
     }
 
-    if( object && test )
+    if( object )
     {
       if( mouse_event->button() == Qt::LeftButton )
       {

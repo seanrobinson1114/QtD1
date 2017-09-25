@@ -13,14 +13,14 @@
 #include <QVector>
 
 // QtD1 Includes
-#include "LevelObject.h"
+#include "InteractiveLevelObject.h"
 
 namespace QtD1{
 
 class LevelPillarData;
 
 //! The level pillar class
-class LevelPillar : public LevelObject
+class LevelPillar : public InteractiveLevelObject
 {
 
 public:
@@ -50,7 +50,7 @@ public:
   //! Constructor
   LevelPillar( const QVector<Block>& level_pillar_blocks,
                const LevelPillar::Properties& level_pillar_properties,
-               const QPainterPath& clickable_region );
+               const QPainterPath& clickable );
 
   //! Copy constructor
   LevelPillar( const LevelPillar& other_pillar );
@@ -88,7 +88,7 @@ public:
   QPainterPath shape() const override;
 
   //! Paint the level pillar
-  void paint( QPainter* painter,
+  void paintImpl( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
