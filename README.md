@@ -15,14 +15,19 @@ Instructions for other flavors and other OSs will be provided in the future.
 ## Ubuntu 16.04 Build Instructions
 
 ### Install Dependencies
-1. run `sudo apt-get install libqt4-dev`
+1. run `sudo apt-get install libqt4-dev libpng-dev`
 2. run `sudo apt-get install libsdl2-mixer-dev`
-3. run `sudo apt-get install libavcodec-dev libswresample-dev libswscale-dev`
+3. run `sudo apt-get install libavcodec-dev libavformat-dev libswresample-dev libswscale-dev`
 4. run `sudo apt-get install zlib1g-dev`
 5. run `sudo apt-get install libbz2-dev`
 6. run `sudo apt-get install doxygen`
-7. run `sudo apt-get install stormlib`
+7. run `sudo apt-get install libstorm-dev`
    - Note: If the stormlib package cannot be found go to [this](http://xpam.pl/blog/?p=117) website and follow the instructions for deb based distros.
+
+Note: On Ubuntu 17.04 and up, libpng12.so is no longer available through
+libpng-dev. To get access to this library, run the following lines:
+* wget http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
+* sudo dpkg -i libpng12-0_1.2.54-1ubuntu1_amd64.deb
 
 ### Build QtD1
 1. Create a new directory to work in (e.g. run `mkdir qtd1`)
