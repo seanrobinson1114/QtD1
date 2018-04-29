@@ -378,10 +378,13 @@ void Level::handleCharacterPositionChanged()
   // Re-center the character in the view
   QList<QGraphicsView*> views = this->views();
 
+  QPointF character_pos = d_character->pos();
+
   // There should only be a single view but just to be safe we will loop over
   // the entire list
   for( int i = 0; i < views.size(); ++i )
-    views[i]->centerOn( d_character );
+    views[i]->centerOn( character_pos.x()+320, character_pos.y()+110 );
+    //views[i]->centerOn( d_character );
 }
 
 // Handle mouse press events in a custom way
