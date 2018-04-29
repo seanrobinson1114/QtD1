@@ -165,7 +165,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
   sectors << top_sector << left_sector << right_sector << bottom_sector;
 
-  // Remove the sectors to the town
+  // Remove the sectors from the town
   this->removeItem( top_sector );
   this->removeItem( left_sector );
   this->removeItem( right_sector );
@@ -177,6 +177,10 @@ void Town::createSectors( QList<LevelSector*>& sectors )
     town_pillars[i]->setPos( town_pillars[i]->mapToScene( QPoint( 0, 0 ) ) );
     town_pillars[i]->setParent( NULL );
     this->addItem( town_pillars[i] );
+    town_pillars[i]->activate();
+
+    if( town_pillars[i]->isInteractive() )
+      this->connectInteractiveLevelObjectSignalsToLevelSignals( town_pillars[i] );
     std::cout << "z value of added pillar: " << town_pillars[i]->zValue() << std::endl;
 
   }

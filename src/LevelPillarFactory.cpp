@@ -26,8 +26,7 @@ namespace QtD1{
 LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name,
                                         const QString& level_sol_file_name )
   : d_level_min_file_name( level_min_file_name ),
-    d_level_sol_file_name( level_sol_file_name ),
-    d_pillar_click_area( "/data/square.cel+levels/towndata/town.pal" )
+    d_level_sol_file_name( level_sol_file_name )
 {
   // Check that the min file name is valid
   if( !level_min_file_name.contains( ".min" ) )
@@ -70,6 +69,9 @@ LevelPillarFactory::createLevelPillars() const
   LevelPillarCreationFunction create_pillar =
     this->getLevelPillarCreationFunction();
 
+  // Get the painter path
+  QPainterPath path = createPillarPainterPath();
+
   int pillar_index = 0;
 
   while( true )
@@ -101,11 +103,8 @@ LevelPillarFactory::createLevelPillars() const
       }
     }
 
-    // Get the painter path
-    QPainterPath* path = createPillarPainterPath();
-
     // Create the pillar
-    level_pillars << create_pillar( blocks, pillar_properties[pillar_index], *path );
+    level_pillars << create_pillar( blocks, pillar_properties[pillar_index], path );
 
     // Increment the pillar index
     ++pillar_index;
@@ -154,43 +153,17 @@ std::shared_ptr<LevelPillar> LevelPillarFactory::createTownPillar(
 }
 
 // Create a pillar heuristic map for clickable area
-QPainterPath* LevelPillarFactory::createPillarPainterPath() const
+QPainterPath LevelPillarFactory::createPillarPainterPath() const
 {
-  // Scale image to size of bottom of pillar and create binary image of same size
-  // d_pillar_click_area.scaled( 32, 96 );
-  QImage binary_image( 32, 96, QImage::Format_MonoLSB );
+  QPolygonF clickable_pillar_region;
+  clickable_pillar_region << QPointF( 0.0, 16.0 )
+                          << QPointF( 16.0, 32.0 )
+                          << QPointF( 32.0, 16.0 )
+                          << QPointF( 16.0, 0.0 );
 
-  // Set pixels on outside of square to be transparent
-  for( int i = 0; i < binary_image.height(); ++i )
-  {
-    bool inside = false;
-    for( int j = 0; j < binary_image.width(); ++j )
-    {
-      // Get alpha value
-      int alpha = QColor( d_pillar_click_area.pixel( j, i ) ).alpha();
-
-      // Pixel value is transparent
-      if( alpha == 1 && !inside )
-        binary_image.setPixel( j, i, 0 );
-
-      else {
-        // Right side of diamond reached
-        if( alpha == 1 && inside )
-          inside = false;
-
-        // Hitting left side of diamond
-        else
-          inside = true;
-
-        binary_image.setPixel( j, i, 1 );
-      }
-    }
-  }
-
-  // Create painter path
-  QBitmap bitmap = QBitmap::fromImage( binary_image );
-  QPainterPath* path = new QPainterPath();
-  path->addRegion( bitmap );
+  QPainterPath path;
+  path.addPolygon( clickable_pillar_region );
+  
   return path;
 }
 

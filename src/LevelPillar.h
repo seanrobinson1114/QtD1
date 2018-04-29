@@ -87,11 +87,6 @@ public:
   //! Get the shape of the pillar
   QPainterPath shape() const override;
 
-  //! Paint the level pillar
-  void paintImpl( QPainter* painter,
-              const QStyleOptionGraphicsItem* option,
-              QWidget* widget ) override;
-
   //! Check if an actor can pass through the pillar
   bool blocksActors() const;
 
@@ -117,6 +112,11 @@ protected:
 
   //! Deep copy the pillar data
   void deepCopyPillarData( const LevelPillar& other_pillar ) const;
+
+  //! Paint the level pillar
+  void paintImpl( QPainter* painter,
+              const QStyleOptionGraphicsItem* option,
+              QWidget* widget ) override;
 
 private:
 

@@ -72,7 +72,7 @@ private:
                                    const QPainterPath& clickable_region );
 
   // Create a pillar heuristic map for clickable area
-  QPainterPath* createPillarPainterPath() const;
+  QPainterPath createPillarPainterPath() const;
 
   // Create a cathedral pillar
   static std::shared_ptr<LevelPillar> createCathedralPillar(
@@ -108,8 +108,6 @@ private:
 
   // The level sol file name
   QString d_level_sol_file_name;
-
-  QImage d_pillar_click_area;
 };
 
 } // end QtD1 namespace

@@ -141,6 +141,9 @@ protected:
 
   //! Create the level sectors
   virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
+  
+  // Connect interactiveLevelObject signals to Level signals
+  void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
 private slots:
 
@@ -184,9 +187,6 @@ private:
 
   // Disconnect character signals from level slots
   void disconnectCharacterSignalsFromLevelSlots() const;
-
-  // Connect interactiveLevelObject signals to Level signals
-  void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
   // The character
   Character* d_character;
