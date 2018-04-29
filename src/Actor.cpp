@@ -516,9 +516,17 @@ bool Actor::updateTimeDependentStates()
     if( d_active_state == Walking )
     {
       bool destination_reached = false;
+
+      // Calculate the lower left positions
+      QPointF target_position = d_target->scenePos();
+      target_position.ry() += d_target->boundingRect().height();
+
+      QPointF this_position = this->scenePos();
+      this_position.ry() += this->boundingRect().height();
+
+      double x_distance = target_position.x() - this_position.x();
       
-      double x_distance = d_target->scenePos().x()-this->scenePos().x();
-      double y_distance = d_target->scenePos().y()-this->scenePos().y();
+      double y_distance = target_position.y() - this_position.y();
       
       double distance = sqrt( x_distance*x_distance + y_distance*y_distance );
       
@@ -528,7 +536,7 @@ bool Actor::updateTimeDependentStates()
         
         // Calculate the movement direction
         Direction direction = calculateNearestDiscreteDirection(
-                                      this->scenePos(), d_target->scenePos() );
+                                              this_position, target_position );
 
         // Calculate the velocity of the actor
         if( direction != this->getDirection() )

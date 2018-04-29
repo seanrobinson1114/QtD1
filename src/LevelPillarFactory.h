@@ -72,7 +72,7 @@ private:
                                    const QPainterPath& clickable_region );
 
   // Create a pillar heuristic map for clickable area
-  QPainterPath createPillarPainterPath() const;
+  QPainterPath createPillarPainterPath( const int height ) const;
 
   // Create a cathedral pillar
   static std::shared_ptr<LevelPillar> createCathedralPillar(

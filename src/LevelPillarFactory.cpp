@@ -70,7 +70,7 @@ LevelPillarFactory::createLevelPillars() const
     this->getLevelPillarCreationFunction();
 
   // Get the painter path
-  QPainterPath path = createPillarPainterPath();
+  QPainterPath path = createPillarPainterPath( blocks_per_pillar*16 ); // 32/2
 
   int pillar_index = 0;
 
@@ -153,13 +153,13 @@ std::shared_ptr<LevelPillar> LevelPillarFactory::createTownPillar(
 }
 
 // Create a pillar heuristic map for clickable area
-QPainterPath LevelPillarFactory::createPillarPainterPath() const
+QPainterPath LevelPillarFactory::createPillarPainterPath( const int height ) const
 {
   QPolygonF clickable_pillar_region;
-  clickable_pillar_region << QPointF( 0.0, 16.0 )
-                          << QPointF( 16.0, 32.0 )
-                          << QPointF( 32.0, 16.0 )
-                          << QPointF( 16.0, 0.0 );
+  clickable_pillar_region << QPointF( 0.0, height - 16.0 )
+                          << QPointF( 32.0, height - 32.0 )
+                          << QPointF( 64.0, height - 16.0 )
+                          << QPointF( 32.0, height );
 
   QPainterPath path;
   path.addPolygon( clickable_pillar_region );
