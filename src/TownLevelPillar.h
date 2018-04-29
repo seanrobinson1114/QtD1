@@ -41,6 +41,9 @@ public:
   //! Clone the level pillar
   TownLevelPillar* clone() const override;
 
+  //! Get a description of the object
+  QString getDescription() const override;
+
 private:
 
   // Get the image asset required by this level pillar

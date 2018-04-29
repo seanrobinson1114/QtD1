@@ -46,6 +46,12 @@ TownLevelPillar* TownLevelPillar::clone() const
   return new_pillar;
 }
 
+// Get a description of the object
+QString TownLevelPillar::getDescription() const
+{
+  return "I am a pillar!";
+}
+
 // Get the image asset required by this level pillar
 QString TownLevelPillar::getRequiredImageAssetName() const
 {
