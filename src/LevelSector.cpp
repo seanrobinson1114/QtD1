@@ -50,7 +50,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
     for( int i = 0; i < level_squares[j].size(); ++i )
     {
       LevelSquare* square = level_squares[j][i];
-      
+
       // The y position gives us the z-order
       int y_pos = (i+j)*32;
       int x_pos = (int)d_bounding_rect.width()/2 + (i-j-1)*64;
@@ -74,7 +74,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
   {
     QList<LevelSquare*>& level_squares =
       d_level_square_z_order_map[i];
-    
+
     QList<LevelSquare*>::iterator level_squares_it, level_squares_end;
     level_squares_it = level_squares.begin();
     level_squares_end = level_squares.end();
@@ -84,7 +84,7 @@ LevelSector::LevelSector( QVector<QVector<LevelSquare*> > level_squares )
       QPointF position = (*level_squares_it)->pos();
 
       (*level_squares_it)->setParentItem( this );
-      
+
       // Set the position again so that it is w.r.t. the sector coordinate sys.
       (*level_squares_it)->setPos( position );
 
@@ -157,7 +157,7 @@ void LevelSector::loadImageAsset( const QString& image_asset_name,
   for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
     QList<LevelSquare*>& row_level_squares = d_level_square_z_order_map[j];
-    
+
     for( int i = 0; i < row_level_squares.size(); ++i )
     {
       if( !row_level_squares[i]->imageAssetsLoaded() )
@@ -175,7 +175,7 @@ void LevelSector::dumpImageAssets()
   for( int j = 0; j < d_level_square_z_order_map.size(); ++j )
   {
     QList<LevelSquare*>& row_level_squares = d_level_square_z_order_map[j];
-    
+
     for( int i = 0; i < row_level_squares.size(); ++i )
     {
       if( row_level_squares[i]->imageAssetsLoaded() )
@@ -203,6 +203,21 @@ void LevelSector::paint( QPainter*,
 bool LevelSector::canBeAttacked() const
 {
   return false;
+}
+
+// Get the number or rows in the sector
+int LevelSector::getNumberOfRows() const
+{
+  return d_level_square_z_order_map.size();
+}
+
+// Return the squares in z-order that make sector
+QList<LevelSquare*> LevelSector::getSquaresForRow( int row_number ) const
+{
+  // Get the number of total rows and the requested rows squares
+  int row_key = row_number * 32;
+
+  return d_level_square_z_order_map[row_key];
 }
 
 } // end QtD1 namespace

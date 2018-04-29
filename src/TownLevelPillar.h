@@ -22,9 +22,11 @@ public:
 
   //! Constructor
   TownLevelPillar();
-  
+
   //! Constructor
-  TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks );
+  TownLevelPillar( const QVector<LevelPillar::Block>& level_image_blocks,
+                   const LevelPillar::Properties& properties,
+                   const QPainterPath& clickable_region );
 
   //! Copy constructor
   TownLevelPillar( const TownLevelPillar& other_pillar );
@@ -44,7 +46,7 @@ private:
   // Get the image asset required by this level pillar
   QString getRequiredImageAssetName() const override;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end TOWN_LEVEL_PILLAR_H

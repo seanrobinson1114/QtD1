@@ -29,6 +29,7 @@ public:
 
   //! Constructor
   LevelSquareFactory( const QString& level_min_file_name,
+                      const QString& level_sol_file_name,
                       const QString& level_til_file_name );
 
   //! Destructor
@@ -39,13 +40,17 @@ public:
   QList<std::shared_ptr<LevelSquare> > createLevelSquares() const;
 
   //! Create the level squares (advanced)
-  QList<std::shared_ptr<LevelSquare> > createLevelSquares(
-             const QList<std::shared_ptr<LevelPillar> >& level_pillars ) const;
+  static QList<std::shared_ptr<LevelSquare> > createLevelSquares(
+                   const QString& level_til_file_name,
+                   const QList<std::shared_ptr<LevelPillar> >& level_pillars );
 
 private:
 
   // The level min file name
   QString d_level_min_file_name;
+
+  // The level sol file name
+  QString d_level_sol_file_name;
 
   // The level til file name
   QString d_level_til_file_name;

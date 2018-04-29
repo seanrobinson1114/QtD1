@@ -41,6 +41,15 @@ public:
   //! Set the pillar blocks
   void setBlocks( const QVector<LevelPillar::Block>& pillar_blocks );
 
+  //! Set the pillar properties
+  void setProperties( const LevelPillar::Properties& properties );
+
+  //! Get the pillar properties
+  const LevelPillar::Properties& getProperties() const;
+
+  //! Set the shape of the clickable region on the pillar
+  void setShape( const QPainterPath& clickable_region );
+
   //! Load the image asset
   void loadImageAsset( const QVector<QPixmap>& image_asset_frames );
 
@@ -66,9 +75,12 @@ private:
                            const QVector<QPixmap>& image_asset_frames,
                            const int start_index );
 
-  // The level image blocks
+  // The level pillar blocks
   QVector<LevelPillar::Block> d_pillar_blocks;
-  
+
+  // The level pillar properties
+  LevelPillar::Properties d_pillar_properties;
+
   // The just-in-time images that make up this pillar
   QPixmap d_pillar_image;
 
@@ -78,7 +90,7 @@ private:
   // The pillar shape
   QPainterPath d_pillar_shape;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_PILLAR_DATA_H

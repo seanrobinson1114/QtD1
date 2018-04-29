@@ -13,6 +13,8 @@
 #include <QDataStream>
 #include <QFile>
 #include <QBuffer>
+#include <QList>
+#include <QVector>
 
 // QtD1 Includes
 #include "LevelPillarFactory.h"
@@ -21,14 +23,26 @@
 namespace QtD1{
 
 // Constructor
-LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name )
-  : d_level_min_file_name( level_min_file_name )
+LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name,
+                                        const QString& level_sol_file_name )
+  : d_level_min_file_name( level_min_file_name ),
+    d_level_sol_file_name( level_sol_file_name ),
+    d_pillar_click_area( "/data/square.cel+levels/towndata/town.pal" )
 {
+  // Check that the min file name is valid
   if( !level_min_file_name.contains( ".min" ) )
   {
     qFatal( "LevelPillarFactory Error: cannot parse file %s (only .min files "
             "can be parsed)!",
             level_min_file_name.toStdString().c_str() );
+  }
+
+  // Check that the sol file name is valid
+  if( !level_sol_file_name.contains( ".sol" ) )
+  {
+    qFatal( "LevelPillarFactory Error: cannot parse file %s (only .sol files "
+            "can be parsed)!",
+            level_sol_file_name.toStdString().c_str() );
   }
 }
 
@@ -36,8 +50,9 @@ LevelPillarFactory::LevelPillarFactory( const QString& level_min_file_name )
 QList<std::shared_ptr<LevelPillar> >
 LevelPillarFactory::createLevelPillars() const
 {
-  // Create a new pillar list
-  QList<std::shared_ptr<LevelPillar> > level_pillars;
+  // Get the level pillar properties
+  QVector<LevelPillar::Properties> pillar_properties =
+    this->getLevelPillarProperties();
 
   // Open the min file
   QFile min_file( d_level_min_file_name );
@@ -47,11 +62,15 @@ LevelPillarFactory::createLevelPillars() const
   QDataStream stream( &min_file );
   stream.setByteOrder( QDataStream::LittleEndian );
 
-  LevelPillarFactory::LevelPillarNumBlocksFunction blocks_per_pillar =
-    this->getLevelPillarNumBlocksFunction();
+  // Create a new pillar list
+  QList<std::shared_ptr<LevelPillar> > level_pillars;
+
+  const int blocks_per_pillar = this->getLevelPillarNumBlocksFunction()();
 
   LevelPillarCreationFunction create_pillar =
     this->getLevelPillarCreationFunction();
+
+  int pillar_index = 0;
 
   while( true )
   {
@@ -59,7 +78,7 @@ LevelPillarFactory::createLevelPillars() const
       break;
 
     // Read a section of blocks from the file
-    QVector<LevelPillar::Block> blocks( blocks_per_pillar() );
+    QVector<LevelPillar::Block> blocks( blocks_per_pillar );
 
     for( int i = 0; i < blocks.size(); ++i )
     {
@@ -82,8 +101,14 @@ LevelPillarFactory::createLevelPillars() const
       }
     }
 
+    // Get the painter path
+    QPainterPath* path = createPillarPainterPath();
+
     // Create the pillar
-    level_pillars << create_pillar( blocks );
+    level_pillars << create_pillar( blocks, pillar_properties[pillar_index], *path );
+
+    // Increment the pillar index
+    ++pillar_index;
   }
 
   return level_pillars;
@@ -120,13 +145,59 @@ int LevelPillarFactory::getNumberOfBlocksInHellPillar()
 }
 
 // Create a town pillar
-std::shared_ptr<LevelPillar> LevelPillarFactory::createTownPillar( const QVector<LevelPillar::Block>& blocks )
+std::shared_ptr<LevelPillar> LevelPillarFactory::createTownPillar(
+                                    const QVector<LevelPillar::Block>& blocks,
+                                    const LevelPillar::Properties& properties,
+                                    const QPainterPath& clickable_region )
 {
-  return std::shared_ptr<LevelPillar>( new TownLevelPillar( blocks ) );
+  return std::shared_ptr<LevelPillar>( new TownLevelPillar( blocks, properties, clickable_region ) );
+}
+
+// Create a pillar heuristic map for clickable area
+QPainterPath* LevelPillarFactory::createPillarPainterPath() const
+{
+  // Scale image to size of bottom of pillar and create binary image of same size
+  // d_pillar_click_area.scaled( 32, 96 );
+  QImage binary_image( 32, 96, QImage::Format_MonoLSB );
+
+  // Set pixels on outside of square to be transparent
+  for( int i = 0; i < binary_image.height(); ++i )
+  {
+    bool inside = false;
+    for( int j = 0; j < binary_image.width(); ++j )
+    {
+      // Get alpha value
+      int alpha = QColor( d_pillar_click_area.pixel( j, i ) ).alpha();
+
+      // Pixel value is transparent
+      if( alpha == 1 && !inside )
+        binary_image.setPixel( j, i, 0 );
+
+      else {
+        // Right side of diamond reached
+        if( alpha == 1 && inside )
+          inside = false;
+
+        // Hitting left side of diamond
+        else
+          inside = true;
+
+        binary_image.setPixel( j, i, 1 );
+      }
+    }
+  }
+
+  // Create painter path
+  QBitmap bitmap = QBitmap::fromImage( binary_image );
+  QPainterPath* path = new QPainterPath();
+  path->addRegion( bitmap );
+  return path;
 }
 
 // Create a cathedral pillar
-std::shared_ptr<LevelPillar> LevelPillarFactory::createCathedralPillar( const QVector<LevelPillar::Block>& )
+std::shared_ptr<LevelPillar> LevelPillarFactory::createCathedralPillar(
+                                            const QVector<LevelPillar::Block>&,
+                                            const LevelPillar::Properties& )
 {
   qFatal( "Cathedral pillar not implemented" );
 
@@ -134,7 +205,9 @@ std::shared_ptr<LevelPillar> LevelPillarFactory::createCathedralPillar( const QV
 }
 
 // Create a catacomb pillar
-std::shared_ptr<LevelPillar> LevelPillarFactory::createCatacombPillar( const QVector<LevelPillar::Block>& )
+std::shared_ptr<LevelPillar> LevelPillarFactory::createCatacombPillar(
+                                            const QVector<LevelPillar::Block>&,
+                                            const LevelPillar::Properties& )
 {
   qFatal( "Catacomb pillar not implemented" );
 
@@ -142,7 +215,9 @@ std::shared_ptr<LevelPillar> LevelPillarFactory::createCatacombPillar( const QVe
 }
 
 // Create a cave pillar
-std::shared_ptr<LevelPillar> LevelPillarFactory::createCavePillar( const QVector<LevelPillar::Block>& )
+std::shared_ptr<LevelPillar> LevelPillarFactory::createCavePillar(
+                                            const QVector<LevelPillar::Block>&,
+                                            const LevelPillar::Properties& )
 {
   qFatal( "Cave pillar not implemented" );
 
@@ -150,11 +225,72 @@ std::shared_ptr<LevelPillar> LevelPillarFactory::createCavePillar( const QVector
 }
 
 // Create a hell pillar
-std::shared_ptr<LevelPillar> LevelPillarFactory::createHellPillar( const QVector<LevelPillar::Block>& )
+std::shared_ptr<LevelPillar> LevelPillarFactory::createHellPillar(
+                                            const QVector<LevelPillar::Block>&,
+                                            const LevelPillar::Properties& )
 {
   qFatal( "Hell pillar not implemented" );
 
   return std::shared_ptr<LevelPillar>();
+}
+
+// Get the pillar properties
+QVector<LevelPillar::Properties> LevelPillarFactory::getLevelPillarProperties() const
+{
+  // Open the sol file
+  QFile sol_file( d_level_sol_file_name );
+  sol_file.open( QIODevice::ReadOnly );
+
+  // Extract the sol file data
+  QDataStream stream( &sol_file );
+  stream.setByteOrder( QDataStream::LittleEndian );
+
+  // Create the properties list
+  QVector<LevelPillar::Properties> level_pillar_properties;
+
+  while( true )
+  {
+    if( stream.atEnd() )
+      break;
+
+    quint8 raw_data;
+
+    stream >> raw_data;
+
+    LevelPillar::Properties
+      properties{true,false,false,false,false,false,false,false};
+
+    // First bit is passable property, 0 is passable
+    if( (raw_data & 0x01) != 0 )
+    {
+      properties.passable = false;
+    }
+
+    if( (raw_data & 0x02) != 0 )
+      properties.unknown_1 = true;
+
+    if( (raw_data & 0x04) != 0 )
+      properties.block_projectiles = true;
+
+    if( (raw_data & 0x08) != 0 )
+      properties.transparent_when_hiding_character = true;
+
+    if( (raw_data & 0x10) != 0 )
+      properties.unknown_4 = true;
+
+    if( (raw_data & 0x20) != 0 )
+      properties.unknown_5 = true;
+
+    if( (raw_data & 0x40) != 0 )
+      properties.unknown_6 = true;
+
+    if( (raw_data & 0x80) != 0 )
+      properties.unknown_7 = true;
+
+    level_pillar_properties << properties;
+  }
+
+  return level_pillar_properties;
 }
 
 // Get the number of pillar blocks function
@@ -183,14 +319,14 @@ LevelPillarFactory::LevelPillarCreationFunction LevelPillarFactory::getLevelPill
 {
   if( d_level_min_file_name.contains( "town.min" ) )
     return &LevelPillarFactory::createTownPillar;
-  if( d_level_min_file_name.contains( "l1.min" ) )
-    return &LevelPillarFactory::createCathedralPillar;
-  if( d_level_min_file_name.contains( "l2.min" ) )
-    return &LevelPillarFactory::createCatacombPillar;
-  if( d_level_min_file_name.contains( "l3.min" ) )
-    return &LevelPillarFactory::createCavePillar;
-  if( d_level_min_file_name.contains( "l4.min" ) )
-    return &LevelPillarFactory::createHellPillar;
+  // if( d_level_min_file_name.contains( "l1.min" ) )
+  //   return &LevelPillarFactory::createCathedralPillar;
+  // if( d_level_min_file_name.contains( "l2.min" ) )
+  //   return &LevelPillarFactory::createCatacombPillar;
+  // if( d_level_min_file_name.contains( "l3.min" ) )
+  //   return &LevelPillarFactory::createCavePillar;
+  // if( d_level_min_file_name.contains( "l4.min" ) )
+  //   return &LevelPillarFactory::createHellPillar;
   else
   {
     qFatal( "LevelPillarFactory Error: Invalid min file %s!",

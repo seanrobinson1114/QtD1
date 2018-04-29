@@ -62,9 +62,11 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   QString level_til_file_name( "/levels/towndata/town.til" );
 
   QList<std::shared_ptr<LevelSquare> > level_squares;
+  QList<LevelPillar*> level_pillars;
 
   {
     LevelSquareFactory level_square_factory( level_min_file_name,
+                                             level_sol_file_name,
                                              level_til_file_name );
 
     level_squares = level_square_factory.createLevelSquares();
@@ -72,39 +74,74 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
   // Create the top sector first
   LevelSector* top_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector4s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector4s.dun",
+                                           level_squares );
 
   // Create the left sector
   LevelSector* left_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector3s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector3s.dun",
+                                           level_squares );
 
   // Create the right sector
   LevelSector* right_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector2s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector2s.dun",
+                                           level_squares );
 
   // Create the bottom sector
   LevelSector* bottom_sector =
-    this->createSector( level_min_file_name,
-                        level_til_file_name,
-                        "/levels/towndata/sector1s.dun",
-                        level_squares );
+    LevelSectorFactory::createLevelSector( "/levels/towndata/sector1s.dun",
+                                           level_squares );
+
+  // Take pillars from all sectors and set in correct order
+  QList<LevelPillar*> town_pillars;
+  for( int i = 0; i < top_sector->getNumberOfRows() - 1; ++i )
+  {
+    QList<LevelSquare*> row_squares;
+    row_squares = top_sector->getSquaresForRow( i );
+    for( int j = 0; j < row_squares.length(); ++j )
+    {
+      town_pillars.append( row_squares[j]->getPillars() );
+    }
+    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
+  }
+  for( int i = 0; i < left_sector->getNumberOfRows() - 1; ++i )
+  {
+    QList<LevelSquare*> row_squares;
+    row_squares = left_sector->getSquaresForRow( i );
+    for( int j = 0; j < row_squares.length(); ++j )
+    {
+      town_pillars.append( row_squares[j]->getPillars() );
+    }
+    // std::cout << "number of pillars in left sector: " << town_pillars.length() << std::endl;
+  }
+  for( int i = 0; i < right_sector->getNumberOfRows() - 1; ++i )
+  {
+    QList<LevelSquare*> row_squares;
+    row_squares = right_sector->getSquaresForRow( i );
+    for( int j = 0; j < row_squares.length(); ++j )
+    {
+      town_pillars.append( row_squares[j]->getPillars() );
+    }
+    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
+  }
+  for( int i = 0; i < bottom_sector->getNumberOfRows() - 1; ++i )
+  {
+    QList<LevelSquare*> row_squares;
+    row_squares = bottom_sector->getSquaresForRow( i );
+    for( int j = 0; j < row_squares.length(); ++j )
+    {
+      town_pillars.append( row_squares[j]->getPillars() );
+    }
+    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
+  }
 
   // Resize the town bounding rect
   int town_width = left_sector->boundingRect().width()+
     right_sector->boundingRect().width();
   int town_height = top_sector->boundingRect().height()+
     bottom_sector->boundingRect().height();
-  
-  this->setSceneRect( 0, 0, town_width, town_height );                      
+
+  this->setSceneRect( 0, 0, town_width, town_height );
 
   // Add the sectors to the town
   this->addItem( top_sector );
@@ -127,20 +164,22 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   sectors.clear();
 
   sectors << top_sector << left_sector << right_sector << bottom_sector;
-}
 
-// Create a sector
-LevelSector* Town::createSector(
-                    const QString& level_min_file_name,
-                    const QString& level_til_file_name,
-                    const QString& level_dun_file_name,
-                    const QList<std::shared_ptr<LevelSquare> >& level_squares )
-{
-  LevelSectorFactory sector_factory( level_min_file_name,
-                                     level_til_file_name,
-                                     level_dun_file_name );
+  // Remove the sectors to the town
+  this->removeItem( top_sector );
+  this->removeItem( left_sector );
+  this->removeItem( right_sector );
+  this->removeItem( bottom_sector );
 
-  return sector_factory.createLevelSector( level_squares );
+  // Set parent and add pillars to the town
+  for( int i = 0; i < town_pillars.length(); ++i )
+  {
+    town_pillars[i]->setPos( town_pillars[i]->mapToScene( QPoint( 0, 0 ) ) );
+    town_pillars[i]->setParent( NULL );
+    this->addItem( town_pillars[i] );
+    std::cout << "z value of added pillar: " << town_pillars[i]->zValue() << std::endl;
+
+  }
 }
 
 } // end QtD1 namespace

@@ -24,16 +24,20 @@ LevelPillar::LevelPillar()
 { /* ... */ }
 
 // Constructor
-LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks )
-  : LevelObject(),
+LevelPillar::LevelPillar( const QVector<Block>& level_image_blocks,
+                          const LevelPillar::Properties& level_pillar_properties,
+                          const QPainterPath& clickable_region )
+  : InteractiveLevelObject(),
     d_data( new LevelPillarData )
 {
   d_data->setBlocks( level_image_blocks );
+  d_data->setProperties( level_pillar_properties );
+  d_data->setShape( clickable_region );
 }
 
 // Copy constructor
 LevelPillar::LevelPillar( const LevelPillar& other_pillar )
-  : LevelObject(),
+  : InteractiveLevelObject(),
     d_data( other_pillar.d_data )
 { /* ... */ }
 
@@ -41,9 +45,7 @@ LevelPillar::LevelPillar( const LevelPillar& other_pillar )
 LevelPillar& LevelPillar::operator=( const LevelPillar& other_pillar )
 {
   if( this != &other_pillar )
-  {
     d_data = other_pillar.d_data;
-  }
 
   return *this;
 }
@@ -61,8 +63,7 @@ int LevelPillar::getNumberOfImageAssets() const
 }
 
 // Get the image asset names used by the object
-void LevelPillar::getImageAssetNames(
-                                       QSet<QString>& image_asset_names ) const
+void LevelPillar::getImageAssetNames( QSet<QString>& image_asset_names ) const
 {
   image_asset_names.insert( this->getRequiredImageAssetName() );
 }
@@ -108,14 +109,14 @@ QRectF LevelPillar::boundingRect() const
   return d_data->boundingRect();
 }
 
-// // Get the shape of the actor
-// QPainterPath LevelPillar::shape() const
-// {
-//   return d_data->shape();
-// }
+// Get the shape of the actor
+QPainterPath LevelPillar::shape() const
+{
+  return d_data->shape();
+}
 
 // Paint the level pillar
-void LevelPillar::paint( QPainter* painter,
+void LevelPillar::paintImpl( QPainter* painter,
                          const QStyleOptionGraphicsItem*,
                          QWidget* )
 {
@@ -123,10 +124,34 @@ void LevelPillar::paint( QPainter* painter,
   painter->drawPixmap( 0, 0, d_data->image() );
 }
 
+// Check if an actor can pass through the pillar
+bool LevelPillar::blocksActors() const
+{
+  return false;
+}
+
+// Check if a projectile can pass through the pillar
+bool LevelPillar::blocksProjectiles() const
+{
+  return d_data->getProperties().block_projectiles;
+}
+
+// Check if the pillar will become transparent when hiding the character
+bool LevelPillar::isTransparentWhenHidingCharacter() const
+{
+  return d_data->getProperties().transparent_when_hiding_character;
+}
+
 // Check if the object can be attacked
 bool LevelPillar::canBeAttacked() const
 {
   return false;
+}
+
+// Get the passable property
+bool LevelPillar::isPassable() const
+{
+  return d_data->getProperties().passable;
 }
 
 } // end QtD1 namespace

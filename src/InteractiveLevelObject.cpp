@@ -60,12 +60,13 @@ void InteractiveLevelObject::deactivate()
 // Handle hover enter events
 void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 {
+  std::cout << "hovering over interactive object" << std::endl;
   d_paint_with_path = true;
 
   // notify level of hover
   emit hoveringStarted( this->getDescription() );
 
-  this->update();
+  //this->update();
 }
 
 // Handle hover leave events

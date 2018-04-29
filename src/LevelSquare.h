@@ -67,6 +67,9 @@ public:
   //! Clone the level square
   LevelSquare* clone();
 
+  //! Return the pillars that make square
+  QList<LevelPillar*> getPillars() const;
+
 private:
 
   // The pillars

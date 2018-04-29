@@ -13,14 +13,14 @@
 #include <QVector>
 
 // QtD1 Includes
-#include "LevelObject.h"
+#include "InteractiveLevelObject.h"
 
 namespace QtD1{
 
 class LevelPillarData;
 
 //! The level pillar class
-class LevelPillar : public LevelObject
+class LevelPillar : public InteractiveLevelObject
 {
 
 public:
@@ -32,11 +32,25 @@ public:
     int type;
   };
 
+  //! The level pillar properties
+  struct Properties{
+    bool passable;
+    bool unknown_1;
+    bool block_projectiles;
+    bool transparent_when_hiding_character;
+    bool unknown_4;
+    bool unknown_5;
+    bool unknown_6;
+    bool unknown_7;
+  };
+
   //! Constructor
   LevelPillar();
 
   //! Constructor
-  LevelPillar( const QVector<Block>& level_image_blocks );
+  LevelPillar( const QVector<Block>& level_pillar_blocks,
+               const LevelPillar::Properties& level_pillar_properties,
+               const QPainterPath& clickable );
 
   //! Copy constructor
   LevelPillar( const LevelPillar& other_pillar );
@@ -71,15 +85,27 @@ public:
   QRectF boundingRect() const override;
 
   //! Get the shape of the pillar
-  //QPainterPath shape() const override;
+  QPainterPath shape() const override;
 
   //! Paint the level pillar
-  void paint( QPainter* painter,
+  void paintImpl( QPainter* painter,
               const QStyleOptionGraphicsItem* option,
               QWidget* widget ) override;
 
+  //! Check if an actor can pass through the pillar
+  bool blocksActors() const;
+
+  //! Check if a projectile can pass through the pillar
+  bool blocksProjectiles() const;
+
+  //! Check if the pillar will become transparent when hiding the character
+  bool isTransparentWhenHidingCharacter() const;
+
   //! Check if the object can be attacked
   bool canBeAttacked() const override;
+
+  //! Get the passable property
+  bool isPassable() const;
 
   //! Clone the level pillar
   virtual LevelPillar* clone() const = 0;
@@ -102,7 +128,7 @@ private:
   // The level pillar data
   std::shared_ptr<LevelPillarData> d_data;
 };
-  
+
 } // end QtD1 namespace
 
 #endif // end LEVEL_PILLAR_H

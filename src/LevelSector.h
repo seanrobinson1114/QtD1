@@ -61,6 +61,12 @@ public:
   //! Check if the object can be attacked
   bool canBeAttacked() const override;
 
+  //! Get the number or rows in the sector
+  int getNumberOfRows() const;
+
+  //! Return the squares that make the sector
+  QList<LevelSquare*> getSquaresForRow( int row_number ) const;
+
 private:
 
   // The level square z-order map
