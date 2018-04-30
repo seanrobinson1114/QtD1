@@ -111,7 +111,10 @@ ADD_LIBRARY(qtd1_core
   ControlPanel.cpp
   GameFrontendProxy.cpp
   MainWindow.cpp
-  MainWindowFrontendProxy.cpp)
+  MainWindowFrontendProxy.cpp
+
+  Grid.cpp
+  GridElement.cpp)
 
 SET_TARGET_PROPERTIES(qtd1_core PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
 

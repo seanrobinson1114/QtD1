@@ -10,10 +10,11 @@
 #include "Town.h"
 #include "LevelSquareFactory.h"
 #include "LevelSectorFactory.h"
+#include "Grid.h"
 
 namespace QtD1{
 
-//! Constructor
+// Constructor
 Town::Town( QObject* parent )
   : Level( parent, "/music/dtowne.wav" )
 { /* ... */ }
@@ -98,11 +99,11 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   {
     QList<LevelSquare*> row_squares;
     row_squares = top_sector->getSquaresForRow( i );
+
     for( int j = 0; j < row_squares.length(); ++j )
     {
       town_pillars.append( row_squares[j]->getPillars() );
     }
-    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
   }
   for( int i = 0; i < left_sector->getNumberOfRows() - 1; ++i )
   {
@@ -112,7 +113,6 @@ void Town::createSectors( QList<LevelSector*>& sectors )
     {
       town_pillars.append( row_squares[j]->getPillars() );
     }
-    // std::cout << "number of pillars in left sector: " << town_pillars.length() << std::endl;
   }
   for( int i = 0; i < right_sector->getNumberOfRows() - 1; ++i )
   {
@@ -122,7 +122,6 @@ void Town::createSectors( QList<LevelSector*>& sectors )
     {
       town_pillars.append( row_squares[j]->getPillars() );
     }
-    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
   }
   for( int i = 0; i < bottom_sector->getNumberOfRows() - 1; ++i )
   {
@@ -132,7 +131,6 @@ void Town::createSectors( QList<LevelSector*>& sectors )
     {
       town_pillars.append( row_squares[j]->getPillars() );
     }
-    // std::cout << "number of pillars in top sector: " << town_pillars.length() << std::endl;
   }
 
   // Resize the town bounding rect
@@ -181,9 +179,10 @@ void Town::createSectors( QList<LevelSector*>& sectors )
 
     if( town_pillars[i]->isInteractive() )
       this->connectInteractiveLevelObjectSignalsToLevelSignals( town_pillars[i] );
-    std::cout << "z value of added pillar: " << town_pillars[i]->zValue() << std::endl;
-
   }
+
+  // Initialize the grid used for pathfinding
+  Grid grid( 96, 96, town_pillars );
 }
 
 } // end QtD1 namespace
