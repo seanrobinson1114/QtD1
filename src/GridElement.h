@@ -18,7 +18,7 @@
 
 namespace QtD1{
 
-//! The grid class declaration
+//! The grid element class declaration
 class GridElement
 {
 
@@ -46,6 +46,9 @@ public:
   //! Set an adjascent grid element
   void setAdjascentGridElement( const Direction, const GridElement& );
 
+  //! Get an adjascent grid element
+  const GridElement* getAdjascentGridElement( const Direction ) const;
+
 private:
 
   // Initialize the adjascent grid grid elements
@@ -56,7 +59,7 @@ private:
 
   LevelPillar* d_corresponding_pillar;
 
-  // Map of adjascent pillars
+  // Map of adjascent grid elements
   std::map<Direction, const GridElement*> d_adjascent_grid_elements;
 };
 

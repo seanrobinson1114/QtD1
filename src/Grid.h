@@ -32,7 +32,7 @@ public:
   { /* ... */ }
 
   //! Construct path
-  void constructPath( QGraphicsItem* start, QGraphicsItem* end );
+  std::list<QPointF> constructPath( QGraphicsItem* start, QGraphicsItem* end ) const;
 
 private:
 

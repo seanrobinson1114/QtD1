@@ -44,10 +44,22 @@ void GridElement::setCorrespondingPillar( LevelPillar* pillar )
   d_corresponding_pillar = pillar;
 }
 
-//! Set an adjascent grid element
+// Set an adjascent grid element
 void GridElement::setAdjascentGridElement( const Direction direction, const GridElement&  grid_element )
 {
   d_adjascent_grid_elements[direction] = &grid_element;
+}
+
+// Get an adjascent grid element
+const GridElement* GridElement::getAdjascentGridElement( const Direction direction ) const
+{
+  auto direction_it = d_adjascent_grid_elements.find( direction );
+
+  if( direction_it != d_adjascent_grid_elements.end() )
+    return direction_it->second;
+
+  else
+    return NULL;
 }
 
 // Initialize adjascent grid elements

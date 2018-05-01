@@ -114,7 +114,8 @@ ADD_LIBRARY(qtd1_core
   MainWindowFrontendProxy.cpp
 
   Grid.cpp
-  GridElement.cpp)
+  GridElement.cpp
+  PathNode.cpp)
 
 SET_TARGET_PROPERTIES(qtd1_core PROPERTIES COMPILE_FLAGS "${QTD1_CXX_FLAGS}")
 
