@@ -37,16 +37,29 @@ public:
   //! Get the node weight
   int getWeight() const;
 
+  //! Get the node bounding box
+  QRectF getBoundingBox() const;
+
+  //! Get the node center point
+  QPointF getCenterPoint() const;
+
   //! Get the corresponding grid element
-  const GridElement* getCorrespondingGridElement() const;
+  const GridElement& getCorrespondingGridElement() const;
 
   //! Set an adjascent node
   void setAdjascentNode( const Direction, const PathNode& );
 
   //! Get an adjascent node
-  const PathNode* getLowestWeightAdjascentNode() const;
+  const PathNode* getLowestWeightAdjascentNode( Direction* = NULL ) const;
 
 private:
+
+  // Check if the node is the lowest weight node
+  void checkLowestWeightNode( const Direction child_node_direction,
+                              const PathNode& child_node,
+                              Direction* lowest_weight_node_direction,
+                              const PathNode* lowest_weight_node ) const;
+                           
 
   // Grid Element associated with node
   const GridElement* d_corresponding_grid_element;

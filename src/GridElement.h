@@ -37,6 +37,9 @@ public:
   //! Get the bounding box
   QRectF getBoundingBox() const;
 
+  //! Get the center point of the grid
+  QPointF getCenterPoint() const;
+
   //! Get the corresponding pillar
   const LevelPillar* getCorrespondingLevelPillar() const;
 

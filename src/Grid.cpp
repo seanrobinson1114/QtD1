@@ -19,7 +19,8 @@ namespace QtD1{
 
 // Constructor
 Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
-  : d_grid( rows * columns )
+  : d_grid( rows * columns ),
+    d_grid_pillar_map()
 {
   // Initialize grid, set bounding boxes and adjacencies
   for( int i = 0; i < rows; ++i )
@@ -97,6 +98,8 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
           grid_element_bb.top() == pillar_bb.top() )
       {
         d_grid[j].setCorrespondingPillar( pillars[i] );
+        d_grid_pillar_map[pillars[i]] = &d_grid[j];
+        
         break;
       }
     }
@@ -104,40 +107,45 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
 }
 
 // Construct path
-auto Grid::constructPath( QGraphicsItem* start, QGraphicsItem* end ) const -> Path
+auto Grid::constructPath( LevelObject* start, LevelObject* end ) const -> Path
+{
+  
+}
+
+// Construct path
+auto Grid::constructPath( LevelPillar* start, LevelPillar* end ) const -> Path
 {
   auto pillar_start_it = d_grid_pillar_map.find( start );
   auto pillar_end_it = d_grid_pillar_map.find( end );
 
   // Check if start and end are both valid
-  if( pillar_start_it == d_grid_pillar_map.end() || pillar_end_it == d_grid_pillar_map.end() )
+  if( pillar_start_it == d_grid_pillar_map.end() ||
+      pillar_end_it == d_grid_pillar_map.end() )
   {
-    // return NULL; // TODO
+    return Path();
   }
 
   // Find path
   else
   {
     // List for tracking current nodes being searched
-    std::list<PathNode> current_nodes;
+    std::list<PathNode> path_nodes;
 
     // Set for checking grid element duplicates
     std::set<const GridElement*> unique_grid_elements;
 
     // Create node from end and add to current list with weigth 0
-    current_nodes.emplace( current_nodes.end(), *pillar_end_it->second );
-    current_nodes.front().setWeight( 0 );
-    auto current_nodes_it = current_nodes.begin();
+    path_nodes.emplace_back( *pillar_end_it->second );
+    path_nodes.front().setWeight( 0 );
+    unique_grid_elements.insert( pillar_end_it->second );
+    
+    auto current_node_it = path_nodes.begin();
 
-    while( current_nodes_it != current_nodes.end() )
+    while( current_node_it != path_nodes.end() )
     {
       // Check if start has been reached
-      if( current_nodes_it->getCorrespondingGridElement() == pillar_start_it->second )
+      if( &current_node_it->getCorrespondingGridElement() == pillar_start_it->second )
         break;
-
-      // Add grid element to set to prevent duplicate nodes
-      const GridElement* grid_element = current_nodes_it->getCorrespondingGridElement();
-      unique_grid_elements.insert( grid_element );
 
       /*
        * Get the grid elements adjacencies
@@ -145,141 +153,149 @@ auto Grid::constructPath( QGraphicsItem* start, QGraphicsItem* end ) const -> Pa
        * Set their weights and add to current nodes
        */
 
-       // Top
-       const GridElement* north_adj = grid_element->getAdjascentGridElement( North );
-       if( north_adj && !unique_grid_elements.count( north_adj ) )
-       {
-         PathNode node( *north_adj );
-         node.setAdjascentNode( South, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( North, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( north_adj );
-       }
+       // North <--> South
+      this->setPathNodeAdjacencies( North,
+                                    South,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Top left
-       const GridElement* northwest_adj = grid_element->getAdjascentGridElement( Northwest );
-       if( northwest_adj && !unique_grid_elements.count( northwest_adj ) )
-       {
-         PathNode node( *northwest_adj );
-         node.setAdjascentNode( Southeast, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( Northwest, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( northwest_adj );
-       }
+       // Northwest <--> Southeast
+      this->setPathNodeAdjacencies( Northwest,
+                                    Southeast,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Top right
-       const GridElement* northeast_adj = grid_element->getAdjascentGridElement( Northeast );
-       if( northeast_adj && !unique_grid_elements.count( northeast_adj ) )
-       {
-         PathNode node( *northeast_adj );
-         node.setAdjascentNode( Southwest, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( Northeast, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( northeast_adj );
-       }
+       // Northeast <--> Southwest
+      this->setPathNodeAdjacencies( Northeast,
+                                    Southwest,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Left
-       const GridElement* west_adj = grid_element->getAdjascentGridElement( West );
-       if( west_adj && !unique_grid_elements.count( west_adj ) )
-       {
-         PathNode node( *west_adj );
-         node.setAdjascentNode( East, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( West, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( west_adj );
-       }
+       // West <--> East
+      this->setPathNodeAdjacencies( West,
+                                    East,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Right
-       const GridElement* east_adj = grid_element->getAdjascentGridElement( East );
-       if( east_adj && !unique_grid_elements.count( east_adj ) )
-       {
-         PathNode node( *east_adj );
-         node.setAdjascentNode( West, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( East, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( east_adj );
-       }
+       // East <--> West
+      this->setPathNodeAdjacencies( East,
+                                    West,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Bottom left
-       const GridElement* southwest_adj = grid_element->getAdjascentGridElement( Southwest );
-       if( southwest_adj && !unique_grid_elements.count( southwest_adj ) )
-       {
-         PathNode node( *southwest_adj );
-         node.setAdjascentNode( Northeast, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( Southwest, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( southwest_adj );
-       }
+       // Southwest <--> Northeast
+      this->setPathNodeAdjacencies( Southwest,
+                                    Northeast,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Bottom right
-       const GridElement* southeast_adj = grid_element->getAdjascentGridElement( Southeast );
-       if( southeast_adj && !unique_grid_elements.count( southeast_adj ) )
-       {
-         PathNode node( *southeast_adj );
-         node.setAdjascentNode( Northwest, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( Southeast, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( southeast_adj );
-       }
+       // Southeast <--> Northwest
+      this->setPathNodeAdjacencies( Southeast,
+                                    Northwest,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-       // Bottom
-       const GridElement* south_adj = grid_element->getAdjascentGridElement( South );
-       if( south_adj && !unique_grid_elements.count( south_adj ) )
-       {
-         PathNode node( *south_adj );
-         node.setAdjascentNode( North, *current_nodes_it );
-         current_nodes.insert( current_nodes.end(), node );
-         current_nodes_it->setAdjascentNode( South, node );
-         current_nodes.back().setWeight( current_nodes_it->getWeight() + 1 );
-         unique_grid_elements.insert( south_adj );
-       }
+       // South <--> North
+      this->setPathNodeAdjacencies( South,
+                                    North,
+                                    *current_node_it,
+                                    path_nodes,
+                                    unique_grid_elements );
 
-      ++current_nodes_it;
+      ++current_node_it;
     }
 
-    // List of path nodes that represent the shortest path
-    std::list<const PathNode*> shortest_path;
-    shortest_path.insert( shortest_path.end(), &( *current_nodes_it ) );
-    auto shortest_path_it = shortest_path.begin();
+    // There is no path between the start and end point
+    if( current_node_it == path_nodes.end() )
+      return Path();
 
-    // List of points to be traveresed by character
-    std::list<QPointF> shortest_path_points;
+    // Construct the shortest path between the start and end node
+    return this->constructShortestPath( *current_node_it, path_nodes.front() );
+  }
+}
 
-    /*
-     * Start at end for current_nodes( the end is the starting point )
-     * Check adjacencies and add the one with the lowest weight to shortest_path
-     */
-    while( shortest_path_it != shortest_path.end() )
+// Set the path node adjacencies
+void Grid::setPathNodeAdjacencies(
+                     const Direction adjacency_direction,
+                     const Direction opposite_adjacency_direction,
+                     PathNode& current_node,
+                     std::list<PathNode>& node_list,
+                     std::set<const GridElement*>& unique_grid_elements ) const
+{
+  const GridElement* grid_element_adj =
+    current_node.getCorrespondingGridElement().getAdjascentGridElement( adjacency_direction );
+
+  // Make sure that there is a grid element in the desired direction and that
+  // this grid element has not been used yet
+  if( grid_element_adj && !unique_grid_elements.count( grid_element_adj ) )
+  {
+    node_list.emplace_back( *grid_element_adj );
+    node_list.back().setAdjascentNode( opposite_adjacency_direction,
+                                           current_node );
+    node_list.back().setWeight( current_node.getWeight() + 1 );
+
+    current_node.setAdjascentNode( adjacency_direction, node_list.back() );
+    unique_grid_elements.insert( &node_list.back().getCorrespondingGridElement() );
+  }
+}
+
+// Construct a path from the current node
+auto Grid::constructShortestPath( PathNode& start_node,
+                                  PathNode& end_node ) const -> Path
+{
+  // List of points to be traveresed by an actor
+  Path shortest_path;
+
+  // Start at end for current_nodes( the end is the starting point )
+  // Check adjacencies and add the one with the lowest weight to
+  // shortest_path
+  const PathNode* current_node = &start_node;
+  QPointF current_node_center_point = current_node->getCenterPoint();
+
+  while( true )
+  {
+    // Check if end has been reached
+    if( current_node == &end_node )
+      break;
+
+    Direction direction;
+
+    // Get the adjascent node with lowest weight
+    const PathNode* next_node =
+      current_node->getLowestWeightAdjascentNode( &direction );
+      
+    // Get the adjascent node center point
+    QPointF next_node_center_point = next_node->getCenterPoint();
+
+    // Calculate the distance between the two node center points
+    double distance = 0.0;
+      
     {
-      // Check if end has been reached
-      if( (*shortest_path_it)->getCorrespondingGridElement() == pillar_end_it->second )
-        break;
+      const double x_diff = current_node_center_point.x() -
+        next_node_center_point.x();
+      
+      const double y_diff = current_node_center_point.y() -
+        next_node_center_point.y();
 
-      // Insert adjascent node with lowest weight
-      const PathNode* next_node = current_nodes_it->getLowestWeightAdjascentNode();
-      shortest_path.push_back( next_node );
-
-      // Get corresponding grid element, pillar, and set coords
-      const GridElement* grid_element = next_node->getCorrespondingGridElement();
-      QRectF bounding_box( grid_element->getBoundingBox() );
-      QPointF point( bounding_box.left() + bounding_box.width()/2, bounding_box.bottom() + bounding_box.height()/2 );
-      shortest_path_points.push_back( point );
-
-
-      ++shortest_path_it;
+      distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
     }
+      
+    shortest_path.push_back( std::make_pair( direction, distance ) );
 
-    // Return the list of points
-    return shortest_path_points;
+    // Move to the next node
+    current_node = next_node;
+    current_node_center_point = next_node_center_point;
   }
 
+  // Return the list of points
+  return shortest_path;
 }
 
 } // end QtD1 namespace

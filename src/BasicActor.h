@@ -98,7 +98,14 @@ protected:
   //! Get the grid
   const Grid& getGrid() const;
 
-  //! 
+  //! Set the path
+  void setPath( const Grid::Path& path );
+
+  //! Get the path
+  const Grid::Path& getPath() const;
+
+  //! Get the path
+  Grid::Path& getPath();
 
 private:
 

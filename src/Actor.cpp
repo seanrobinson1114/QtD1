@@ -493,6 +493,9 @@ void Actor::setTarget( LevelObject* target )
   if( target )
   {
     d_target = target;
+
+    this->setPath( this->getGrid().constructPath( this, target ) );
+    
     emit targetSet( target );
   }
 }
@@ -515,55 +518,45 @@ bool Actor::updateTimeDependentStates()
   {
     if( d_active_state == Walking )
     {
-      bool destination_reached = false;
+      bool destination_reached = this->getPath().empty();
 
-      // Calculate the lower left positions
-      QPointF target_position = d_target->scenePos();
-      target_position.ry() += d_target->boundingRect().height();
+      if( destination_reached )
+        emit targetReached( d_target );
 
-      QPointF this_position = this->scenePos();
-      this_position.ry() += this->boundingRect().height();
-
-      double x_distance = target_position.x() - this_position.x();
-      
-      double y_distance = target_position.y() - this_position.y();
-      
-      double distance = sqrt( x_distance*x_distance + y_distance*y_distance );
-      
-      if( distance > 0 )
+      else
       {
+        Direction direction = this->getPath().front().first;
+        double& distance = this->getPath().front().second;
+      
         update_required = true;
         
-        // Calculate the movement direction
-        Direction direction = calculateNearestDiscreteDirection(
-                                              this_position, target_position );
-
         // Calculate the velocity of the actor
         if( direction != this->getDirection() )
         {
           // Get the movement direction enum
           this->setDirection( direction );
 
-          QPointF direction_vector = getDirectionVector( direction );
-        
           // Calculate the velocity
           double speed = this->getMovementSpeed();
 
           if( distance < speed )
-          {
             speed = distance;
-            destination_reached = true;
-          }
+
+          QPointF direction_vector = QtD1::getDirectionVector( direction );
           
           d_x_velocity = direction_vector.x()*speed;
           d_y_velocity = direction_vector.y()*speed;
         }
-      }
 
-      this->moveBy( d_x_velocity, d_y_velocity );
-      
-      if( destination_reached )
-        emit targetReached( d_target );
+        this->moveBy( d_x_velocity, d_y_velocity );
+
+        // Update the path
+        distance -= std::sqrt( d_x_velocity*d_x_velocity +
+                               d_y_velocity*d_y_velocity );
+
+        if( distance <= 0.0 )
+          this->getPath().pop_front();
+      }
     }
   }
   

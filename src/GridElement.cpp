@@ -32,6 +32,13 @@ QRectF GridElement::getBoundingBox() const
   return d_bounding_box;
 }
 
+// Get the center point of the grid
+QPointF GridElement::getCenterPoint() const
+{
+  return QPointF( d_bounding_box.left() + d_bounding_box.width()/2,
+                  d_bounding_box.right() + d_bounding_box.height()/2 );
+}
+
 // Get the corresponding pillar
 const LevelPillar* GridElement::getCorrespondingLevelPillar() const
 {

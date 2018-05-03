@@ -17,7 +17,8 @@ BasicActor::BasicActor( QGraphicsObject* parent )
     d_active_sprites(),
     d_active_direction_sprite( std::make_pair( South, (GameSprite*)0 ) ),
     d_state_machine(),
-    d_grid()
+    d_grid(),
+    d_path()
 { /* ... */ }
 
 // Get the description of the basic actor
@@ -153,6 +154,24 @@ void BasicActor::restartActiveSprite()
 const Grid& BasicActor::getGrid() const
 {
   return *d_grid;
+}
+
+// Set the path
+void BasicActor::setPath( const Grid::Path& path )
+{
+  d_path = path;
+}
+
+// Get the path
+const Grid::Path& BasicActor::getPath() const
+{
+  return d_path;
+}
+
+// Get the path
+Grid::Path& BasicActor::getPath()
+{
+  return d_path;
 }
 
 } // end QtD1 namespace
