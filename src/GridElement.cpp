@@ -83,6 +83,14 @@ const GridElement* GridElement::getAdjascentGridElement( const Direction directi
 //! Check if painter path contains point
 bool GridElement::containsPoint( const QPointF& point ) const
 {
+  std::cout << "containsPoint point: " << point.x() << " : " << point.y() << std::endl;
+  std::cout << "bounding box values: "
+  << "left: " << d_bounding_box.left()
+  << " right: " << d_bounding_box.right()
+  << " top: "<< d_bounding_box.top()
+  << " bottom: " << d_bounding_box.bottom()
+  << std::endl;
+
   return d_shape.contains( point );
 }
 

@@ -58,8 +58,8 @@ private:
   void checkLowestWeightNode( const Direction child_node_direction,
                               const PathNode& child_node,
                               Direction* lowest_weight_node_direction,
-                              const PathNode* lowest_weight_node ) const;
-                           
+                              const PathNode*& lowest_weight_node ) const;
+
 
   // Grid Element associated with node
   const GridElement* d_corresponding_grid_element;

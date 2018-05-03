@@ -33,32 +33,40 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
 // Convert start and end to LevelPillars and construct path
 auto Grid::constructPath( LevelObject* start, LevelObject* end ) const -> Path
 {
-  LevelPillar* start_pillar = NULL, * end_pillar = NULL;
+  const GridElement* start_grid_element = NULL, * end_grid_element = NULL;
 
   // Check start
   if( start->isPillar() )
-  {
-    start_pillar = dynamic_cast<LevelPillar*>( start );
-  }
+    start_grid_element = d_grid_pillar_map.find( dynamic_cast<LevelPillar*>( start ) )->second;
 
   else
-  {
+    start_grid_element = this->findGridElement( start );
 
-  }
 
   // Check end
   if( end->isPillar() )
-  {
-    end_pillar = dynamic_cast<LevelPillar*>( end );
-  }
+    end_grid_element = d_grid_pillar_map.find( dynamic_cast<LevelPillar*>( end ) )->second;
 
   else
-  {
+    end_grid_element = this->findGridElement( end );
 
+
+  if( end_grid_element == NULL )
+  {
+    std::cout << "end grid element is NULL" << std::endl;
+    return Path();
+  }
+
+  if( start_grid_element == NULL )
+  {
+    std::cout << "start grid element is NULL" << std::endl;
+    return Path();
   }
 
   // Construct path
-  return this->constructPath( start_pillar, end_pillar );
+  else
+    return this->constructPath( start_grid_element, end_grid_element );
+
 }
 
 // Construct path
@@ -175,14 +183,32 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end ) con
 // Find the grid element that the point lies in
 const GridElement* Grid::findGridElement( const QPointF& point ) const
 {
+  std::cout << "grid element X: " << point.x() << std::endl;
+  std::cout << "grid element Y: " << point.y() << std::endl;
+
   std::vector<double>::const_iterator d_x_grid_points_it =
     std::lower_bound( d_x_grid_points.begin(), d_x_grid_points.end(), point.x() );
 
   std::vector<double>::const_iterator d_y_grid_points_it =
     std::lower_bound( d_y_grid_points.begin(), d_y_grid_points.end(), point.y() );
 
-  int x_index = std::distance( d_x_grid_points.begin(), d_x_grid_points_it );
-  int y_index = std::distance( d_y_grid_points.begin(), d_y_grid_points_it );
+  int x_index = d_x_grid_points_it - d_x_grid_points.begin();
+
+  // Index returned is one after
+  if( x_index > 0 )
+    --x_index;
+
+  int y_index = d_y_grid_points_it - d_y_grid_points.begin();
+
+  // Index returned is one after
+  if( y_index > 0 )
+    --y_index;
+
+  std::cout << "std::distance x index: " << x_index << std::endl;
+  std::cout << "x lower bound: " << d_x_grid_points[x_index] << std::endl;
+
+  std::cout << "std::distance y index: " << y_index << std::endl;
+  std::cout << "y lower bound: " << d_y_grid_points[y_index] << std::endl;
 
   auto x_index_map_it = d_binary_obb_tree.find( x_index );
   if( x_index_map_it != d_binary_obb_tree.end() )
@@ -209,8 +235,8 @@ const GridElement* Grid::findGridElement( const QPointF& point ) const
 // Find the grid element that the level objects bounding box lies in
 const GridElement* Grid::findGridElement( LevelObject* level_object ) const
 {
-  QPointF lower_left_point( level_object->boundingRect().left(), level_object->boundingRect().top() );
-  return this->findGridElement( lower_left_point );
+  QPointF lower_left_point( level_object->boundingRect().left(), level_object->boundingRect().height() );
+  return this->findGridElement( level_object->mapToScene( lower_left_point ) );
 }
 
 // Construct the grid
@@ -223,7 +249,7 @@ void Grid::constructGrid()
     {
       int ge_index = j+(i*d_columns);
 
-      d_grid[ge_index].setBoundingBox( 32*i + 32*j, 32*(d_columns/2) - 16*(i+1) + 16*j, 64, 32 );
+      d_grid[ge_index].setBoundingBox( 32*i + 32*j, (32*(d_columns/2) + 16*(i+1) - 16*j) + 192, 64, 32 );
 
       // Set North adjacent grid element
       if( i != 0 && j != d_columns - 1 )
@@ -278,10 +304,20 @@ void Grid::constructGrid()
 // Set all corresponding pillars
 void Grid::setCorrespondingPillars( QList<LevelPillar*> pillars )
 {
+  int success = 0;
+  int fail = 0;
+  std::cout << "number of pillars: " << pillars.size() << std::endl;
+
   // Loop through pillars and find corresponding grid element
   for( int i = 0; i < pillars.size(); ++i )
   {
     QRectF pillar_bb = pillars[i]->mapRectToScene( pillars[i]->boundingRect() );
+
+    // std::cout << "pillar bounding box: " << std::endl;
+    // std::cout << "left: " << pillar_bb.left() << std::endl;
+    // std::cout << "right: " << pillar_bb.right() << std::endl;
+    // std::cout << "top: " << pillar_bb.top() << std::endl;
+    // std::cout << "bottom: " << pillar_bb.bottom() << std::endl;
 
     /*
      * Loop through grid and find matching values for left, right, and top
@@ -291,17 +327,34 @@ void Grid::setCorrespondingPillars( QList<LevelPillar*> pillars )
     {
       QRectF grid_element_bb = d_grid[j].getBoundingBox();
 
+      // std::cout << std::endl;
+      // std::cout << "grid element bounding box: " << std::endl;
+      // std::cout << "left: " << grid_element_bb.left() << std::endl;
+      // std::cout << "right: " << grid_element_bb.right() << std::endl;
+      // std::cout << "top: " << grid_element_bb.top() << std::endl;
+      // std::cout << "bottom: " << grid_element_bb.bottom() << std::endl;
+      // std::cout << "grid element index: " << j << std::endl;
+      // std::cout << std::endl;
+
       if( grid_element_bb.left() == pillar_bb.left() &&
           grid_element_bb.right() == pillar_bb.right() &&
-          grid_element_bb.top() == pillar_bb.top() )
+          grid_element_bb.bottom() == pillar_bb.bottom() )
       {
+        // std::cout << "corresponding pillar: true" << std::endl;
         d_grid[j].setCorrespondingPillar( pillars[i] );
         d_grid_pillar_map[pillars[i]] = &d_grid[j];
 
+        ++success;
+
         break;
       }
+
+      if( j == d_grid.size() -1 )
+        ++fail;
     }
   }
+  std::cout << "number of matches: " << success << std::endl;
+  std::cout << "number of failures: " << fail << std::endl;
 }
 
 // Set the path node adjacencies
@@ -341,6 +394,7 @@ void Grid::setPathNodeAdjacencies(
 auto Grid::constructShortestPath( PathNode& start_node,
                                   PathNode& end_node ) const -> Path
 {
+  std::cout << "finding shortest path" << std::endl;
   // List of points to be traveresed by an actor
   Path shortest_path;
 
@@ -354,7 +408,13 @@ auto Grid::constructShortestPath( PathNode& start_node,
   {
     // Check if end has been reached
     if( current_node == &end_node )
+    {
+      std::cout << "current node equals end node" << std::endl;
       break;
+    }
+
+    else
+      std::cout << "current node doesn't equal end node" << std::endl;
 
     Direction direction;
 
@@ -403,30 +463,49 @@ void Grid::constructBinarySearchTree()
   d_y_grid_points.resize( d_rows*2 + 1 );
   for( int i = 0; i <= d_rows*2; ++i )
   {
-    d_y_grid_points[i] = i*16;
+    d_y_grid_points[i] = i*16 + 224; // generalize this offset
   }
 
   // Get grid elements that overlay each mesh point
   for( int i = 0; i < d_rows; ++i )
   {
     int y_index_second = d_y_grid_points.size()/2 + i;
-    int y_index_first = --y_index_second;
+    int y_index_first = y_index_second - 1;
 
     int x_index_first = i;
-    int x_index_second = ++x_index_first;
+    int x_index_second = x_index_first + 1;
 
     for( int j = 0; j < d_columns; ++j )
     {
-      y_index_first -= j;
-      y_index_second -= j;
-      x_index_first += j;
-      x_index_second += j;
+      if( j > 0 )
+      {
+        --y_index_first;
+        --y_index_second;
+        ++x_index_first;
+        ++x_index_second;
+      }
 
       d_binary_obb_tree[x_index_first][y_index_first].push_back( &d_grid[j + i*d_columns] );
       d_binary_obb_tree[x_index_first][y_index_second].push_back( &d_grid[j + i*d_columns] );
       d_binary_obb_tree[x_index_second][y_index_first].push_back( &d_grid[j + i*d_columns] );
       d_binary_obb_tree[x_index_second][y_index_second].push_back( &d_grid[j + i*d_columns] );
     }
+  }
+  for( int i = 0; i < d_x_grid_points.size(); ++i )
+  {
+    std::cout << "x index[" << i << "]: " << std::endl;
+    for( auto y_element : d_binary_obb_tree[i] )
+    {
+      std::cout << "  y_index: " << y_element.first << "(" << d_y_grid_points[y_element.first] << "-" << d_y_grid_points[y_element.first+1] << ")" << std::endl;
+      for( auto y_grid_element : y_element.second )
+      {
+        std::cout << "    bottom: " << y_grid_element->getBoundingBox().bottom() << std::endl
+                  << "    top: " << y_grid_element->getBoundingBox().top()
+        << std::endl;
+
+      }
+    }
+    std::cout << std::endl;
   }
 }
 

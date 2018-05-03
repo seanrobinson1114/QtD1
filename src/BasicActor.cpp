@@ -165,6 +165,7 @@ const Grid& BasicActor::getGrid() const
 // Set the path
 void BasicActor::setPath( const Grid::Path& path )
 {
+  std::cout<< "Path Length: " << path.size() << std::endl;
   d_path = path;
 }
 

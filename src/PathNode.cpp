@@ -61,7 +61,7 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
   const PathNode* lw_path_node = NULL;
 
   auto direction_it = d_adjascent_path_nodes.find( North );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( North,
@@ -79,9 +79,9 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
                                  direction,
                                  lw_path_node );
   }
-  
+
   direction_it = d_adjascent_path_nodes.find( Northeast );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( Northeast,
@@ -91,7 +91,7 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
   }
 
   direction_it = d_adjascent_path_nodes.find( West );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( West,
@@ -101,7 +101,7 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
   }
 
   direction_it = d_adjascent_path_nodes.find( East );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( East,
@@ -111,17 +111,17 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
   }
 
   direction_it = d_adjascent_path_nodes.find( Southwest );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( Southwest,
                                  *direction_it->second,
                                  direction,
-                                 lw_path_node );    
+                                 lw_path_node );
   }
 
   direction_it = d_adjascent_path_nodes.find( Southeast );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( Southeast,
@@ -131,7 +131,7 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
   }
 
   direction_it = d_adjascent_path_nodes.find( South );
-  
+
   if( direction_it != d_adjascent_path_nodes.end() )
   {
     this->checkLowestWeightNode( South,
@@ -147,8 +147,8 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
 void PathNode::checkLowestWeightNode( const Direction child_node_direction,
                                       const PathNode& child_node,
                                       Direction* lowest_weight_node_direction,
-                                      const PathNode* lowest_weight_node ) const
-                                      
+                                      const PathNode*& lowest_weight_node ) const
+
 {
   if( !lowest_weight_node )
   {
@@ -157,11 +157,11 @@ void PathNode::checkLowestWeightNode( const Direction child_node_direction,
     if( lowest_weight_node_direction )
       *lowest_weight_node_direction = child_node_direction;
   }
-    
+
   else if( child_node.getWeight() < lowest_weight_node->getWeight() )
   {
     lowest_weight_node = &child_node;
-    
+
     if( lowest_weight_node_direction )
       *lowest_weight_node_direction = child_node_direction;
   }
