@@ -44,10 +44,21 @@ public:
   //! Construct path
   Path constructPath( LevelPillar* start, LevelPillar* end ) const;
 
+  //! Construct path
+  Path constructPath( const GridElement* start, const GridElement* end ) const;
+
+protected:
+
+  // Find the grid element that the point lies in
+  const GridElement* findGridElement( const QPointF& ) const;
+
+  // Find the grid element that the level objects bounding box lies in
+  const GridElement* findGridElement( LevelObject* ) const;
+
 private:
 
   // Construct the grid
-  void constructGrid( int, int );
+  void constructGrid();
 
   // Set all corresponding pillars
   void setCorrespondingPillars( QList<LevelPillar*> );
@@ -62,11 +73,27 @@ private:
   // Construct a path from the current node
   Path constructShortestPath( PathNode& start_node, PathNode& end_node ) const;
 
+  // Construct binary search tree
+  void constructBinarySearchTree();
+
+  // Number of rows
+  int d_rows;
+
+  // Number of columns
+  int d_columns;
+
   // Grid
   std::vector<GridElement> d_grid;
 
   // Map of grid points with corresponding pillars from scene
   std::map<LevelPillar*, GridElement*> d_grid_pillar_map;
+
+  // Points in binary obb tree
+  std::vector<double> d_x_grid_points;
+  std::vector<double> d_y_grid_points;
+
+  // Binary obb tree
+  std::map<int, std::map<int, std::list<const GridElement*>>> d_binary_obb_tree;
 };
 
 } // end QtD1 namespace

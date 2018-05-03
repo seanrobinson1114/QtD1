@@ -19,11 +19,15 @@ namespace QtD1{
 
 // Constructor
 Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
-  : d_grid( rows * columns ),
+  : d_rows( rows ),
+    d_columns( columns ),
+    d_grid( rows * columns ),
     d_grid_pillar_map()
 {
-  this->constructGrid( rows, columns );
+  this->constructGrid();
   this->setCorrespondingPillars( pillars );
+
+  this->constructBinarySearchTree();
 }
 
 // Convert start and end to LevelPillars and construct path
@@ -70,159 +74,202 @@ auto Grid::constructPath( LevelPillar* start, LevelPillar* end ) const -> Path
     return Path();
   }
 
-  // Find path
-  else
+  return this->constructPath( pillar_start_it->second, pillar_end_it->second );
+}
+
+//! Construct path
+auto Grid::constructPath( const GridElement* start, const GridElement* end ) const -> Path
+{
+  // List for tracking current nodes being searched
+  std::list<PathNode> path_nodes;
+
+  // Set for checking grid element duplicates
+  std::set<const GridElement*> unique_grid_elements;
+
+  // Create node from end and add to current list with weigth 0
+  path_nodes.emplace_back( *end );
+  path_nodes.front().setWeight( 0 );
+  unique_grid_elements.insert( end );
+
+  auto current_node_it = path_nodes.begin();
+
+  while( current_node_it != path_nodes.end() )
   {
-    // List for tracking current nodes being searched
-    std::list<PathNode> path_nodes;
+    // Check if start has been reached
+    if( &current_node_it->getCorrespondingGridElement() == start )
+      break;
 
-    // Set for checking grid element duplicates
-    std::set<const GridElement*> unique_grid_elements;
+    /*
+     * Get the grid elements adjacencies
+     * Check for null adjacencies
+     * Set their weights and add to current nodes
+     */
 
-    // Create node from end and add to current list with weigth 0
-    path_nodes.emplace_back( *pillar_end_it->second );
-    path_nodes.front().setWeight( 0 );
-    unique_grid_elements.insert( pillar_end_it->second );
+     // North <--> South
+    this->setPathNodeAdjacencies( North,
+                                  South,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-    auto current_node_it = path_nodes.begin();
+     // Northwest <--> Southeast
+    this->setPathNodeAdjacencies( Northwest,
+                                  Southeast,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-    while( current_node_it != path_nodes.end() )
-    {
-      // Check if start has been reached
-      if( &current_node_it->getCorrespondingGridElement() == pillar_start_it->second )
-        break;
+     // Northeast <--> Southwest
+    this->setPathNodeAdjacencies( Northeast,
+                                  Southwest,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-      /*
-       * Get the grid elements adjacencies
-       * Check for null adjacencies
-       * Set their weights and add to current nodes
-       */
+     // West <--> East
+    this->setPathNodeAdjacencies( West,
+                                  East,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-       // North <--> South
-      this->setPathNodeAdjacencies( North,
-                                    South,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
+     // East <--> West
+    this->setPathNodeAdjacencies( East,
+                                  West,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-       // Northwest <--> Southeast
-      this->setPathNodeAdjacencies( Northwest,
-                                    Southeast,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
+     // Southwest <--> Northeast
+    this->setPathNodeAdjacencies( Southwest,
+                                  Northeast,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-       // Northeast <--> Southwest
-      this->setPathNodeAdjacencies( Northeast,
-                                    Southwest,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
+     // Southeast <--> Northwest
+    this->setPathNodeAdjacencies( Southeast,
+                                  Northwest,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-       // West <--> East
-      this->setPathNodeAdjacencies( West,
-                                    East,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
+     // South <--> North
+    this->setPathNodeAdjacencies( South,
+                                  North,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
 
-       // East <--> West
-      this->setPathNodeAdjacencies( East,
-                                    West,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
-
-       // Southwest <--> Northeast
-      this->setPathNodeAdjacencies( Southwest,
-                                    Northeast,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
-
-       // Southeast <--> Northwest
-      this->setPathNodeAdjacencies( Southeast,
-                                    Northwest,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
-
-       // South <--> North
-      this->setPathNodeAdjacencies( South,
-                                    North,
-                                    *current_node_it,
-                                    path_nodes,
-                                    unique_grid_elements );
-
-      ++current_node_it;
-    }
-
-    // There is no path between the start and end point
-    if( current_node_it == path_nodes.end() )
-      return Path();
-
-    // Construct the shortest path between the start and end node
-    return this->constructShortestPath( *current_node_it, path_nodes.front() );
+    ++current_node_it;
   }
+
+  // There is no path between the start and end point
+  if( current_node_it == path_nodes.end() )
+    return Path();
+
+  // Construct the shortest path between the start and end node
+  return this->constructShortestPath( *current_node_it, path_nodes.front() );
+}
+
+// Find the grid element that the point lies in
+const GridElement* Grid::findGridElement( const QPointF& point ) const
+{
+  std::vector<double>::const_iterator d_x_grid_points_it =
+    std::lower_bound( d_x_grid_points.begin(), d_x_grid_points.end(), point.x() );
+
+  std::vector<double>::const_iterator d_y_grid_points_it =
+    std::lower_bound( d_y_grid_points.begin(), d_y_grid_points.end(), point.y() );
+
+  int x_index = std::distance( d_x_grid_points.begin(), d_x_grid_points_it );
+  int y_index = std::distance( d_y_grid_points.begin(), d_y_grid_points_it );
+
+  auto x_index_map_it = d_binary_obb_tree.find( x_index );
+  if( x_index_map_it != d_binary_obb_tree.end() )
+  {
+    auto y_index_map_it = x_index_map_it->second.find( y_index );
+    if( y_index_map_it != x_index_map_it->second.end() )
+    {
+      const std::list<const GridElement*>& possible_grids_elements = y_index_map_it->second;
+      for( auto grid_element : possible_grids_elements )
+      {
+        if( grid_element->containsPoint( point ) )
+          return grid_element;
+      }
+
+      return NULL;
+    }
+    else
+      return NULL;
+  }
+  else
+    return NULL;
+}
+
+// Find the grid element that the level objects bounding box lies in
+const GridElement* Grid::findGridElement( LevelObject* level_object ) const
+{
+  QPointF lower_left_point( level_object->boundingRect().left(), level_object->boundingRect().top() );
+  return this->findGridElement( lower_left_point );
 }
 
 // Construct the grid
-void Grid::constructGrid( int rows, int columns )
+void Grid::constructGrid()
 {
   // Initialize grid, set bounding boxes and adjacencies
-  for( int i = 0; i < rows; ++i )
+  for( int i = 0; i < d_rows; ++i )
   {
-    for( int j = 0; j < columns; ++j )
+    for( int j = 0; j < d_columns; ++j )
     {
-      int ge_index = j+(i*columns);
+      int ge_index = j+(i*d_columns);
 
-      d_grid[ge_index].setBoundingBox( 32*i + 32*j, 32*(columns/2) - 16*(i+1) + 16*j, 64, 32 );
+      d_grid[ge_index].setBoundingBox( 32*i + 32*j, 32*(d_columns/2) - 16*(i+1) + 16*j, 64, 32 );
 
       // Set North adjacent grid element
-      if( i != 0 && j != columns - 1 )
+      if( i != 0 && j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( North, d_grid[j+1+(i-1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( North, d_grid[j+1+(i-1)*d_columns]);
       }
 
       // Set the Northwest adjacent grid element
       if( i != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Northwest, d_grid[j+(i-1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( Northwest, d_grid[j+(i-1)*d_columns]);
       }
 
       // Set the Northeast adjacent grid element
-      if( j != columns - 1 )
+      if( j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Northeast, d_grid[j+1+(i*columns)]);
+        d_grid[ge_index].setAdjascentGridElement( Northeast, d_grid[j+1+(i*d_columns)]);
       }
 
       // Set the West adjascent grid element
       if( i != 0 && j != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( West, d_grid[j-1+(i-1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( West, d_grid[j-1+(i-1)*d_columns]);
       }
 
       // Set the East adjascent grid element
-      if( i != rows - 1 && j != columns - 1 )
+      if( i != d_rows - 1 && j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( East, d_grid[j+1+(i+1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( East, d_grid[j+1+(i+1)*d_columns]);
       }
 
       // Set Southwest adjacent grid element
       if( j != 0 ) {
-        d_grid[ge_index].setAdjascentGridElement( Southwest, d_grid[j-1+(i*columns)]);
+        d_grid[ge_index].setAdjascentGridElement( Southwest, d_grid[j-1+(i*d_columns)]);
       }
 
       // Set the Southeast adjascent grid element
-      if( i != rows - 1 )
+      if( i != d_rows - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Southeast, d_grid[j+(i+1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( Southeast, d_grid[j+(i+1)*d_columns]);
       }
 
       // Set the South adjacent grid element
-      if( i != rows -1 && j != 0 )
+      if( i != d_rows -1 && j != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( South, d_grid[j-1+(i+1)*columns]);
+        d_grid[ge_index].setAdjascentGridElement( South, d_grid[j-1+(i+1)*d_columns]);
       }
     }
   }
@@ -272,13 +319,21 @@ void Grid::setPathNodeAdjacencies(
   // this grid element has not been used yet
   if( grid_element_adj && !unique_grid_elements.count( grid_element_adj ) )
   {
-    node_list.emplace_back( *grid_element_adj );
-    node_list.back().setAdjascentNode( opposite_adjacency_direction,
-                                           current_node );
-    node_list.back().setWeight( current_node.getWeight() + 1 );
+    // Check if pillar exists
+    if( grid_element_adj->getCorrespondingLevelPillar() )
+    {
+      // Check if passable
+      if( grid_element_adj->getCorrespondingLevelPillar()->isPassable() )
+      {
+        node_list.emplace_back( *grid_element_adj );
+        node_list.back().setAdjascentNode( opposite_adjacency_direction,
+                                               current_node );
+        node_list.back().setWeight( current_node.getWeight() + 1 );
 
-    current_node.setAdjascentNode( adjacency_direction, node_list.back() );
-    unique_grid_elements.insert( &node_list.back().getCorrespondingGridElement() );
+        current_node.setAdjascentNode( adjacency_direction, node_list.back() );
+        unique_grid_elements.insert( &node_list.back().getCorrespondingGridElement() );
+      }
+    }
   }
 }
 
@@ -332,6 +387,47 @@ auto Grid::constructShortestPath( PathNode& start_node,
 
   // Return the list of points
   return shortest_path;
+}
+
+// Construct binary search tree
+void Grid::constructBinarySearchTree()
+{
+  // Set x points
+  d_x_grid_points.resize( d_columns*2 + 1 );
+  for( int i = 0; i <= d_columns*2; ++i )
+  {
+    d_x_grid_points[i] = i*32;
+  }
+
+  // Set y points
+  d_y_grid_points.resize( d_rows*2 + 1 );
+  for( int i = 0; i <= d_rows*2; ++i )
+  {
+    d_y_grid_points[i] = i*16;
+  }
+
+  // Get grid elements that overlay each mesh point
+  for( int i = 0; i < d_rows; ++i )
+  {
+    int y_index_second = d_y_grid_points.size()/2 + i;
+    int y_index_first = --y_index_second;
+
+    int x_index_first = i;
+    int x_index_second = ++x_index_first;
+
+    for( int j = 0; j < d_columns; ++j )
+    {
+      y_index_first -= j;
+      y_index_second -= j;
+      x_index_first += j;
+      x_index_second += j;
+
+      d_binary_obb_tree[x_index_first][y_index_first].push_back( &d_grid[j + i*d_columns] );
+      d_binary_obb_tree[x_index_first][y_index_second].push_back( &d_grid[j + i*d_columns] );
+      d_binary_obb_tree[x_index_second][y_index_first].push_back( &d_grid[j + i*d_columns] );
+      d_binary_obb_tree[x_index_second][y_index_second].push_back( &d_grid[j + i*d_columns] );
+    }
+  }
 }
 
 } // end QtD1 namespace

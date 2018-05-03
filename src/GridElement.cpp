@@ -14,6 +14,7 @@ namespace QtD1{
 // Constructor
 GridElement::GridElement()
   : d_bounding_box(),
+    d_shape(),
     d_corresponding_pillar( NULL ),
     d_adjascent_grid_elements()
 {
@@ -24,6 +25,16 @@ GridElement::GridElement()
 void GridElement::setBoundingBox( int x_min, int y_min, int width, int height )
 {
   d_bounding_box.setRect( x_min, y_min, width, height );
+
+  // set painter member data
+  QPolygonF shape_polygon;
+  shape_polygon << QPointF( x_min, y_min + height/2 );
+  shape_polygon << QPointF( x_min + width/2, y_min );
+  shape_polygon << QPointF( x_min + width, y_min + height/2 );
+  shape_polygon << QPointF( x_min + width/2, y_min + height );
+
+  // Add polygon to painter path
+  d_shape.addPolygon( shape_polygon );
 }
 
 // Get the bounding box
@@ -67,6 +78,12 @@ const GridElement* GridElement::getAdjascentGridElement( const Direction directi
 
   else
     return NULL;
+}
+
+//! Check if painter path contains point
+bool GridElement::containsPoint( const QPointF& point ) const
+{
+  return d_shape.contains( point );
 }
 
 // Initialize adjascent grid elements

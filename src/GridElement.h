@@ -52,6 +52,9 @@ public:
   //! Get an adjascent grid element
   const GridElement* getAdjascentGridElement( const Direction ) const;
 
+  //! Check if painter path contains point
+  bool containsPoint( const QPointF& ) const;
+
 private:
 
   // Initialize the adjascent grid grid elements
@@ -59,6 +62,9 @@ private:
 
   // Bounding Box
   QRectF d_bounding_box;
+
+  // Painter path
+  QPainterPath d_shape;
 
   LevelPillar* d_corresponding_pillar;
 
