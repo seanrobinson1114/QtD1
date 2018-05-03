@@ -27,7 +27,8 @@ Level::Level( QObject* parent )
     d_music( new Music ),
     d_image_asset_loader(),
     d_needs_restore( false ),
-    d_ready( false )
+    d_ready( false ),
+    d_grid()
 { /* ... */ }
 
 // Constructor
@@ -98,6 +99,8 @@ void Level::insertCharacter( Character* character,
   character->setPos( location );
   character->setDirection( direction );
 
+  character->setGrid( d_grid );
+
   this->handleCharacterPositionChanged();
 
   // Check that character is interactive
@@ -111,6 +114,12 @@ void Level::removeCharacter()
   this->disconnectCharacterSignalsFromLevelSlots();
 
   this->removeItem( d_character );
+}
+
+// Initialize the grid
+void Level::initializeGrid( int rows, int columns, QList<LevelPillar*> pillars )
+{
+  d_grid.reset( new Grid( rows, columns, pillars ) );
 }
 
 // Check if the level image assets need to be restored

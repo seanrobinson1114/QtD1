@@ -21,6 +21,7 @@
 #include "InteractiveLevelObject.h"
 #include "Direction.h"
 #include "GameSprite.h"
+#include "Grid.h"
 
 namespace QtD1{
 
@@ -61,6 +62,9 @@ public:
   //! Start the actor state machine
   void startStateMachine();
 
+  //! Set the grid
+  void setGrid( const std::shared_ptr<const Grid>& );
+
 signals:
 
   //! All of the active sprite frames have been shown
@@ -91,6 +95,11 @@ protected:
   //! Update time dependent states (return if a screen update
   virtual bool updateTimeDependentStates() = 0;
 
+  //! Get the grid
+  const Grid& getGrid() const;
+
+  //! 
+
 private:
 
   // The active sprites
@@ -101,6 +110,12 @@ private:
 
   // The basic actor state machine
   std::unique_ptr<QStateMachine> d_state_machine;
+
+  // The grid
+  std::shared_ptr<const Grid> d_grid;
+
+  // The path through the grid
+  Grid::Path d_path;
 };
 
 } // end QtD1 namespace

@@ -104,7 +104,7 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
 }
 
 // Construct path
-std::list<QPointF> Grid::constructPath( QGraphicsItem* start, QGraphicsItem* end ) const
+auto Grid::constructPath( QGraphicsItem* start, QGraphicsItem* end ) const -> Path
 {
   auto pillar_start_it = d_grid_pillar_map.find( start );
   auto pillar_end_it = d_grid_pillar_map.find( end );

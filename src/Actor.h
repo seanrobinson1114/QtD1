@@ -206,7 +206,7 @@ signals:
 
   //! Actor health changed
   void healthChanged( const int current_health );
-  
+
   //! Actor mana changed
   void manaChanged( const int current_mana );
 

@@ -22,6 +22,7 @@
 #include "ImageAssetLoader.h"
 #include "Character.h"
 #include "Music.h"
+#include "Grid.h"
 
 namespace QtD1{
 
@@ -75,6 +76,9 @@ public:
 
   //! Remove the character
   virtual void removeCharacter();
+
+  //! Create the grid
+  void initializeGrid( int, int, QList<LevelPillar*> );
 
   //! Get the character
   Character* getCharacter();
@@ -141,7 +145,7 @@ protected:
 
   //! Create the level sectors
   virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
-  
+
   // Connect interactiveLevelObject signals to Level signals
   void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
@@ -211,6 +215,9 @@ private:
 
   // Records if the image assets are ready
   bool d_ready;
+
+  // the grid used for pathfinding
+  std::shared_ptr<const Grid> d_grid;
 };
 
 } // end QtD1 namespace

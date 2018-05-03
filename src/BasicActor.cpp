@@ -16,7 +16,8 @@ BasicActor::BasicActor( QGraphicsObject* parent )
   : InteractiveLevelObject( parent ),
     d_active_sprites(),
     d_active_direction_sprite( std::make_pair( South, (GameSprite*)0 ) ),
-    d_state_machine()
+    d_state_machine(),
+    d_grid()
 { /* ... */ }
 
 // Get the description of the basic actor
@@ -122,6 +123,12 @@ void BasicActor::startStateMachine()
   }
 }
 
+// Set the grid
+void BasicActor::setGrid( const std::shared_ptr<const Grid>& grid )
+{
+  d_grid = grid;
+}
+
 // Set the active sprites
 void BasicActor::setActiveSprites(
                 const std::shared_ptr<DirectionGameSpriteMap>& active_sprites )
@@ -140,6 +147,12 @@ void BasicActor::restartActiveSprite()
 {
   if( d_active_direction_sprite.second )
     d_active_direction_sprite.second->setFrame( 0 );
+}
+
+// Get the grid
+const Grid& BasicActor::getGrid() const
+{
+  return *d_grid;
 }
 
 } // end QtD1 namespace

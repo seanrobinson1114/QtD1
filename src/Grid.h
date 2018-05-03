@@ -24,6 +24,9 @@ class Grid
 
 public:
 
+  //! Typedef for the path through the grid
+  typedef std::list<QPointF> Path;
+
   //! Constructor
   Grid( int rows, int columns, QList<LevelPillar*> pillars );
 
@@ -32,7 +35,7 @@ public:
   { /* ... */ }
 
   //! Construct path
-  std::list<QPointF> constructPath( QGraphicsItem* start, QGraphicsItem* end ) const;
+  Path constructPath( QGraphicsItem* start, QGraphicsItem* end ) const;
 
 private:
 
