@@ -143,6 +143,9 @@ protected:
   //! Set the music
   void setMusic( const std::shared_ptr<Music>& music );
 
+  //! Set the grid
+  void setGrid( const std::shared_ptr<const Grid>& grid );
+
   //! Create the level sectors
   virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
 

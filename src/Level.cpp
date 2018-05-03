@@ -45,6 +45,12 @@ void Level::setMusic( const std::shared_ptr<Music>& music )
   d_music = music;
 }
 
+// Set the grid
+void Level::setGrid( const std::shared_ptr<const Grid>& grid )
+{
+  d_grid = grid;
+}
+
 // Create the level background
 void Level::createBackground()
 {

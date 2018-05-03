@@ -182,7 +182,7 @@ void Town::createSectors( QList<LevelSector*>& sectors )
   }
 
   // Initialize the grid used for pathfinding
-  Grid grid( 96, 96, town_pillars );
+  this->setGrid( std::make_shared<const Grid>( 96, 96, town_pillars ) );
 }
 
 } // end QtD1 namespace
