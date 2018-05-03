@@ -82,6 +82,9 @@ public:
 
   //! Check if the object can be attacked
   virtual bool canBeAttacked() const = 0;
+
+  //! Check if it is a pillar
+  virtual bool isPillar() const = 0;
 };
 
 } // end QtD1 namespace

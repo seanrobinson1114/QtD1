@@ -154,6 +154,12 @@ bool LevelPillar::isPassable() const
   return d_data->getProperties().passable;
 }
 
+// Check if is a pillar
+bool LevelPillar::isPillar() const
+{
+  return true;
+}
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

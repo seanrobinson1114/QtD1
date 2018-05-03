@@ -220,6 +220,12 @@ QList<LevelSquare*> LevelSector::getSquaresForRow( int row_number ) const
   return d_level_square_z_order_map[row_key];
 }
 
+// Check if it is a pillar
+bool LevelSector::isPillar() const
+{
+  return false;
+}
+
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

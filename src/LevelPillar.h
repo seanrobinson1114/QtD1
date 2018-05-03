@@ -105,6 +105,9 @@ public:
   //! Clone the level pillar
   virtual LevelPillar* clone() const = 0;
 
+  // Check if is a pillar
+  bool isPillar() const override;
+
 protected:
 
   //! Get the image asset required by this level pillar

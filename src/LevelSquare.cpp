@@ -145,6 +145,12 @@ QList<LevelPillar*> LevelSquare::getPillars() const
   return pillars;
 }
 
+//! Check if it is a pillar
+bool LevelSquare::isPillar() const
+{
+  return false;
+}
+
 }// end QtD1 namespace
 
 //---------------------------------------------------------------------------//

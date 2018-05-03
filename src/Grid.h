@@ -46,6 +46,12 @@ public:
 
 private:
 
+  // Construct the grid
+  void constructGrid( int, int );
+
+  // Set all corresponding pillars
+  void setCorrespondingPillars( QList<LevelPillar*> );
+
   // Set the path node adjacencies
   void setPathNodeAdjacencies( const Direction adjacency_direction,
                                const Direction opposite_adjacency_direction,

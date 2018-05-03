@@ -70,6 +70,9 @@ public:
   //! Return the pillars that make square
   QList<LevelPillar*> getPillars() const;
 
+  //! Check if it is a pillar
+  bool isPillar() const override;
+
 private:
 
   // The pillars

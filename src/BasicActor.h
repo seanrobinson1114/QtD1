@@ -65,6 +65,9 @@ public:
   //! Set the grid
   void setGrid( const std::shared_ptr<const Grid>& );
 
+  //! Check if is a pillar
+  bool isPillar() const override;
+
 signals:
 
   //! All of the active sprite frames have been shown

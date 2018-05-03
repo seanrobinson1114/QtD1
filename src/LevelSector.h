@@ -67,6 +67,9 @@ public:
   //! Return the squares that make the sector
   QList<LevelSquare*> getSquaresForRow( int row_number ) const;
 
+  //! Check if it is a pillar
+  bool isPillar() const override;
+
 private:
 
   // The level square z-order map

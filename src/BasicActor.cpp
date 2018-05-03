@@ -130,7 +130,13 @@ void BasicActor::setGrid( const std::shared_ptr<const Grid>& grid )
   d_grid = grid;
 }
 
-// Set the active sprites
+// Check if is a pillar
+bool BasicActor::isPillar() const
+{
+  return false;
+}
+
+// Set the active spritess
 void BasicActor::setActiveSprites(
                 const std::shared_ptr<DirectionGameSpriteMap>& active_sprites )
 {
