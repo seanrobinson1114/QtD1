@@ -51,6 +51,14 @@ const GridElement& PathNode::getCorrespondingGridElement() const
 // Set an adjascent node
 void PathNode::setAdjascentNode( const Direction direction, const PathNode& node )
 {
+  //std::cout << "\n Setting adjascent: \n" << std::endl;
+  if( (node.getCenterPoint().x() == this->getCenterPoint().x()) && (node.getCenterPoint().y() == this->getCenterPoint().y()) ) {
+    // std::cout << "Centers are the Same ----------------------------------------------------\n" << std::endl;
+  }
+  if( &node == this ) {
+    // std::cout << "Both Nodes are the Same! +++++++++++++++++++++++++++++++++++++++++++++++++\n" << std::endl;
+  }
+  
   d_adjascent_path_nodes[direction] = &node;
 }
 
@@ -140,6 +148,7 @@ const PathNode* PathNode::getLowestWeightAdjascentNode( Direction* direction ) c
                                  lw_path_node );
   }
 
+  //std::cout << "lowest weight adjascent node center: " << lw_path_node->getCenterPoint().x() << " " << lw_path_node->getCenterPoint().y() << std::endl; 
   return lw_path_node;
 }
 

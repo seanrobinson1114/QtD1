@@ -47,7 +47,7 @@ QRectF GridElement::getBoundingBox() const
 QPointF GridElement::getCenterPoint() const
 {
   return QPointF( d_bounding_box.left() + d_bounding_box.width()/2,
-                  d_bounding_box.right() + d_bounding_box.height()/2 );
+                  d_bounding_box.top() + d_bounding_box.height()/2 );
 }
 
 // Get the corresponding pillar
@@ -65,6 +65,11 @@ void GridElement::setCorrespondingPillar( LevelPillar* pillar )
 // Set an adjascent grid element
 void GridElement::setAdjascentGridElement( const Direction direction, const GridElement&  grid_element )
 {
+  // std::cout << "\n Setting Adjascent Grid Element: " << std::endl;
+  // std::cout << "current x and y: " << this->getCenterPoint().x() << " " << this->getCenterPoint().y() << std::endl;
+  // std::cout << "adjasc  x and y: " << grid_element.getCenterPoint().x() << " " << grid_element.getCenterPoint().y() << std::endl;
+  // if( grid_element.getCenterPoint() == this->getCenterPoint() )
+  //   std::cout << "Centers Match!?\n =======================================================================================" << std::endl;
   d_adjascent_grid_elements[direction] = &grid_element;
 }
 
@@ -83,13 +88,13 @@ const GridElement* GridElement::getAdjascentGridElement( const Direction directi
 //! Check if painter path contains point
 bool GridElement::containsPoint( const QPointF& point ) const
 {
-  std::cout << "containsPoint point: " << point.x() << " : " << point.y() << std::endl;
-  std::cout << "bounding box values: "
-  << "left: " << d_bounding_box.left()
-  << " right: " << d_bounding_box.right()
-  << " top: "<< d_bounding_box.top()
-  << " bottom: " << d_bounding_box.bottom()
-  << std::endl;
+  // std::cout << "containsPoint point: " << point.x() << " : " << point.y() << std::endl;
+  // std::cout << "bounding box values: "
+  // << "left: " << d_bounding_box.left()
+  // << " right: " << d_bounding_box.right()
+  // << " top: "<< d_bounding_box.top()
+  // << " bottom: " << d_bounding_box.bottom()
+  // << std::endl;
 
   return d_shape.contains( point );
 }

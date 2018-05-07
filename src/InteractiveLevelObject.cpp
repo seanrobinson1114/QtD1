@@ -25,7 +25,7 @@ QPen InteractiveLevelObject::s_hover_outline_pen =
 // Constructor
 InteractiveLevelObject::InteractiveLevelObject( QGraphicsObject* parent )
   : LevelObject( parent ),
-    d_paint_with_path( true )
+    d_paint_with_path( false )
 { /* ... */ }
 
 // Paint the interactive level object
@@ -60,7 +60,7 @@ void InteractiveLevelObject::deactivate()
 // Handle hover enter events
 void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 {
-  std::cout << "hovering over interactive object" << std::endl;
+  // std::cout << "hovering over interactive object" << std::endl;
   d_paint_with_path = true;
 
   // notify level of hover
@@ -72,7 +72,7 @@ void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 // Handle hover leave events
 void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
 {
-  //d_paint_with_path = false;
+  d_paint_with_path = false;
 
   // notify level of hover exit
   emit hoveringStopped( QString( "" ) );

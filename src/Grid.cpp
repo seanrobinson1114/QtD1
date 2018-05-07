@@ -249,53 +249,56 @@ void Grid::constructGrid()
     {
       int ge_index = j+(i*d_columns);
 
-      d_grid[ge_index].setBoundingBox( 32*i + 32*j, (32*(d_columns/2) + 16*(i+1) - 16*j) + 192, 64, 32 );
+      d_grid[ge_index].setBoundingBox( 32*i + 32*j, (32*(d_columns/2) - 16*(j+1) + 16*i) + 224, 64, 32 );
+
+      // std::cout << "ge_index: " << ge_index << std::endl;
+      // std::cout << "Grid Element center: " << "x y: " << d_grid[ge_index].getCenterPoint().x() << " " << d_grid[ge_index].getCenterPoint().y() << std::endl;
 
       // Set North adjacent grid element
       if( i != 0 && j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( North, d_grid[j+1+(i-1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( North, d_grid[j+1+(i-1)*d_columns] );
       }
 
       // Set the Northwest adjacent grid element
       if( i != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Northwest, d_grid[j+(i-1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( Northwest, d_grid[j+(i-1)*d_columns] );
       }
 
       // Set the Northeast adjacent grid element
       if( j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Northeast, d_grid[j+1+(i*d_columns)]);
+        d_grid[ge_index].setAdjascentGridElement( Northeast, d_grid[j+1+(i*d_columns)] );
       }
 
       // Set the West adjascent grid element
       if( i != 0 && j != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( West, d_grid[j-1+(i-1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( West, d_grid[j-1+(i-1)*d_columns] );
       }
 
       // Set the East adjascent grid element
       if( i != d_rows - 1 && j != d_columns - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( East, d_grid[j+1+(i+1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( East, d_grid[j+1+(i+1)*d_columns] );
       }
 
       // Set Southwest adjacent grid element
       if( j != 0 ) {
-        d_grid[ge_index].setAdjascentGridElement( Southwest, d_grid[j-1+(i*d_columns)]);
+        d_grid[ge_index].setAdjascentGridElement( Southwest, d_grid[j-1+(i*d_columns)] );
       }
 
       // Set the Southeast adjascent grid element
       if( i != d_rows - 1 )
       {
-        d_grid[ge_index].setAdjascentGridElement( Southeast, d_grid[j+(i+1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( Southeast, d_grid[j+(i+1)*d_columns] );
       }
 
       // Set the South adjacent grid element
-      if( i != d_rows -1 && j != 0 )
+      if( i != d_rows - 1 && j != 0 )
       {
-        d_grid[ge_index].setAdjascentGridElement( South, d_grid[j-1+(i+1)*d_columns]);
+        d_grid[ge_index].setAdjascentGridElement( South, d_grid[j-1+(i+1)*d_columns] );
       }
     }
   }
@@ -419,6 +422,8 @@ auto Grid::constructShortestPath( PathNode& start_node,
     Direction direction;
 
     // Get the adjascent node with lowest weight
+    std::cout << "current node center: " << current_node->getCenterPoint().x() << " " << current_node->getCenterPoint().y() << std::endl;
+
     const PathNode* next_node =
       current_node->getLowestWeightAdjascentNode( &direction );
 
@@ -432,8 +437,17 @@ auto Grid::constructShortestPath( PathNode& start_node,
       const double x_diff = current_node_center_point.x() -
         next_node_center_point.x();
 
+      std::cout << "x 1: " << current_node_center_point.x() << std::endl;
+      std::cout << "x 2: " << next_node_center_point.x() << std::endl;
+
       const double y_diff = current_node_center_point.y() -
         next_node_center_point.y();
+
+      std::cout << "y 1: " << current_node_center_point.y() << std::endl;
+      std::cout << "y 2: " << next_node_center_point.y() << std::endl;
+
+      // std::cout << "\n x difference: " << x_diff;
+      // std::cout << " y difference: " << y_diff << "\n" << std::endl;
 
       distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
     }

@@ -407,7 +407,7 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 {
   if( d_character )
   {
-    std::cout << "character z order: " << d_character->zValue() << std::endl;
+    //std::cout << "character z order: " << d_character->zValue() << std::endl;
     // Check if there is a level object where the mouse was pressed
     LevelObject* object = NULL;
 
