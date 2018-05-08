@@ -14,6 +14,7 @@ namespace QtD1{
 // Constructor
 GridElement::GridElement()
   : d_bounding_box(),
+    d_z_value(),
     d_shape(),
     d_corresponding_pillar( NULL ),
     d_adjascent_grid_elements()
@@ -60,6 +61,21 @@ const LevelPillar* GridElement::getCorrespondingLevelPillar() const
 void GridElement::setCorrespondingPillar( LevelPillar* pillar )
 {
   d_corresponding_pillar = pillar;
+
+  d_corresponding_pillar->setZValue( d_z_value );
+}
+
+// Set the corresponding pillar's z order
+void GridElement::setZValue( int z_value )
+{
+  std::cout << "Setting grid element z value===============================================" << std::endl;
+  d_z_value = z_value;
+}
+
+//! Get the z order
+int GridElement::getZValue() const
+{
+  return d_z_value;
 }
 
 // Set an adjascent grid element

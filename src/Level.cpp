@@ -402,6 +402,20 @@ void Level::handleCharacterPositionChanged()
     //views[i]->centerOn( d_character );
 }
 
+// Handle z value change
+void Level::updateInteractiveLevelObjectZValue() 
+{
+  // Get the signal sender
+  QObject* sender = QObject::sender();
+  LevelObject* level_object_sender = dynamic_cast<LevelObject*>( sender );
+  
+  if( level_object_sender )
+  {
+    d_grid->updateLevelObjectZValue( level_object_sender );
+    std::cout << "level object z value changed: " << d_character->zValue() << std::endl;
+  }
+}
+
 // Handle mouse press events in a custom way
 void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 {
@@ -462,9 +476,9 @@ void Level::connectCharacterSignalsToLevelSlots() const
 void Level::disconnectCharacterSignalsFromLevelSlots() const
 {
   QObject::disconnect( d_character, SIGNAL(xChanged()),
-                       this, SLOT(handleCharacterPositionChanged()) );
+                       this, SLOT( handleCharacterPositionChanged()) );
   QObject::disconnect( d_character, SIGNAL(yChanged()),
-                       this, SLOT(handleCharacterPositionChanged()) );
+                       this, SLOT( handleCharacterPositionChanged()) );
 }
 
 void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const
@@ -474,6 +488,9 @@ void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* lev
 
   QObject::connect( level_object, SIGNAL( hoveringStopped( QString ) ),
                     this, SIGNAL( interactiveLevelObjectHoveringStopped( QString ) ) );
+
+  QObject::connect( level_object, SIGNAL( yChanged() ),
+                    this, SLOT( updateInteractiveLevelObjectZValue() ) );
 }
 
 } // end QtD1 namespace

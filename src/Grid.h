@@ -47,6 +47,9 @@ public:
   //! Construct path
   Path constructPath( const GridElement* start, const GridElement* end ) const;
 
+  //! Update Level Objects z value
+  void updateLevelObjectZValue( LevelObject* ) const;
+
 protected:
 
   // Find the grid element that the point lies in
@@ -81,6 +84,9 @@ private:
 
   // Number of columns
   int d_columns;
+
+  // Number of z value rows
+  int d_z_value_rows;
 
   // Grid
   std::vector<GridElement> d_grid;

@@ -46,6 +46,12 @@ public:
   //! Set the corresponding pillar
   void setCorrespondingPillar( LevelPillar* );
 
+  //! Set the z order
+  void setZValue( int );
+
+  //! Get the z order
+  int getZValue() const;
+
   //! Set an adjascent grid element
   void setAdjascentGridElement( const Direction, const GridElement& );
 
@@ -62,6 +68,9 @@ private:
 
   // Bounding Box
   QRectF d_bounding_box;
+
+  // Z order
+  int d_z_value;
 
   // Painter path
   QPainterPath d_shape;

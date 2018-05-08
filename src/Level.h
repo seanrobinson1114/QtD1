@@ -168,6 +168,9 @@ private slots:
   // Handle character position changed
   void handleCharacterPositionChanged();
 
+  // Handle z value change
+  void updateInteractiveLevelObjectZValue();
+
 private:
 
   // Reset the asset data
