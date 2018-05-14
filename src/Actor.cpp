@@ -488,13 +488,13 @@ void Actor::incrementBaseVitality()
 }
 
 // Set the target
-void Actor::setTarget( LevelObject* target )
+void Actor::setTarget( LevelObject* target, QPointF target_coord )
 {
   if( target )
   {
     d_target = target;
 
-    this->setPath( this->getGrid().constructPath( this, target ) );
+    this->setPath( this->getGrid().constructPath( this, target, target_coord, this->scenePos() ) );
     
     emit targetSet( target );
   }
@@ -526,10 +526,10 @@ bool Actor::updateTimeDependentStates()
       else
       {
         Direction direction = this->getPath().front().first;
-        // std::cout << "DIRECTION: " << direction << std::endl;
+        std::cout << "DIRECTION: " << direction << std::endl;
 
         double& distance = this->getPath().front().second;
-        // std::cout << "DISTANCE: " << distance << std::endl;
+        std::cout << "DISTANCE: " << distance << std::endl;
       
         update_required = true;
         

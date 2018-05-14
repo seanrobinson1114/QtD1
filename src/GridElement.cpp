@@ -68,7 +68,7 @@ void GridElement::setCorrespondingPillar( LevelPillar* pillar )
 // Set the corresponding pillar's z order
 void GridElement::setZValue( int z_value )
 {
-  std::cout << "Setting grid element z value===============================================" << std::endl;
+  // std::cout << "Setting grid element z value===============================================" << std::endl;
   d_z_value = z_value;
 }
 

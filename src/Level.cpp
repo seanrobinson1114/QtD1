@@ -436,7 +436,7 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
     {
       if( mouse_event->button() == Qt::LeftButton )
       {
-        d_character->setTarget( object );
+        d_character->setTarget( object, mouse_event->scenePos() );
       }
       else if( mouse_event->button() == Qt::RightButton )
       {

@@ -32,25 +32,40 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
 }
 
 // Convert start and end to LevelPillars and construct path
-auto Grid::constructPath( LevelObject* start, LevelObject* end ) const -> Path
+auto Grid::constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord ) const -> Path
 {
   const GridElement* start_grid_element = NULL, * end_grid_element = NULL;
 
   // Check start
   if( start->isPillar() )
+  {
     start_grid_element = d_grid_pillar_map.find( dynamic_cast<LevelPillar*>( start ) )->second;
+    std::cout << "start is a pillar" << std::endl;
+  }
 
-  else
+  else 
+  {
     start_grid_element = this->findGridElement( start );
-
+    std::cout << "start is not a pillar" << std::endl;
+  }
 
   // Check end
   if( end->isPillar() )
+  {
     end_grid_element = d_grid_pillar_map.find( dynamic_cast<LevelPillar*>( end ) )->second;
+    std::cout << "end is a pillar" << std::endl;
+  }
 
   else
+  {
     end_grid_element = this->findGridElement( end );
+    std::cout << "end is not a pillar" << std::endl;
+  }
 
+  if( start_grid_element == NULL )
+  {
+    std::cout << "start grid element is NULL" << std::endl;
+  }
 
   if( end_grid_element == NULL )
   {
@@ -66,12 +81,12 @@ auto Grid::constructPath( LevelObject* start, LevelObject* end ) const -> Path
 
   // Construct path
   else
-    return this->constructPath( start_grid_element, end_grid_element );
+    return this->constructPath( start_grid_element, end_grid_element, end_coord, start_coord );
 
 }
 
 // Construct path
-auto Grid::constructPath( LevelPillar* start, LevelPillar* end ) const -> Path
+auto Grid::constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord ) const -> Path
 {
   auto pillar_start_it = d_grid_pillar_map.find( start );
   auto pillar_end_it = d_grid_pillar_map.find( end );
@@ -83,19 +98,23 @@ auto Grid::constructPath( LevelPillar* start, LevelPillar* end ) const -> Path
     return Path();
   }
 
-  return this->constructPath( pillar_start_it->second, pillar_end_it->second );
+  return this->constructPath( pillar_start_it->second, pillar_end_it->second, end_coord, start_coord );
 }
 
 //! Construct path
-auto Grid::constructPath( const GridElement* start, const GridElement* end ) const -> Path
+auto Grid::constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord ) const -> Path
 {
+  std::cout << "constructing path with grid elements" << std::endl;
+  std::cout << "mouse click coord: " << end_coord.x() << ", " << end_coord.y() << std::endl;
+  std::cout << "character coord: " << start_coord.x() << ", " << start_coord.y() << std::endl;
+
   // List for tracking current nodes being searched
   std::list<PathNode> path_nodes;
 
   // Set for checking grid element duplicates
   std::set<const GridElement*> unique_grid_elements;
 
-  // Create node from end and add to current list with weigth 0
+  // Create node from end and add to current list with weight 0
   path_nodes.emplace_back( *end );
   path_nodes.front().setWeight( 0 );
   unique_grid_elements.insert( end );
@@ -175,10 +194,13 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end ) con
 
   // There is no path between the start and end point
   if( current_node_it == path_nodes.end() )
+  {
+    std::cout << "No path between points" << std::endl;
     return Path();
+  }
 
   // Construct the shortest path between the start and end node
-  return this->constructShortestPath( *current_node_it, path_nodes.front() );
+  return this->constructShortestPath( *current_node_it, path_nodes.front(), end_coord, start_coord );
 }
 
 // Update Level Objects z value
@@ -211,13 +233,13 @@ const GridElement* Grid::findGridElement( const QPointF& point ) const
 
   int x_index = d_x_grid_points_it - d_x_grid_points.begin();
 
-  // Index returned is one after
+  // Index returned from lower_bound is one after
   if( x_index > 0 )
     --x_index;
 
   int y_index = d_y_grid_points_it - d_y_grid_points.begin();
 
-  // Index returned is one after
+  // Index returned from lower_bound is one after
   if( y_index > 0 )
     --y_index;
 
@@ -268,8 +290,8 @@ void Grid::constructGrid()
 
       d_grid[ge_index].setBoundingBox( 32*i + 32*j, (32*(d_columns/2) - 16*(j+1) + 16*i) + 224, 64, 32 );
       d_grid[ge_index].setZValue( d_columns - (j+1) + i );
-      std::cout << "row: " << i << std::endl;
-      std::cout << "grid element z value: " << d_grid[ge_index].getZValue() << "\n" << std::endl;
+      // std::cout << "row: " << i << std::endl;
+      // std::cout << "grid element z value: " << d_grid[ge_index].getZValue() << "\n" << std::endl;
 
       // std::cout << "ge_index: " << ge_index << std::endl;
       // std::cout << "Grid Element center: " << "x y: " << d_grid[ge_index].getCenterPoint().x() << " " << d_grid[ge_index].getCenterPoint().y() << std::endl;
@@ -364,8 +386,8 @@ void Grid::setCorrespondingPillars( QList<LevelPillar*> pillars )
       {
         d_grid[j].setCorrespondingPillar( pillars[i] );
         d_grid_pillar_map[pillars[i]] = &d_grid[j];
-        std::cout << "grid z value: " << d_grid[j].getZValue() << std::endl;
-        std::cout << "pillar z value: " << d_grid[j].getCorrespondingLevelPillar()->zValue() << "\n" << std::endl;
+        // std::cout << "grid z value: " << d_grid[j].getZValue() << std::endl;
+        // std::cout << "pillar z value: " << d_grid[j].getCorrespondingLevelPillar()->zValue() << "\n" << std::endl;
 
         ++success;
 
@@ -415,7 +437,9 @@ void Grid::setPathNodeAdjacencies(
 
 // Construct a path from the current node
 auto Grid::constructShortestPath( PathNode& start_node,
-                                  PathNode& end_node ) const -> Path
+                                  PathNode& end_node,
+                                  QPointF end_coord, 
+                                  QPointF start_coord ) const -> Path
 {
   std::cout << "finding shortest path" << std::endl;
   // List of points to be traveresed by an actor
@@ -442,7 +466,7 @@ auto Grid::constructShortestPath( PathNode& start_node,
     Direction direction;
 
     // Get the adjascent node with lowest weight
-    std::cout << "current node center: " << current_node->getCenterPoint().x() << " " << current_node->getCenterPoint().y() << std::endl;
+    // std::cout << "current node center: " << current_node->getCenterPoint().x() << " " << current_node->getCenterPoint().y() << std::endl;
 
     const PathNode* next_node =
       current_node->getLowestWeightAdjascentNode( &direction );
@@ -463,14 +487,16 @@ auto Grid::constructShortestPath( PathNode& start_node,
       const double y_diff = current_node_center_point.y() -
         next_node_center_point.y();
 
-      std::cout << "y 1: " << current_node_center_point.y() << std::endl;
-      std::cout << "y 2: " << next_node_center_point.y() << std::endl;
+      // std::cout << "y 1: " << current_node_center_point.y() << std::endl;
+      // std::cout << "y 2: " << next_node_center_point.y() << std::endl;
 
       // std::cout << "\n x difference: " << x_diff;
       // std::cout << " y difference: " << y_diff << "\n" << std::endl;
 
       distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
     }
+
+    // Add actual start and actual end
 
     shortest_path.push_back( std::make_pair( direction, distance ) );
 
@@ -525,22 +551,22 @@ void Grid::constructBinarySearchTree()
       d_binary_obb_tree[x_index_second][y_index_second].push_back( &d_grid[j + i*d_columns] );
     }
   }
-  for( int i = 0; i < d_x_grid_points.size(); ++i )
-  {
-    // std::cout << "x index[" << i << "]: " << std::endl;
-    for( auto y_element : d_binary_obb_tree[i] )
-    {
-      // std::cout << "  y_index: " << y_element.first << "(" << d_y_grid_points[y_element.first] << "-" << d_y_grid_points[y_element.first+1] << ")" << std::endl;
-      for( auto y_grid_element : y_element.second )
-      {
-        // std::cout << "    bottom: " << y_grid_element->getBoundingBox().bottom() << std::endl
-        //           << "    top: " << y_grid_element->getBoundingBox().top()
-        // << std::endl;
+  // for( int i = 0; i < d_x_grid_points.size(); ++i )
+  // {
+  //   // std::cout << "x index[" << i << "]: " << std::endl;
+  //   for( auto y_element : d_binary_obb_tree[i] )
+  //   {
+  //     // std::cout << "  y_index: " << y_element.first << "(" << d_y_grid_points[y_element.first] << "-" << d_y_grid_points[y_element.first+1] << ")" << std::endl;
+  //     for( auto y_grid_element : y_element.second )
+  //     {
+  //       // std::cout << "    bottom: " << y_grid_element->getBoundingBox().bottom() << std::endl
+  //       //           << "    top: " << y_grid_element->getBoundingBox().top()
+  //       // << std::endl;
 
-      }
-    }
-    // std::cout << std::endl;
-  }
+  //     }
+  //   }
+  //   // std::cout << std::endl;
+  // }
 }
 
 } // end QtD1 namespace

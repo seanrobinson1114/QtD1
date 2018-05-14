@@ -264,7 +264,7 @@ public slots:
   void restoreMana();
 
   //! Set the target
-  void setTarget( LevelObject* target );
+  void setTarget( LevelObject* target, QPointF target_coord );
 
   //! Cast a spell at the target
   virtual void castSpellAt( LevelObject* target );

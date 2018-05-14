@@ -128,7 +128,7 @@ void Game::create( const QString& character_name,
 
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
-                            QPointF( 3250, 2450 ),
+                            QPointF( 3264, 2448 ),
                             South );
 
   // Load the level assets

@@ -39,13 +39,13 @@ public:
   { /* ... */ }
 
   //! Construct path
-  Path constructPath( LevelObject* start, LevelObject* end ) const;
+  Path constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord ) const;
 
   //! Construct path
-  Path constructPath( LevelPillar* start, LevelPillar* end ) const;
+  Path constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord) const;
 
   //! Construct path
-  Path constructPath( const GridElement* start, const GridElement* end ) const;
+  Path constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord ) const;
 
   //! Update Level Objects z value
   void updateLevelObjectZValue( LevelObject* ) const;
@@ -74,7 +74,7 @@ private:
                                std::set<const GridElement*>& unique_grid_elements ) const;
 
   // Construct a path from the current node
-  Path constructShortestPath( PathNode& start_node, PathNode& end_node ) const;
+  Path constructShortestPath( PathNode& start_node, PathNode& end_node, QPointF end_coord, QPointF start_coord ) const;
 
   // Construct binary search tree
   void constructBinarySearchTree();
