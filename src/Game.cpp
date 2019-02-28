@@ -128,7 +128,7 @@ void Game::create( const QString& character_name,
 
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
-                            QPointF( 3264, 2448 ),
+                            QPointF( 0, 0 ),
                             South );
 
   // Load the level assets
@@ -536,6 +536,7 @@ void Game::handleTownAssetLoadFinished()
   this->connectCharacterSignalsToGameSlots();
 
   // Activate the character
+  d_character->setPos( 3264, 2448 );
   d_character->activate();
   d_character->startStateMachine();
 
