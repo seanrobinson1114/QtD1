@@ -52,7 +52,7 @@ QPointF GridElement::getCenterPoint() const
 }
 
 // Get the corresponding pillar
-const LevelPillar* GridElement::getCorrespondingLevelPillar() const
+LevelPillar* GridElement::getCorrespondingLevelPillar() const
 {
   return d_corresponding_pillar;
 }

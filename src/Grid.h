@@ -39,13 +39,13 @@ public:
   { /* ... */ }
 
   //! Construct path
-  Path constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord ) const;
+  Path constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord );
 
   //! Construct path
-  Path constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord) const;
+  Path constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord);
 
   //! Construct path
-  Path constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord ) const;
+  Path constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord );
 
   //! Update Level Objects z value
   void updateLevelObjectZValue( LevelObject* ) const;
@@ -74,7 +74,7 @@ private:
                                std::set<const GridElement*>& unique_grid_elements ) const;
 
   // Construct a path from the current node
-  Path constructShortestPath( PathNode& start_node, PathNode& end_node, QPointF end_coord, QPointF start_coord ) const;
+  Path constructShortestPath( PathNode& start_node, PathNode& end_node, QPointF end_coord, QPointF start_coord );
 
   // Construct binary search tree
   void constructBinarySearchTree();
@@ -100,6 +100,9 @@ private:
 
   // Binary obb tree
   std::map<int, std::map<int, std::list<const GridElement*>>> d_binary_obb_tree;
+
+  // Old Path reference for unhighlighting
+  std::list<LevelPillar*> d_old_highlighted_path;
 };
 
 } // end QtD1 namespace

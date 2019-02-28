@@ -63,7 +63,7 @@ public:
   void startStateMachine();
 
   //! Set the grid
-  void setGrid( const std::shared_ptr<const Grid>& );
+  void setGrid( const std::shared_ptr<Grid>& );
 
   //! Check if is a pillar
   bool isPillar() const override;
@@ -101,6 +101,9 @@ protected:
   //! Get the grid
   const Grid& getGrid() const;
 
+  //! Get the grid
+  Grid& getGrid();
+
   //! Set the path
   void setPath( const Grid::Path& path );
 
@@ -122,7 +125,7 @@ private:
   std::unique_ptr<QStateMachine> d_state_machine;
 
   // The grid
-  std::shared_ptr<const Grid> d_grid;
+  std::shared_ptr<Grid> d_grid;
 
   // The path through the grid
   Grid::Path d_path;

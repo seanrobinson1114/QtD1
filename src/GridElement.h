@@ -41,7 +41,7 @@ public:
   QPointF getCenterPoint() const;
 
   //! Get the corresponding pillar
-  const LevelPillar* getCorrespondingLevelPillar() const;
+  LevelPillar* getCorrespondingLevelPillar() const;
 
   //! Set the corresponding pillar
   void setCorrespondingPillar( LevelPillar* );

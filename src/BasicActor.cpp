@@ -125,7 +125,7 @@ void BasicActor::startStateMachine()
 }
 
 // Set the grid
-void BasicActor::setGrid( const std::shared_ptr<const Grid>& grid )
+void BasicActor::setGrid( const std::shared_ptr<Grid>& grid )
 {
   d_grid = grid;
 }
@@ -158,6 +158,12 @@ void BasicActor::restartActiveSprite()
 
 // Get the grid
 const Grid& BasicActor::getGrid() const
+{
+  return *d_grid;
+}
+
+// Get the grid
+Grid& BasicActor::getGrid()
 {
   return *d_grid;
 }

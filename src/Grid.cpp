@@ -23,7 +23,8 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
     d_columns( columns ),
     d_z_value_rows( rows + columns - 1 ),
     d_grid( rows * columns ),
-    d_grid_pillar_map()
+    d_grid_pillar_map(),
+    d_old_highlighted_path()
 {
   this->constructGrid();
   this->setCorrespondingPillars( pillars );
@@ -32,7 +33,7 @@ Grid::Grid( int rows, int columns, QList<LevelPillar*> pillars )
 }
 
 // Convert start and end to LevelPillars and construct path
-auto Grid::constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord ) const -> Path
+auto Grid::constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord ) -> Path
 {
   const GridElement* start_grid_element = NULL, * end_grid_element = NULL;
 
@@ -86,7 +87,7 @@ auto Grid::constructPath( LevelObject* start, LevelObject* end, QPointF end_coor
 }
 
 // Construct path
-auto Grid::constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord ) const -> Path
+auto Grid::constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord ) -> Path
 {
   auto pillar_start_it = d_grid_pillar_map.find( start );
   auto pillar_end_it = d_grid_pillar_map.find( end );
@@ -102,7 +103,7 @@ auto Grid::constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coor
 }
 
 //! Construct path
-auto Grid::constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord ) const -> Path
+auto Grid::constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord ) -> Path
 {
   std::cout << "constructing path with grid elements" << std::endl;
   std::cout << "mouse click coord: " << end_coord.x() << ", " << end_coord.y() << std::endl;
@@ -439,8 +440,17 @@ void Grid::setPathNodeAdjacencies(
 auto Grid::constructShortestPath( PathNode& start_node,
                                   PathNode& end_node,
                                   QPointF end_coord, 
-                                  QPointF start_coord ) const -> Path
+                                  QPointF start_coord ) -> Path
 {
+  std::cout << "unhighlighting old path" << std::endl;
+  // Unhighlight old path
+  for( auto&& old_pillar : d_old_highlighted_path )
+  {
+    old_pillar->unhighlight();
+  }
+  // Clear the old highlighted path
+  d_old_highlighted_path.clear();
+
   std::cout << "finding shortest path" << std::endl;
   // List of points to be traveresed by an actor
   Path shortest_path;
@@ -453,6 +463,10 @@ auto Grid::constructShortestPath( PathNode& start_node,
 
   while( true )
   {
+    // Save pillars to unhighlight after new path is made and change highlight prop to true with color
+    d_old_highlighted_path.push_back( current_node->getCorrespondingGridElement().getCorrespondingLevelPillar() );
+    d_old_highlighted_path.back()->highlight( "blue" );
+
     // Check if end has been reached
     if( current_node == &end_node )
     {
@@ -497,7 +511,6 @@ auto Grid::constructShortestPath( PathNode& start_node,
     }
 
     // Add actual start and actual end
-
     shortest_path.push_back( std::make_pair( direction, distance ) );
 
     // Move to the next node

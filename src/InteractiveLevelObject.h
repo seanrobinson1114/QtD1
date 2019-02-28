@@ -36,6 +36,12 @@ public:
   //! Check if object is interactive
   bool isInteractive() const override;
 
+  //! Highlight the object
+  void highlight( const QColor& color );
+
+  //! Unhighlight the object
+  void unhighlight();
+
   //! Get a description of the object
   virtual QString getDescription() const = 0;
 
@@ -85,6 +91,12 @@ private:
 
   // Records if the object should be painted with its path
   bool d_paint_with_path;
+
+  // Record if the object should be highlighted
+  bool d_paint_with_highlight_only;
+
+  // Record the highlight color
+  QColor d_highlight_color;
 };
 
 } // end QtD1 namespace

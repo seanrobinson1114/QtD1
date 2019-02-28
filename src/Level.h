@@ -144,7 +144,7 @@ protected:
   void setMusic( const std::shared_ptr<Music>& music );
 
   //! Set the grid
-  void setGrid( const std::shared_ptr<const Grid>& grid );
+  void setGrid( const std::shared_ptr<Grid>& grid );
 
   //! Create the level sectors
   virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
@@ -223,7 +223,7 @@ private:
   bool d_ready;
 
   // the grid used for pathfinding
-  std::shared_ptr<const Grid> d_grid;
+  std::shared_ptr<Grid> d_grid;
 };
 
 } // end QtD1 namespace
