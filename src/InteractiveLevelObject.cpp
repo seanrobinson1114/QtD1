@@ -43,7 +43,8 @@ void InteractiveLevelObject::paint( QPainter* painter,
   {
     this->paintImpl( painter, option, widget );
 
-    if( d_paint_with_path ) {
+    if( d_paint_with_path )
+    {
       painter->strokePath( this->shape(), s_hover_outline_pen );
       painter->fillPath( this->shape(), QBrush(QColor("blue")) );
     }
@@ -83,10 +84,22 @@ void InteractiveLevelObject::deactivate()
   this->setAcceptHoverEvents( false );
 }
 
+// Handle being targeted by another object
+void InteractiveLevelObject::handleBeingTargeted( LevelObject* targeter )
+{
+  if( targeter->isCharacter() )
+  {
+    emit targetedByCharacter( targeter );
+  }
+  else
+  {
+    emit targeted( targeter );
+  }
+}
+
 // Handle hover enter events
 void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
 {
-  // std::cout << "hovering over interactive object" << std::endl;
   d_paint_with_path = true;
 
   // notify level of hover
@@ -104,19 +117,6 @@ void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
   emit hoveringStopped( QString( "" ) );
 
   this->update();
-}
-
-// Handle mouse press events
-void InteractiveLevelObject::mousePressEvent( QGraphicsSceneMouseEvent* event )
-{
-
-}
-
-// Handle mouse release events
-void InteractiveLevelObject::mouseReleaseEvent(
-                                             QGraphicsSceneMouseEvent * event )
-{
-
 }
 
 // Generate the hover outline pen

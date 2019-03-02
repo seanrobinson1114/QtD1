@@ -17,7 +17,7 @@ namespace QtD1{
 
 // Constructor
 ActorAttackingTargetTransition::ActorAttackingTargetTransition( Actor* actor )
-  : QSignalTransition( actor, SIGNAL(targetReached(LevelObject*)) )
+  : QSignalTransition( actor, SIGNAL(targetReached(LevelObject*,LevelObject*)) )
 { /* ... */ }
 
 // Custom event test
@@ -30,7 +30,7 @@ bool ActorAttackingTargetTransition::eventTest( QEvent* event )
   QStateMachine::SignalEvent* signal_event =
     dynamic_cast<QStateMachine::SignalEvent*>( event );
   
-  LevelObject* target = signal_event->arguments().at(0).value<LevelObject*>();
+  LevelObject* target = signal_event->arguments().at(1).value<LevelObject*>();
 
   return target->canBeAttacked();
 }

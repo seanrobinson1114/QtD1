@@ -53,6 +53,11 @@ signals:
   //! Object is no longer being hovered over
   void hoveringStopped( QString empty_string );
 
+  //! The object has been targeted by the character
+  void targetedByCharacter( LevelObject* targeter );
+
+  //! The object has been targeted by another object
+  void targeted( LevelObject* targeter );
 
 public slots:
 
@@ -61,6 +66,11 @@ public slots:
 
   //! Deactivate the object
   void deactivate();
+
+protected slots:
+
+  //! Handle being targeted by another object
+  void handleBeingTargeted( LevelObject* targeter ) override;
 
 protected:
 
@@ -74,12 +84,6 @@ protected:
 
   //! Handle hover leave events
   void hoverLeaveEvent( QGraphicsSceneHoverEvent* event ) override;
-
-  //! Handle mouse press events
-  void mousePressEvent( QGraphicsSceneMouseEvent* event ) override;
-
-  //! Handle mouse release events
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 
 private:
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   ActorStandingByTargetTransition.h
+//! \file   BasicActorStandingByTargetTransition.h
 //! \author Alex Robinson
 //! \brief  The actor standing by target transition class declaration
 //!
@@ -14,19 +14,19 @@
 
 namespace QtD1{
 
-class Actor;
+class BasicActor;
 
 //! The actor standing by target transition class
-class ActorStandingByTargetTransition : public QSignalTransition
+class BasicActorStandingByTargetTransition : public QSignalTransition
 {
   
 public:
 
   //! Constructor
-  ActorStandingByTargetTransition( Actor* actor );
+  BasicActorStandingByTargetTransition( BasicActor* actor );
 
   //! Destructor
-  ~ActorStandingByTargetTransition()
+  ~BasicActorStandingByTargetTransition()
   { /* ... */ }
 
 private:
@@ -40,5 +40,5 @@ private:
 #endif // end ACTOR_STANDING_BY_TARGET_TRANSITION_H
 
 //---------------------------------------------------------------------------//
-// end ActorStandingByTargetTransition.h
+// end BasicActorStandingByTargetTransition.h
 //---------------------------------------------------------------------------//

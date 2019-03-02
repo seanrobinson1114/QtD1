@@ -96,6 +96,28 @@ void LevelObject::loadImageAssets(
   }
 }
 
+// Check if it is a pillar
+bool LevelObject::isPillar() const
+{
+  return false;
+}
+
+// Check if it is a character
+bool LevelObject::isCharacter() const
+{
+  return false;
+}
+
+// Handle being targeted by another object
+void LevelObject::handleBeingTargeted( LevelObject* )
+{ /* ... */ }
+
+// Notify object that it has been targeted
+void LevelObject::notifyTarget( LevelObject* target )
+{
+  target->handleBeingTargeted( this );
+}
+
 QML_REGISTER_BASE_META_TYPE( LevelObject );
 
 } // end QtD1 namespace

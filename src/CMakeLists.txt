@@ -53,6 +53,7 @@ ADD_LIBRARY(qtd1_core
   GameSpriteData.cpp
   GameSprite.cpp
   Direction.cpp
+  Quest.cpp
   CharacterStats.cpp
   Inventory.cpp
   RogueInventory.cpp
@@ -85,13 +86,15 @@ ADD_LIBRARY(qtd1_core
   ImageAssetLoader.cpp
   BasicActor.cpp
   ActorAttackingTargetTransition.cpp
-  ActorStandingByTargetTransition.cpp
+  BasicActorStandingByTargetTransition.cpp
   Actor.cpp
   Character.cpp
   CharacterFrontendProxy.cpp
   Rogue.cpp
   Sorcerer.cpp
   Warrior.cpp
+  NPC.cpp
+  Farnham.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

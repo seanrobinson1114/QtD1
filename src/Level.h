@@ -61,8 +61,11 @@ public:
   //! Create the level background
   void createBackground();
 
-  //! Add a level object
-  void addLevelObject( LevelObject* level_object, const QPointF& location );
+  //! Create the level NPCs and actors
+  virtual void createNPCsAndActors() = 0;
+
+  //! Activate the NPCs and actors
+  virtual void activateNPCsAndActors() = 0;
 
   //! Add an actor
   void addActor( Actor* actor,
@@ -151,6 +154,9 @@ protected:
 
   // Connect interactiveLevelObject signals to Level signals
   void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
+
+  //! Add a level object
+  void addLevelObject( LevelObject* level_object, const QPointF& location );
 
 private slots:
 
