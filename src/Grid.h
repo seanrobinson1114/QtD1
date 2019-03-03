@@ -31,6 +31,9 @@ public:
   //! Typedef for the path through the grid
   typedef std::list<std::pair<Direction,double> > Path;
 
+  //! Typedef for the node path through the grid
+  typedef std::list<std::pair<Direction,QPointF> > NodePath;
+
   //! Constructor
   Grid( int rows, int columns, QList<LevelPillar*> pillars );
 
@@ -42,7 +45,7 @@ public:
   Path constructPath( LevelObject* start, LevelObject* end, QPointF end_coord, QPointF start_coord );
 
   //! Construct path
-  Path constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord);
+  Path constructPath( LevelPillar* start, LevelPillar* end, QPointF end_coord, QPointF start_coord );
 
   //! Construct path
   Path constructPath( const GridElement* start, const GridElement* end, QPointF end_coord, QPointF start_coord );
@@ -73,8 +76,19 @@ private:
                                std::list<PathNode>& node_list,
                                std::set<const GridElement*>& unique_grid_elements ) const;
 
-  // Construct a path from the current node
-  Path constructShortestPath( PathNode& start_node, PathNode& end_node, QPointF end_coord, QPointF start_coord );
+  // Construct a path from the current node center
+  Path constructShortestPath( const PathNode& start_node, const PathNode& end_node, const QPointF& end_coord, const QPointF& start_coord );
+
+  // Construct the actual path the character will traverse
+  NodePath constructShortestNodePath( const PathNode& start_node, const PathNode& end_node, const QPointF& end_coord, const QPointF& start_coord );
+
+  // Calculate intersection for first and last line segments on path
+  void  calculateLineIntersection( const QPointF& first_grid_point, 
+                                   const QPointF& second_grid_point,
+                                   const QPointF& start_coord, 
+                                   double& intersection_x, 
+                                   double& intersection_y, 
+                                   Direction& direction );
 
   // Construct binary search tree
   void constructBinarySearchTree();

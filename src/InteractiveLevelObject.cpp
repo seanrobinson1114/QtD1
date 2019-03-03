@@ -46,6 +46,7 @@ void InteractiveLevelObject::paint( QPainter* painter,
     if( d_paint_with_path ) {
       painter->strokePath( this->shape(), s_hover_outline_pen );
       painter->fillPath( this->shape(), QBrush(QColor("blue")) );
+      // painter->fillRect( this->boundingRect(), QBrush(QColor("red")) );
     }
 
     // this->paintImpl( painter, option, widget );
