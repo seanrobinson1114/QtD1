@@ -1,0 +1,97 @@
+//---------------------------------------------------------------------------//
+//!
+//! \file   Farnham.h
+//! \author Alex Robinson
+//! \brief  The Farnham class declaration
+//!
+//---------------------------------------------------------------------------//
+
+#ifndef FARNHAM_H
+#define FARNHAM_H
+
+// QtD1 Includes
+#include "NPC.h"
+#include "Sound.h"
+#include "Quest.h"
+
+namespace QtD1{
+
+//! The Farnham class
+class Farnham : public NPC
+{
+  Q_OBJECT
+
+public:
+
+  //! Constructor
+  Farnham( QGraphicsObject* parent = 0 );
+
+  //! Destructor
+  ~Farnham()
+  { /* ... */ }
+
+  //! Get the warrior description
+  QString getDescription() const final override;
+
+  //! Get the number of image assets used by the object
+  int getNumberOfImageAssets() const final override;
+
+  //! Get the image asset names used by the object
+  void getImageAssetNames( QSet<QString>& image_asset_names ) const final override;
+
+  //! Check if an image asset is used
+  bool isImageAssetUsed( const QString& image_asset_name ) const final override;
+
+  //! Check if the image assets have been loaded
+  bool imageAssetsLoaded() const final override;
+
+  //! Load the image asset
+  void loadImageAsset( const QString& image_asset_name,
+                       const QVector<QPixmap>& image_asset_frames ) final override;
+
+  //! Finalize image asset loading
+  void finalizeImageAssetLoading() final override;
+
+  //! Dump the image assets
+  void dumpImageAssets() final override;
+
+protected:
+
+  //! Greet the character
+  void greet() final override;
+
+  //! Get the movement speed (pixels per game tic)
+  qreal getMovementSpeed() const final override;
+
+private:
+
+  // The image asset name
+  static QString s_image_asset_name;
+
+  // The direction sprites
+  QMap<QString,std::shared_ptr<BasicActor::DirectionGameSpriteMap> >
+  d_direction_sprites;
+
+  // Records if the sprites have been loaded
+  bool d_sprites_loaded;
+
+  // The greeting
+  Sound d_greeting;
+
+  // The quest dialogues
+  std::map<Quest::Type,std::vector<Sound> > d_quest_dialogues;
+
+  // The gossip dialogues
+  std::vector<Sound> d_gossip_dialogues;
+
+  // The unused dialogues
+  std::vector<Sound> d_unused_dialogues;
+};
+  
+} // end QtD1 namespace
+
+#endif // end FARNHAM_H
+
+//---------------------------------------------------------------------------//
+// end Farnham.h
+//---------------------------------------------------------------------------//

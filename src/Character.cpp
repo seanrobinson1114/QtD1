@@ -662,6 +662,12 @@ void Character::dumpImageAssets()
   d_sprites_loaded = false;
 }
 
+// Check if it is a character
+bool Character::isCharacter() const
+{
+  return true;
+}
+
 // Enter the town
 void Character::enterTown()
 {

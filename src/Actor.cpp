@@ -14,7 +14,7 @@
 
 // QtD1 Includes
 #include "Actor.h"
-#include "ActorStandingByTargetTransition.h"
+#include "BasicActorStandingByTargetTransition.h"
 #include "ActorAttackingTargetTransition.h"
 
 namespace QtD1{
@@ -33,8 +33,6 @@ Actor::Actor( QGraphicsObject* parent )
     d_base_magic_resistance_fraction( 0.0 ),
     d_base_fire_resistance_fraction( 0.0 ),
     d_base_lightning_resistance_fraction( 0.0 ),
-    d_x_velocity( 0.0 ),
-    d_y_velocity( 0.0 ),
     d_sprites(),
     d_active_state( Standing )
 { /* ... */ }
@@ -43,7 +41,7 @@ Actor::Actor( QGraphicsObject* parent )
 /*! \details The sprites will not be copied.
  */
 Actor::Actor( const Actor& other_actor )
-  : BasicActor( other_actor.parentObject() ),
+  : BasicActor( other_actor ),
     d_level( other_actor.d_level ),
     d_kill_experience( other_actor.d_kill_experience ),
     d_base_strength( other_actor.d_base_strength ),
@@ -55,8 +53,6 @@ Actor::Actor( const Actor& other_actor )
     d_base_magic_resistance_fraction( other_actor.d_base_magic_resistance_fraction ),
     d_base_fire_resistance_fraction( other_actor.d_base_fire_resistance_fraction ),
     d_base_lightning_resistance_fraction( other_actor.d_base_lightning_resistance_fraction ),
-    d_x_velocity( other_actor.d_x_velocity ),
-    d_y_velocity( other_actor.d_y_velocity ),
     d_sprites(),
     d_active_state( Standing )
 { /* ... */ }
@@ -68,7 +64,7 @@ Actor& Actor::operator=( const Actor& other_actor )
 {
   if( this != &other_actor )
   {
-    this->setParentItem( other_actor.parentObject() );
+    BasicActor::operator=( other_actor );
     
     d_level = other_actor.d_level;
     d_kill_experience = other_actor.d_kill_experience;
@@ -81,8 +77,6 @@ Actor& Actor::operator=( const Actor& other_actor )
     d_base_magic_resistance_fraction = other_actor.d_base_magic_resistance_fraction;
     d_base_fire_resistance_fraction = other_actor.d_base_fire_resistance_fraction;
     d_base_lightning_resistance_fraction = other_actor.d_base_lightning_resistance_fraction;
-    d_x_velocity = other_actor.d_x_velocity;
-    d_y_velocity = other_actor.d_y_velocity;
     d_sprites.reset();
     d_active_state = Standing;
   }
@@ -421,37 +415,6 @@ qreal Actor::getChanceToHitWithSpell() const
   return this->getBaseChanceToHitWithSpell();
 }
 
-// Get the actor x velocity
-qreal Actor::getXVelocity() const
-{
-  return d_x_velocity;
-}
-
-// Set the actor x velocity
-void Actor::setXVelocity( const qreal x_velocity )
-{
-  d_x_velocity = x_velocity;
-}
-
-// Get the actor y velocity
-qreal Actor::getYVelocity() const
-{
-  return d_y_velocity;
-}
-
-// Set the actor y velocity
-void Actor::setYVelocity( const qreal y_velocity )
-{
-  d_y_velocity = y_velocity;
-}
-
-// Set the actor velocity
-void Actor::setVelocity( const qreal x_velocity, const qreal y_velocity )
-{
-  d_x_velocity = x_velocity;
-  d_y_velocity = y_velocity;
-}
-
 // The actor can be attacked
 bool Actor::canBeAttacked() const
 {
@@ -515,58 +478,7 @@ void Actor::castSpellAt( LevelObject* target )
  */
 bool Actor::updateTimeDependentStates()
 {
-  bool update_required = false;
-  
-  if( d_target )
-  {
-    if( d_active_state == Walking )
-    {
-      bool destination_reached = this->getPath().empty();
-
-      if( destination_reached )
-        emit targetReached( d_target );
-
-      else
-      {
-        Direction direction = this->getPath().front().first;
-        std::cout << "DIRECTION: " << direction << std::endl;
-
-        double& distance = this->getPath().front().second;
-        std::cout << "DISTANCE: " << distance << std::endl;
-      
-        update_required = true;
-        
-        // Calculate the velocity of the actor
-        if( direction != this->getDirection() )
-        {
-          // Get the movement direction enum
-          this->setDirection( direction );
-
-          // Calculate the velocity
-          double speed = this->getMovementSpeed();
-
-          if( distance < speed )
-            speed = distance;
-
-          QPointF direction_vector = QtD1::getDirectionVector( direction );
-          
-          d_x_velocity = direction_vector.x()*speed;
-          d_y_velocity = direction_vector.y()*speed;
-        }
-
-        this->moveBy( d_x_velocity, d_y_velocity );
-
-        // Update the path
-        distance -= std::sqrt( d_x_velocity*d_x_velocity +
-                               d_y_velocity*d_y_velocity );
-
-        if( distance <= 0.0 )
-          this->getPath().pop_front();
-      }
-    }
-  }
-  
-  return update_required;
+  return this->updateTimeDependentStatesImpl( d_active_state == Walking );
 }
 
 // Set the actor sprites
@@ -577,6 +489,7 @@ void Actor::setActorSprites(
   {
     d_sprites = sprites;
 
+    // There will always be a standing sprite
     if( d_sprites->find( d_active_state ) == d_sprites->end() )
       d_active_state = Standing;
 
@@ -680,11 +593,11 @@ void Actor::createAliveStates( QState* alive_parent_state )
 
   // Create the walking transitions
   standing_state->addTransition( this,
-                                 SIGNAL(targetSet(LevelObject*)),
+                                 SIGNAL(targetSet(LevelObject*,LevelObject*)),
                                  walking_state );
 
   QAbstractTransition* to_standing_state_transition =
-    new ActorStandingByTargetTransition( this );
+    new BasicActorStandingByTargetTransition( this );
   to_standing_state_transition->setTargetState( standing_state );
 
   walking_state->addTransition( to_standing_state_transition );

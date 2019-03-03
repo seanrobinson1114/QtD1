@@ -161,6 +161,9 @@ public:
   //! Dump the image assets
   void dumpImageAssets() override;
 
+  //! Check if it is a character
+  bool isCharacter() const final override;
+
 signals:
 
   //! Character leveled up

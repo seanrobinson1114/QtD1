@@ -11,12 +11,14 @@
 #include "LevelSquareFactory.h"
 #include "LevelSectorFactory.h"
 #include "Grid.h"
+#include "Farnham.h"
 
 namespace QtD1{
 
 // Constructor
 Town::Town( QObject* parent )
-  : Level( parent, "/music/dtowne.wav" )
+  : Level( parent, "/music/dtowne.wav" ),
+    d_farnham( NULL )
 { /* ... */ }
 
 // Get the type
@@ -35,6 +37,25 @@ int Town::getNumber() const
 QString Town::getImageAssetName() const
 {
   return "/levels/towndata/town.cel+levels/towndata/town.pal";
+}
+
+// Create the level NPCs and actors
+void Town::createNPCsAndActors()
+{
+  // This memory will be managed by the scene
+  d_farnham = new Farnham;
+
+  this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
+}
+
+// Activate the NPCs and actors
+void Town::activateNPCsAndActors()
+{
+  // Set the direction so that the correct sprite sheet gets activated
+  //d_farnham->setDirection( Direction::Southeast );
+  d_farnham->setPos( 2600, 2640 );
+  d_farnham->activate();
+  d_farnham->startStateMachine();
 }
 
 // Insert the character

@@ -126,6 +126,9 @@ void Game::create( const QString& character_name,
   d_loading_screen->trackAssetLoadProgression(
                                              d_level, LoadingScreen::newGame );
 
+  // Create the level NPCs and actors
+  d_level->createNPCsAndActors();
+
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
                             QPointF( 0, 0 ),
@@ -534,6 +537,9 @@ void Game::handleTownAssetLoadFinished()
 
   // Connect the character signals to the game slots
   this->connectCharacterSignalsToGameSlots();
+
+  // Activate the level NPCs and actors
+  d_level->activateNPCsAndActors();
 
   // Activate the character
   d_character->setPos( 3250, 2548 );

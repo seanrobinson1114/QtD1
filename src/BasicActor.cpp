@@ -18,8 +18,41 @@ BasicActor::BasicActor( QGraphicsObject* parent )
     d_active_direction_sprite( std::make_pair( South, (GameSprite*)0 ) ),
     d_state_machine(),
     d_grid(),
-    d_path()
+    d_path(),
+    d_x_velocity( 0.0 ),
+    d_y_velocity( 0.0 ),
+    d_target( NULL )
 { /* ... */ }
+
+// Copy Constructor
+BasicActor::BasicActor( const BasicActor& other_actor )
+  : InteractiveLevelObject( other_actor.parentObject() ),
+    d_active_sprites(),
+    d_active_direction_sprite( std::make_pair( South, (GameSprite*)0 ) ),
+    d_state_machine(),
+    d_grid( other_actor.d_grid ),
+    d_path( other_actor.d_path ),
+    d_x_velocity( other_actor.d_x_velocity ),
+    d_y_velocity( other_actor.d_y_velocity ),
+    d_target( other_actor.d_target )
+{ /* ... */ }
+
+// Assignment Operator
+BasicActor& BasicActor::operator=( const BasicActor& other_actor )
+{
+  if( this != &other_actor )
+  {
+    this->setParentItem( other_actor.parentObject() );
+    
+    d_grid = other_actor.d_grid;
+    d_path = other_actor.d_path;
+    d_x_velocity = other_actor.d_x_velocity;
+    d_y_velocity = other_actor.d_y_velocity;
+    d_target = other_actor.d_target;    
+  }
+  
+  return *this;
+}
 
 // Get the description of the basic actor
 QString BasicActor::getDescription() const
@@ -37,10 +70,54 @@ void BasicActor::setDirection( const Direction direction )
   }
 }
 
+// Set the target
+void BasicActor::setTarget( LevelObject* target, QPointF target_coord )
+{
+  if( target )
+  {
+    d_target = target;
+
+    this->setPath( this->getGrid().constructPath( this, target, target_coord, this->scenePos() ) );
+    
+    emit targetSet( this, target );
+  }
+}
+
 // Get the direction of the basic actor
 Direction BasicActor::getDirection() const
 {
   return d_active_direction_sprite.first;
+}
+
+// Get the actor x velocity (pixels per game tic)
+qreal BasicActor::getXVelocity() const
+{
+  return d_x_velocity;
+}
+
+// Set the actor x velocity
+void BasicActor::setXVelocity( const qreal x_velocity )
+{
+  d_x_velocity = x_velocity;
+}
+
+// Get the actor y velocity (pixels per game tic)
+qreal BasicActor::getYVelocity() const
+{
+  return d_y_velocity;
+}
+
+// Set the actor y velocity
+void BasicActor::setYVelocity( const qreal y_velocity )
+{
+  d_y_velocity = y_velocity;
+}
+
+// Set the actor velocity
+void BasicActor::setVelocity( const qreal x_velocity, const qreal y_velocity )
+{
+  d_x_velocity = x_velocity;
+  d_y_velocity = y_velocity;
 }
 
 // Get the bounding rect of the basic actor
@@ -85,6 +162,8 @@ void BasicActor::advance( int phase )
         this->update( d_active_direction_sprite.second->boundingRect() );
       }
     }
+    else
+      std::cout << "An empty sprite sheet was found!" << std::endl;
   }
 }
 
@@ -94,9 +173,9 @@ void BasicActor::paintImpl( QPainter* painter,
                             QWidget* widget )
 {
   if( d_active_direction_sprite.second )
-  {
     d_active_direction_sprite.second->paint( painter, option, widget );
-  }
+  else
+    std::cout << "empty sprite sheet detected!" << std::endl;
 }
 
 // Start the actor state machine
@@ -156,6 +235,69 @@ void BasicActor::restartActiveSprite()
     d_active_direction_sprite.second->setFrame( 0 );
 }
 
+// Update time dependent states implementation (return if a screen update)
+/*! \details If the actor direction or position changes this method will
+ * return true indicating that the screen update is required.
+ */
+bool BasicActor::updateTimeDependentStatesImpl( const bool in_walking_state )
+{
+  bool update_required = false;
+  
+  if( d_target )
+  {
+    if( in_walking_state )
+    {
+      bool destination_reached = this->getPath().empty();
+
+      if( destination_reached )
+      {
+        emit targetReached( this, d_target );
+
+        this->notifyTarget( d_target );
+      }
+      else
+      {
+        Direction direction = this->getPath().front().first;
+        std::cout << "DIRECTION: " << direction << std::endl;
+
+        double& distance = this->getPath().front().second;
+        std::cout << "DISTANCE: " << distance << std::endl;
+      
+        update_required = true;
+        
+        // Calculate the velocity of the actor
+        if( direction != this->getDirection() )
+        {
+          // Get the movement direction enum
+          this->setDirection( direction );
+
+          // Calculate the velocity
+          double speed = this->getMovementSpeed();
+
+          if( distance < speed )
+            speed = distance;
+
+          QPointF direction_vector = QtD1::getDirectionVector( direction );
+          
+          d_x_velocity = direction_vector.x()*speed;
+          d_y_velocity = direction_vector.y()*speed;
+        }
+
+        this->moveBy( d_x_velocity, d_y_velocity );
+
+        // Update the path
+        distance -= std::sqrt( d_x_velocity*d_x_velocity +
+                               d_y_velocity*d_y_velocity );
+
+        if( distance <= 0.0 )
+          this->getPath().pop_front();
+      }
+    }
+  }
+  
+  return update_required;
+}
+
 // Get the grid
 const Grid& BasicActor::getGrid() const
 {
@@ -171,7 +313,6 @@ Grid& BasicActor::getGrid()
 // Set the path
 void BasicActor::setPath( const Grid::Path& path )
 {
-  // std::cout<< "Path Length: " << path.size() << std::endl;
   d_path = path;
 }
 

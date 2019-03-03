@@ -71,11 +71,13 @@ void Level::addLevelObject( LevelObject* level_object,
 
   this->addItem( level_object );
 
-  level_object->setPos( location );
-
   // Notify game instance if object is interactive
   if( level_object->isInteractive() )
     this->connectInteractiveLevelObjectSignalsToLevelSignals( level_object );
+
+  // Set the position after connecting the signals and slots so that the
+  // correct z value is calculated
+  level_object->setPos( location );
 }
 
 // Add an actor
@@ -107,6 +109,7 @@ void Level::insertCharacter( Character* character,
 
   character->setGrid( d_grid );
 
+  // Center the viewport on the character
   this->handleCharacterPositionChanged();
 
   // Check that character is interactive
@@ -412,13 +415,15 @@ void Level::updateInteractiveLevelObjectZValue()
   if( level_object_sender )
   {
     d_grid->updateLevelObjectZValue( level_object_sender );
-    std::cout << "level object z value changed: " << d_character->zValue() << std::endl;
+    std::cout << "level object z value changed: " << level_object_sender->zValue() << std::endl;
   }
 }
 
 // Handle mouse press events in a custom way
 void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 {
+  // If the character has not been assigned to this level - do nothing
+  // Note: This most likely means that there is a problem...
   if( d_character )
   {
     //std::cout << "character z order: " << d_character->zValue() << std::endl;
@@ -434,19 +439,23 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
 
     if( object )
     {
-      if( mouse_event->button() == Qt::LeftButton )
+      // Don't to anything if the character is clicked
+      if( object != d_character )
       {
-        d_character->setTarget( object, mouse_event->scenePos() );
-      }
-      else if( mouse_event->button() == Qt::RightButton )
-      {
-        if( d_character->inTown() )
+        if( mouse_event->button() == Qt::LeftButton )
         {
-          //d_character->playICantSound();
-          std::cout << "can't cast a spell in town!" << std::endl;
+          d_character->setTarget( object, mouse_event->scenePos() );
         }
-        else
-          d_character->castSpellAt( object );
+        else if( mouse_event->button() == Qt::RightButton )
+        {
+          if( d_character->inTown() )
+          {
+            //d_character->playICantSound();
+            std::cout << "can't cast a spell in town!" << std::endl;
+          }
+          else
+            d_character->castSpellAt( object );
+        }
       }
     }
   }

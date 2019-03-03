@@ -37,6 +37,12 @@ public:
   //! Constructor
   BasicActor( QGraphicsObject* parent = 0 );
 
+  //! Copy Constructor
+  BasicActor( const BasicActor& other_actor );
+
+  //! Assignment Operator
+  BasicActor& operator=( const BasicActor& other_actor );
+
   //! Destructor
   virtual ~BasicActor()
   { /* ... */ }
@@ -49,6 +55,12 @@ public:
 
   //! Get the movement speed (pixels per game tic)
   virtual qreal getMovementSpeed() const = 0;
+
+  //! Get the actor x velocity (pixels per game tic)
+  qreal getXVelocity() const;
+
+  //! Get the actor y velocity (pixels per game tic)
+  qreal getYVelocity() const;
 
   //! Get the bounding rect of the basic actor
   QRectF boundingRect() const override;
@@ -73,10 +85,30 @@ signals:
   //! All of the active sprite frames have been shown
   void allActiveFramesShown();
 
+  //! Actor target set
+  void targetSet( LevelObject* targeter, LevelObject* target );
+  
+  //! Actor target reached
+  void targetReached( LevelObject* targeter, LevelObject* target );
+
 public slots:
 
   //! Set the direction of the basic actor
   void setDirection( const Direction direction );
+
+  //! Set the target
+  void setTarget( LevelObject* target, QPointF target_coord );
+
+protected slots:
+
+  //! Set the actor x velocity
+  void setXVelocity( const qreal x_velocity );
+
+  //! Set the actor y velocity
+  void setYVelocity( const qreal y_velocity );
+
+  //! Set the actor velocity
+  void setVelocity( const qreal x_velocity, const qreal y_velocity );
 
 protected:
 
@@ -95,8 +127,11 @@ protected:
   //! Restart active sprite
   void restartActiveSprite();
 
-  //! Update time dependent states (return if a screen update
+  //! Update time dependent states
   virtual bool updateTimeDependentStates() = 0;
+
+  //! Update time dependent states implementation (return if a screen update)
+  bool updateTimeDependentStatesImpl( const bool in_walking_state );
 
   //! Get the grid
   const Grid& getGrid() const;
@@ -129,6 +164,13 @@ private:
 
   // The path through the grid
   Grid::Path d_path;
+
+  // The velocity of the actor
+  qreal d_x_velocity;
+  qreal d_y_velocity;
+
+  // The target of the actor
+  LevelObject* d_target;
 };
 
 } // end QtD1 namespace

@@ -84,7 +84,20 @@ public:
   virtual bool canBeAttacked() const = 0;
 
   //! Check if it is a pillar
-  virtual bool isPillar() const = 0;
+  virtual bool isPillar() const;
+
+  //! Check if it is a character
+  virtual bool isCharacter() const;
+
+protected slots:
+
+  //! Handle being targeted by another object
+  virtual void handleBeingTargeted( LevelObject* targeter );
+
+protected:
+
+  //! Notify object that it has been targeted
+  void notifyTarget( LevelObject* target );
 };
 
 } // end QtD1 namespace

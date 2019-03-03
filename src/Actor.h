@@ -193,12 +193,6 @@ public:
   //! Get the chance to hit with a spell
   virtual qreal getChanceToHitWithSpell() const;
 
-  //! Get the actor x velocity (pixels per game tic)
-  qreal getXVelocity() const;
-
-  //! Get the actor y velocity (pixels per game tic)
-  qreal getYVelocity() const;
-
   //! The actor can be attacked
   bool canBeAttacked() const override;
 
@@ -215,12 +209,6 @@ signals:
 
   //! Actor health depleted
   void healthDepleted();
-
-  //! Actor target set
-  void targetSet( LevelObject* target );
-
-  //! Actor target reached
-  void targetReached( LevelObject* target );
 
   //! Actor cast spell at
   void spellCastAt( LevelObject* target );
@@ -263,9 +251,6 @@ public slots:
   //! Restore mana
   void restoreMana();
 
-  //! Set the target
-  void setTarget( LevelObject* target, QPointF target_coord );
-
   //! Cast a spell at the target
   virtual void castSpellAt( LevelObject* target );
 
@@ -303,15 +288,6 @@ protected slots:
 
   //! Set the mana (will emit manaChanged signal)
   void setMana( const int new_mana );
-
-  //! Set the actor x velocity
-  void setXVelocity( const qreal x_velocity );
-
-  //! Set the actor y velocity
-  void setYVelocity( const qreal y_velocity );
-
-  //! Set the actor velocity
-  void setVelocity( const qreal x_velocity, const qreal y_velocity );
 
 private slots:
 
@@ -385,13 +361,6 @@ private:
 
   // The base lightning resistance percent
   qreal d_base_lightning_resistance_fraction;
-
-  // The velocity of the actor
-  qreal d_x_velocity;
-  qreal d_y_velocity;
-
-  // The target of the actor
-  LevelObject* d_target;
 
   // The actor sprites
   std::shared_ptr<StateDirectionGameSpriteMap> d_sprites;

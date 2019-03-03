@@ -11,6 +11,7 @@
 
 // QtD1 Includes
 #include "Level.h"
+#include "NPC.h"
 
 namespace QtD1{
 
@@ -37,6 +38,12 @@ public:
   //! Get the image asset name
   QString getImageAssetName() const override;
 
+  //! Create the level NPCs and actors
+  void createNPCsAndActors() final override;
+
+  //! Activate the NPCs and actors
+  void activateNPCsAndActors() final override;
+
   //! Insert the character
   void insertCharacter( Character* character,
                         const QPointF& location,
@@ -49,6 +56,9 @@ private:
 
   // Create the level sectors
   void createSectors( QList<LevelSector*>& sectors ) override;
+
+  // Farnham
+  NPC* d_farnham;
 };
   
 } // end QtD1 namespace
