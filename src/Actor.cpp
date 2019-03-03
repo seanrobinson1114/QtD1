@@ -450,22 +450,6 @@ void Actor::incrementBaseVitality()
   emit baseStatsChanged();
 }
 
-// Set the target
-void Actor::setTarget( LevelObject* target, QPointF target_coord )
-{
-  if( target )
-  {
-    d_target = target;
-
-    // Get approximate position of Actors feet
-    QPointF lower_center_point( this->boundingRect().left() + this->boundingRect().width()/2, this->boundingRect().height() - 20 );
-
-    this->setPath( this->getGrid().constructPath( this, target, target_coord, this->mapToScene( lower_center_point ) ) );
-    
-    emit targetSet( target );
-  }
-}
-
 // Cast a spell at the target
 void Actor::castSpellAt( LevelObject* target )
 {
