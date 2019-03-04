@@ -415,7 +415,7 @@ void Level::updateInteractiveLevelObjectZValue()
   if( level_object_sender )
   {
     d_grid->updateLevelObjectZValue( level_object_sender );
-    std::cout << "level object z value changed: " << level_object_sender->zValue() << std::endl;
+    // std::cout << "level object z value changed: " << level_object_sender->zValue() << std::endl;
   }
 }
 

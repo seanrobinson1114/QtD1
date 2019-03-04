@@ -209,14 +209,17 @@ void Grid::updateLevelObjectZValue( LevelObject* level_object ) const
 {
   const GridElement* grid_element = this->findGridElement( level_object );
 
-  // Check if the bounding box of level object is above bottom of grid element
-  if( grid_element->getBoundingBox().bottom() <= level_object->boundingRect().bottom() )
+  if( grid_element ) 
   {
-    level_object->setZValue( grid_element->getZValue() - 1 );
-  }
-  else
-  {
-    level_object->setZValue( grid_element->getZValue() );
+    // Check if the bounding box of level object is above bottom of grid element
+    if( grid_element->getBoundingBox().bottom() <= level_object->boundingRect().bottom() )
+    {
+      level_object->setZValue( grid_element->getZValue() - 1 );
+    }
+    else
+    {
+      level_object->setZValue( grid_element->getZValue() );
+    }
   }
 }
 
@@ -419,71 +422,100 @@ auto Grid::constructShortestPath( const PathNode& start_node,
   
   // List of nodes to be traveresed by an actor
   NodePath shortest_node_path = constructShortestNodePath( start_node, end_node, end_coord, start_coord );
-
-  // need first, second grid elements
-  NodePath::iterator first, second;
-  first = shortest_node_path.begin();
-  second = first;
-  ++second;
-
-  double intersection_x_start, intersection_y_start;
-  Direction direction_start;
-
-  // find closest intersection point with first segment
-  this->calculateLineIntersection( first->second, second->second, start_coord, intersection_x_start, intersection_y_start, direction_start );
-
-  // need last, second last grid elements
-  NodePath::reverse_iterator last, second_last;
-  last = shortest_node_path.rbegin();
-  second_last = last;
-  ++second_last;
-
-  double intersection_x_end, intersection_y_end;
-  Direction direction_end;
-
-  // find closest intersection point with end segment
-  this->calculateLineIntersection( second_last->second, last->second, start_coord, intersection_x_end, intersection_y_end, direction_end );
-
-  // Remove first node point in shortest_node_path
-  // Add intersection point
-  // Add character point
-  // Remove last point
-  // Add end intersection
-  // add target point
-
-  Direction old_direction_start = shortest_node_path.front().first;
-  shortest_node_path.pop_front();
-  shortest_node_path.push_front( std::make_pair( old_direction_start, QPointF( intersection_x_start, intersection_y_start ) ) );
-  shortest_node_path.push_front( std::make_pair( direction_start, start_coord ) );
-
-  shortest_node_path.pop_back();
-  shortest_node_path.push_back( std::make_pair( direction_end, QPointF( intersection_x_end, intersection_y_end ) ) );
-  shortest_node_path.push_back( std::make_pair( direction_end, end_coord ) );
-
-  Path shortest_path;
-  double distance = 0.0;
-
-  NodePath::const_iterator current, next;
-  current = shortest_node_path.begin();
-  next = current;
-  ++next;
-
-  while( next != shortest_node_path.end() )
+  std::cout << "\n\noriginal path" << std::endl;
+  for( auto&& point : shortest_node_path )
   {
-    const double x_diff = current->second.x() -
-      next->second.x();
-
-    const double y_diff = current->second.y() -
-      next->second.y();
-
-    distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
-
-    shortest_path.push_back( std::make_pair( current->first, distance ) );
-
-    ++current;
-    ++next;
+    std::cout << "x: " << point.second.x() << ", y: " << point.second.y() << ", direction: " << point.first << std::endl;
   }
+  std::cout << std::endl;
 
+  // returned
+  Path shortest_path;
+
+  // node path length > 1
+  if( shortest_node_path.size() > 1 ) 
+  {
+    // need first, second grid elements
+    NodePath::iterator first, second;
+    first = shortest_node_path.begin();
+    second = first;
+    ++second;
+
+    double intersection_x_start, intersection_y_start, distance_start;
+    Direction direction_start;
+
+    // find closest intersection point with first segment
+    this->calculateLineIntersection( first->second, second->second, start_coord, intersection_x_start, intersection_y_start, direction_start, distance_start );
+
+    // need last, second last grid elements
+    NodePath::reverse_iterator last, second_last;
+    last = shortest_node_path.rbegin();
+    second_last = last;
+    ++second_last;
+
+    double intersection_x_end, intersection_y_end, distance_end;
+    Direction direction_end;
+
+    // find closest intersection point with end segment
+    this->calculateLineIntersection( second_last->second, last->second, end_coord, intersection_x_end, intersection_y_end, direction_end, distance_end );
+
+    // Remove first node point in shortest_node_path
+    // Add intersection point
+    // Add character point
+    // Remove last point
+    // Add end intersection
+    // add target point
+
+    // Check if distance_start is 0
+    if( distance_start > 0 )
+    {
+      Direction old_direction_start = shortest_node_path.front().first;
+      shortest_node_path.pop_front();
+      shortest_node_path.push_front( std::make_pair( old_direction_start, QPointF( intersection_x_start, intersection_y_start ) ) );
+      shortest_node_path.push_front( std::make_pair( direction_start, start_coord ) );
+    } 
+    
+    // Check if distance_end is 0
+    if( distance_end > 0 )
+    {
+      shortest_node_path.pop_back();
+      shortest_node_path.push_back( std::make_pair( direction_end, QPointF( intersection_x_end, intersection_y_end ) ) );
+      shortest_node_path.push_back( std::make_pair( direction_end, end_coord ) );
+    }
+
+    double distance = 0.0;
+
+    NodePath::const_iterator current, next;
+    current = shortest_node_path.begin();
+    next = current;
+    ++next;
+
+    while( next != shortest_node_path.end() )
+    {
+      std::cout << "STILL LOOPING" << std::endl;
+      const double x_diff = current->second.x() -
+        next->second.x();
+
+      const double y_diff = current->second.y() -
+        next->second.y();
+
+      distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
+
+      shortest_path.push_back( std::make_pair( current->first, distance ) );
+
+      std::cout << "Direction: " << current->first << std::endl;
+      std::cout << "Distance: " << distance << std::endl;
+
+      ++current;
+      ++next;
+    }
+  }
+  else
+  {
+    // TODO
+    // Special case for mini path within same grid element, only 1 node
+  }
+  
   return shortest_path;
 }
 
@@ -541,6 +573,9 @@ auto Grid::constructShortestNodePath( const PathNode& start_node,
     current_node = next_node;
   }
 
+  // Add the last node to shortest path (direction is not used)
+  shortest_node_path.push_back( std::make_pair( Direction::North, current_node->getCenterPoint() ) );
+
   // Return the list of points
   return shortest_node_path;
 }
@@ -551,87 +586,132 @@ void  Grid::calculateLineIntersection( const QPointF& first_grid_point,
                                  const QPointF& start_coord, 
                                  double& intersection_x, 
                                  double& intersection_y, 
-                                 Direction& direction ) 
+                                 Direction& direction,
+                                 double& t ) 
 {
-  double m_line = ( second_grid_point.y() - first_grid_point.y() ) / ( second_grid_point.x() - first_grid_point.x() );
+  // start_coord is character position and click target position
+  std::cout << "start_coord: " << start_coord.x() << ", " << start_coord.y() << std::endl;
 
-  // calculate intercept
-  double b_line = -1 * ( m_line * first_grid_point.x() ) + first_grid_point.y();
-
-  // calculate all directions
-  double t = std::numeric_limits<double>::max();
-
-  double t_north = start_coord.y() - m_line * start_coord.x() - b_line;
-  if( t_north >= 0 && t_north < t ) 
+  // Check if x1 and x2 are equal(vertical)
+  if( first_grid_point.x() == second_grid_point.x() ) 
   {
-    t = t_north;
-    direction = North;
-    intersection_x = start_coord.x();
-    intersection_y = start_coord.y() - t;
-  }
-
-  double t_northwest = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 - m_line );
-  if( t_northwest >= 0 && t_northwest < t ) 
-  {
-    t = t_northwest;
-    direction = Northwest;
-    intersection_x = start_coord.x() - t;
-    intersection_y = start_coord.y() - t;
-  }
-
-  double t_northeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 + m_line );
-  if( t_northeast >= 0 && t_northeast < t )
-  {
-    t = t_northeast;
-    direction = Northeast;
-    intersection_x = start_coord.x() + t;
-    intersection_y = start_coord.y() - t;
-  }
-
-  double t_west = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( m_line );
-  if( t_west >= 0 && t_west < t )
-  {
-    t = t_west;
-    direction = West;
-    intersection_x = start_coord.x() - t;
+    intersection_x = first_grid_point.x();
     intersection_y = start_coord.y();
-  } 
 
-  double t_east = ( start_coord.y() - m_line * start_coord.x() - b_line ) / m_line;
-  if( t_east >= 0 && t_east < t )
+    // Check if start_coord.x < first_grid_point.x
+    if( start_coord.x() < first_grid_point.x() )
+    {
+      direction = East;
+      t = first_grid_point.x() - start_coord.x();
+    }
+    else
+    {
+      direction = West;
+      t = start_coord.x() - first_grid_point.x();
+    }  
+  }
+  else 
   {
-    t = t_east;
-    direction = East;
-    intersection_x = start_coord.x() + t;
-    intersection_y = start_coord.y();
+    double m_line = ( second_grid_point.y() - first_grid_point.y() ) / ( second_grid_point.x() - first_grid_point.x() );
+
+
+    std::cout << first_grid_point.x() << ", " << first_grid_point.y() << std::endl;
+    std::cout << second_grid_point.x() << ", " << second_grid_point.y() << std::endl;
+    std::cout << "m_line: " << m_line << std::endl;
+
+    // calculate intercept
+    double b_line = -1 * ( m_line * first_grid_point.x() ) + first_grid_point.y();
+    std::cout << "b_line: " << b_line << std::endl;
+
+    // calculate all directions
+    t = std::numeric_limits<double>::max();
+
+    double t_north = start_coord.y() - m_line * start_coord.x() - b_line;
+    std::cout << "t_north: " << t_north << std::endl;
+    if( t_north >= 0 && t_north < t ) 
+    {
+      t = t_north;
+      direction = North;
+      intersection_x = start_coord.x();
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_northwest = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 - m_line );
+    std::cout << "t_northwest: " << t_northwest << std::endl;
+    if( t_northwest >= 0 && t_northwest < t ) 
+    {
+      t = t_northwest;
+      direction = Northwest;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_northeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 + m_line );
+    std::cout << "t_northeast: " << t_northeast << std::endl;
+    if( t_northeast >= 0 && t_northeast < t )
+    {
+      t = t_northeast;
+      direction = Northeast;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_west = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( m_line );
+    std::cout << "t_west: " << t_west << std::endl;
+    if( t_west >= 0 && t_west < t )
+    {
+      t = t_west;
+      direction = West;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y();
+    } 
+
+    double t_east = ( start_coord.y() - m_line * start_coord.x() - b_line ) / m_line;
+    std::cout << "t_east: " << t_east << std::endl;
+    if( t_east >= 0 && t_east < t )
+    {
+      t = t_east;
+      direction = East;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y();
+    }
+
+    double t_southwest = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( 1 + m_line );
+    std::cout << "t_southwest: " << t_southwest << std::endl;
+    if( t_southwest >= 0 && t_southwest < t )
+    {
+      t = t_southwest;
+      direction = Southwest;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y() + t;
+    }
+
+    double t_southeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( m_line - 1 );
+    std::cout << "t_southeast: " << t_southeast << std::endl;
+    if( t_southeast >= 0 && t_southeast < t )
+    {
+      t = t_southeast;
+      direction = Southeast;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y() + t;
+    }
+
+    double t_south = m_line * start_coord.x() + b_line - start_coord.y();
+    std::cout << "t_south: " << t_south << std::endl;
+    if( t_south >= 0 && t_south < t )
+    {
+      t = t_south;
+      direction = South;
+      intersection_x = start_coord.x();
+      intersection_y = start_coord.y() + t;
+    }
+    if( t == std::numeric_limits<double>::max() )
+    {
+      std::cout << "\n NO VALID T VALUES" << std::endl;
+    }
   }
 
-  double t_southwest = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( 1 + m_line );
-  if( t_southwest >= 0 && t_southwest < t )
-  {
-    t = t_southwest;
-    direction = Southwest;
-    intersection_x = start_coord.x() - t;
-    intersection_y = start_coord.y() + t;
-  }
-
-  double t_southeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( m_line - 1 );
-  if( t_southeast >= 0 && t_southeast < t )
-  {
-    t = t_southeast;
-    direction = Southeast;
-    intersection_x = start_coord.x() + t;
-    intersection_y = start_coord.y() + t;
-  }
-
-  double t_south = m_line * start_coord.x() + b_line - start_coord.y();
-  if( t_south >= 0 && t_south < t )
-  {
-    t = t_south;
-    direction = South;
-    intersection_x = start_coord.x();
-    intersection_y = start_coord.y() + t;
-  }
+  std::cout << "Line Segment Intersection: Distance(t): " << t << ", Direction: " << direction << std::endl;
 }
 
 // Construct binary search tree

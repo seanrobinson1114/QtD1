@@ -261,10 +261,10 @@ bool BasicActor::updateTimeDependentStatesImpl( const bool in_walking_state )
       else
       {
         Direction direction = this->getPath().front().first;
-        std::cout << "DIRECTION: " << direction << std::endl;
+        // std::cout << "DIRECTION: " << direction << std::endl;
 
         double& distance = this->getPath().front().second;
-        std::cout << "DISTANCE: " << distance << std::endl;
+        // std::cout << "DISTANCE: " << distance << std::endl;
       
         update_required = true;
         

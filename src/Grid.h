@@ -88,7 +88,8 @@ private:
                                    const QPointF& start_coord, 
                                    double& intersection_x, 
                                    double& intersection_y, 
-                                   Direction& direction );
+                                   Direction& direction,
+                                   double& distance );
 
   // Construct binary search tree
   void constructBinarySearchTree();
