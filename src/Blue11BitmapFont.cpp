@@ -1,36 +1,36 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   White11BitmapFont.cpp
+//! \file   Blue11BitmapFont.cpp
 //! \author Alex Robinson, Sean Robinson
-//! \brief  The white 11 bitmap font class definition
+//! \brief  The blue 11 bitmap font class definition
 //!
 //---------------------------------------------------------------------------//
 
 // QtD1 Includes
-#include "White11BitmapFont.h"
+#include "Blue11BitmapFont.h"
 
 namespace QtD1 {
 
 // Initialize static members
-std::unique_ptr<White11BitmapFont> White11BitmapFont::s_instance;
+std::unique_ptr<Blue11BitmapFont> Blue11BitmapFont::s_instance;
   
 // Constructor
-White11BitmapFont::White11BitmapFont()
-  : _11BitmapFont()
+Blue11BitmapFont::Blue11BitmapFont()
+  : _11BitmapFont( QColor( 154, 117, 255 ) )
 { /* ... */ }
 
-// Get the White11BitmapFont instance
-White11BitmapFont* White11BitmapFont::getInstance()
+// Get the Blue11BitmapFont instance
+Blue11BitmapFont* Blue11BitmapFont::getInstance()
 {
   // Just-in-time initialization
   if( !s_instance )
-    s_instance.reset( new White11BitmapFont );
+    s_instance.reset( new Blue11BitmapFont );
 
   return s_instance.get();
 }
-
+  
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//
-// end White11BitmapFont.cpp
+// end Blue11BitmapFont.cpp
 //---------------------------------------------------------------------------//

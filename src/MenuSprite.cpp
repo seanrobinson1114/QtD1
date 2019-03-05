@@ -26,6 +26,7 @@ MenuSprite::MenuSprite( QDeclarativeItem* parent )
     d_source(),
     d_display_policy( Viewport::StretchToFit ),
     d_background_color( Qt::transparent ),
+    d_mixing_color( Qt::transparent ),
     d_source_rows( 1 ),
     d_source_cols( 1 ),
     d_displayed_frame_indices(),
@@ -75,6 +76,18 @@ QColor MenuSprite::getBackgroundColor() const
 void MenuSprite::setBackgroundColor( const QColor& background_color )
 {
   d_background_color = background_color;
+}
+
+// Get the mixing color
+QColor MenuSprite::getMixingColor() const
+{
+  return d_mixing_color;
+}
+
+// Set the mixing color
+void MenuSprite::setMixingColor( const QColor& mixing_color )
+{
+  d_mixing_color = mixing_color;
 }
 
 // Get the number of rows in the sprite sheet
@@ -286,6 +299,10 @@ void MenuSprite::connectFrameLoaderSignalsToMenuSpriteSlots()
 // Handle frame loaded
 void MenuSprite::handleFrameLoaded( const int, QImage frame )
 {
+  // Check if color mixing needs to be done
+  if( d_mixing_color.alpha() > 0 )
+    this->mixFrameColors( frame );
+  
   Frame new_frame;
   new_frame.pixmap.convertFromImage( frame );
 
@@ -296,6 +313,44 @@ void MenuSprite::handleFrameLoaded( const int, QImage frame )
                                 new_frame.target_viewport );
 
   d_frames.push_back( new_frame );
+}
+
+// Mix frame colors
+void MenuSprite::mixFrameColors( QImage& frame ) const
+{
+  // We need a 32-bit image
+  if( frame.format() != QImage::Format_ARGB32 )
+    frame = frame.convertToFormat( QImage::Format_ARGB32 );
+
+  QRgb transparent_color = QColor(Qt::transparent).rgba();
+
+  for( int j = 0; j < frame.height(); ++j )
+  {
+    QRgb* line_pixels = (QRgb*)frame.scanLine( j );
+
+    for( int i = 0; i < frame.width(); ++i )
+    {
+      // Don't mix transparent colors
+      if( *line_pixels != transparent_color )
+      {
+        QColor pixel_color = QColor::fromRgba( *line_pixels );
+
+        int red, green, blue, alpha;
+        
+        red = d_mixing_color.red()*(pixel_color.red()/255.0);
+        green = d_mixing_color.green()*(pixel_color.green()/255.0);
+        blue = d_mixing_color.blue()*(pixel_color.blue()/255.0);
+        alpha = d_mixing_color.alpha()*(pixel_color.alpha()/255.0);
+        
+        pixel_color.setRgb( red, green, blue, alpha );
+
+        // Set the new color
+        *line_pixels = pixel_color.rgba();
+      }
+
+      ++line_pixels;
+    }
+  }
 }
 
 // Handle source loaded

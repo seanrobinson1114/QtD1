@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   White11BitmapFont.h
-//! \author Alex Robinson, Sean Robinson
-//! \brief  The white 11 bitmap font class declaration
+//! \file   Gold11BitmapFont.h
+//! \author Alex Robinson
+//! \brief  The gold 11 bitmap font class definition
 //!
 //---------------------------------------------------------------------------//
 
-#ifndef WHITE_11_BITMAP_FONT_H
-#define WHITE_11_BITMAP_FONT_H
+#ifndef GOLD_11_BITMAP_FONT_H
+#define GOLD_11_BITMAP_FONT_H
 
 // Std Lib Includes
 #include <memory>
@@ -17,32 +17,32 @@
 
 namespace QtD1{
 
-//! The white 11 bitmap font class
-class White11BitmapFont : public _11BitmapFont
+//! The gold 11 bitmap font class
+class Gold11BitmapFont : public _11BitmapFont
 {
 
 public:
 
-  //! Get the White11BitmapFont instance
-  static White11BitmapFont* getInstance();
+  //! Get the gold 11 bitmap font
+  static Gold11BitmapFont* getInstance();
 
   //! Destructor
-  ~White11BitmapFont()
+  ~Gold11BitmapFont()
   { /* ... */ }
 
 private:
 
   // Constructor
-  White11BitmapFont();
+  Gold11BitmapFont();
 
   // The singleton instance
-  static std::unique_ptr<White11BitmapFont> s_instance;
+  static std::unique_ptr<Gold11BitmapFont> s_instance;
 };
-
+  
 } // end QtD1 namespace
 
-#endif // end WHITE_11_BITMAP_FONT_H
+#endif // end GOLD_11_BITMAP_FONT_H
 
 //---------------------------------------------------------------------------//
-// end White11BitmapFont.h
+// end Gold11BitmapFont.h
 //---------------------------------------------------------------------------//

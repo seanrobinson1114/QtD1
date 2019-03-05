@@ -91,6 +91,9 @@ public:
   //! Set the display policy
   void setDisplayPolicy( const Viewport::DisplayPolicy policy );
 
+  //! Set the text mixing color
+  void setMixingColor( const QColor& color );
+
   //! Get the number of lines
   int getLineCount() const;
 
@@ -157,6 +160,9 @@ private:
 
   // The text target viewport
   QRectF d_text_target_viewport;
+
+  // The mixing color
+  QColor d_mixing_color;
 
   // The font name
   QString d_font_name;

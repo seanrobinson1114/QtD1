@@ -32,7 +32,8 @@ public:
   //! Constructor which takes filename, vector of widths and vector of orders
   BitmapFont( const QString& source,
               const QVector<int>& widths,
-              const QVector<int>& order );
+              const QVector<int>& order,
+              const QColor& mixing_color = Qt::transparent );
 
   //! Destructor
   ~BitmapFont()
