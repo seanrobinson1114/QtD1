@@ -42,13 +42,15 @@ BitmapFont::BitmapFont( const QString& source, const QVector<int>& widths )
 // Constructor with filename, widths and orders
 BitmapFont::BitmapFont( const QString& source,
                         const QVector<int>& widths,
-                        const QVector<int>& order )
+                        const QVector<int>& order,
+                        const QColor& mixing_color )
   : d_glyph_map()
 {
   // Extract the frames and set the glyph map
   MenuSprite glyph_sprites;
   glyph_sprites.setSource( source );
   glyph_sprites.setDisplayedFrameIndices( "all" );
+  glyph_sprites.setMixingColor( mixing_color );
   glyph_sprites.loadSync();
 
   QVector<QPixmap> raw_glyphs;

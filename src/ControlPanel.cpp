@@ -46,6 +46,9 @@ ControlPanel::ControlPanel( QWidget* parent )
   control_panel_image->setFixedSize( background_image.size() );
   this->setFixedSize( control_panel_image->size() );
 
+  // Disable focus borders/outlines on push buttons
+  this->setStyleSheet( QString( "QPushButton:focus { border: none; outline: none; }" ) );
+
   this->loadControlPanelButtons();
   this->loadHoverDisplay();
 }
@@ -216,13 +219,14 @@ void ControlPanel::loadHoverDisplay()
 
 // Initialize tab button
 void ControlPanel::initializeControlPanelButton( QPushButton** panel_button,
-                                     const QImage& image )
+                                                 const QImage& image )
 {
   QIcon panel_icon( QPixmap::fromImage( image ) );
 
   *panel_button = new QPushButton( this );
   (*panel_button)->setFocusProxy( this );
-  (*panel_button)->setStyleSheet( QString( "background: transparent" ) );
+  (*panel_button)->setAutoDefault( false );
+  (*panel_button)->setStyleSheet( "background: transparent" );
   (*panel_button)->setIcon( panel_icon );
   (*panel_button)->setIconSize( s_hidden_button_size );
   (*panel_button)->resize( s_active_button_size );

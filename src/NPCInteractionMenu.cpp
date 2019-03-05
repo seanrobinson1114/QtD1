@@ -30,6 +30,9 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     d_go_back_button( NULL ),
     d_exit_button( NULL )
 {
+  // Disable focus borders/outlines on push buttons
+  this->setStyleSheet( QString( "QPushButton:focus { border: none; outline: none; }" ) );
+  
   // Load the interaction menu image
   std::unique_ptr<UIArtLoader> ui_art_frame_loader( new UIArtLoader );
 
@@ -81,7 +84,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     QLabel* title_region = new QLabel( d_primary_menu );
 
     BitmapText title_text;
-    title_text.setFontName( "QtD1White11" );
+    title_text.setFontName( "QtD1Gold11" );
     title_text.setContainerWidth( 200 );
     title_text.setTextWithNoWrap( interaction_menu_title_text );
     title_text.load();
@@ -97,7 +100,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     QLabel* prompt_region = new QLabel( d_primary_menu );
 
     BitmapText prompt_text;
-    prompt_text.setFontName( "QtD1White11" );
+    prompt_text.setFontName( "QtD1Gold11" );
     prompt_text.setContainerWidth( 200 );
     prompt_text.setTextWithNoWrap( "Would you like to:" );
     prompt_text.load();
@@ -112,7 +115,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
   // Create the talk menu button
   {
     BitmapText talk_menu_button_text;
-    talk_menu_button_text.setFontName( "QtD1White11" );
+    talk_menu_button_text.setFontName( "QtD1Blue11" );
     talk_menu_button_text.setContainerWidth( 300 );
     //talk_menu_button_text.setTextWithNoWrap( QString("Talk to ") + npc_name );
     talk_menu_button_text.setTextWithNoWrap( QString("Talk to ") + npc_name );
@@ -142,6 +145,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     exit_button_text.load();
     
     QIcon exit_button_icon( exit_button_text.getPixmap() );
+    std::cout << "Icon theme: " << exit_button_icon.themeName().toStdString() << std::endl;
     
     d_exit_button = new QPushButton( d_primary_menu );
     d_exit_button->setFocusProxy( d_primary_menu );
@@ -169,7 +173,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     QLabel* title_region = new QLabel( d_talk_menu );
 
     BitmapText title_text;
-    title_text.setFontName( "QtD1White11" );
+    title_text.setFontName( "QtD1Gold11" );
     title_text.setContainerWidth( 200 );
     title_text.setTextWithNoWrap( QString("Talk to ") + npc_name );
     title_text.load();
@@ -183,7 +187,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
   // Create the gossip button
   {
     BitmapText gossip_button_text;
-    gossip_button_text.setFontName( "QtD1White11" );
+    gossip_button_text.setFontName( "QtD1Blue11" );
     gossip_button_text.setContainerWidth( 150 );
     gossip_button_text.setTextWithNoWrap( "Gossip" );
     gossip_button_text.load();

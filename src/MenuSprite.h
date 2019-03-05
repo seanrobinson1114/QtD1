@@ -71,6 +71,12 @@ public:
   //! Set the background color (will be transparent)
   void setBackgroundColor( const QColor& background_color );
 
+  //! Get the mixing color
+  QColor getMixingColor() const;
+
+  //! Set the mixing color
+  void setMixingColor( const QColor& mixing_color );
+
   //! Get the number of rows in the sprite sheet
   quint32 getNumberOfRows() const;
 
@@ -161,6 +167,9 @@ private:
   // Calculate the frame index within the range [0,d_sprite_frames.size())
   quint32 calculateBoundedFrameIndex() const;
 
+  // Mix frame colors
+  void mixFrameColors( QImage& frame ) const;
+
   // Initialize the frame loader
   void initializeFrameLoader();
 
@@ -181,6 +190,9 @@ private:
 
   // The sprite sheet background color
   QColor d_background_color;
+
+  // The mixing color
+  QColor d_mixing_color;
 
   // The number of rows in the sprite sheet
   quint32 d_source_rows;

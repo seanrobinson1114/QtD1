@@ -15,6 +15,8 @@
 // QtD1 Includes
 #include "BitmapText.h"
 #include "White11BitmapFont.h"
+#include "Blue11BitmapFont.h"
+#include "Gold11BitmapFont.h"
 #include "Gold16BitmapFont.h"
 #include "Silver16BitmapFont.h"
 #include "Gold22BitmapFont.h"
@@ -39,6 +41,7 @@ BitmapText::BitmapText( QDeclarativeItem* parent )
     d_display_policy( Viewport::NoStretch_AlignSourceCenterWithElementCenter ),
     d_text_source_viewport(),
     d_text_target_viewport(),
+    d_mixing_color( Qt::transparent ),
     d_font_name(),
     d_font( NULL )
 {
@@ -201,6 +204,12 @@ void BitmapText::setDisplayPolicy( const Viewport::DisplayPolicy policy )
   d_display_policy = policy;
 }
 
+// Set the text mixing color
+void BitmapText::setMixingColor( const QColor& color )
+{
+  d_mixing_color = color;
+}
+
 // Get the number of lines
 int BitmapText::getLineCount() const
 {
@@ -325,6 +334,8 @@ void BitmapText::paint( QPainter* painter,
 void BitmapText::loadStandardFonts()
 {
   QtD1::BitmapText::registerFont<QtD1::White11BitmapFont>( "QtD1White11" );
+  QtD1::BitmapText::registerFont<QtD1::Blue11BitmapFont>( "QtD1Blue11" );
+  QtD1::BitmapText::registerFont<QtD1::Gold11BitmapFont>( "QtD1Gold11" );
   QtD1::BitmapText::registerFont<QtD1::Gold16BitmapFont>( "QtD1Gold16" );
   QtD1::BitmapText::registerFont<QtD1::Silver16BitmapFont>( "QtD1Silver16" );
   QtD1::BitmapText::registerFont<QtD1::Gold22BitmapFont>( "QtD1Gold22" );

@@ -1,36 +1,36 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   White11BitmapFont.cpp
-//! \author Alex Robinson, Sean Robinson
-//! \brief  The white 11 bitmap font class definition
+//! \file   Gold11BitmapFont.cpp
+//! \author Alex Robinson
+//! \brief  The gold 11 bitmap font class definition
 //!
 //---------------------------------------------------------------------------//
 
 // QtD1 Includes
-#include "White11BitmapFont.h"
+#include "Gold11BitmapFont.h"
 
-namespace QtD1 {
+namespace QtD1{
 
 // Initialize static members
-std::unique_ptr<White11BitmapFont> White11BitmapFont::s_instance;
+std::unique_ptr<Gold11BitmapFont> Gold11BitmapFont::s_instance;
   
 // Constructor
-White11BitmapFont::White11BitmapFont()
-  : _11BitmapFont()
+Gold11BitmapFont::Gold11BitmapFont()
+  : _11BitmapFont( QColor( 255, 230, 145 ) )
 { /* ... */ }
 
-// Get the White11BitmapFont instance
-White11BitmapFont* White11BitmapFont::getInstance()
+// Get the Gold11BitmapFont instance
+Gold11BitmapFont* Gold11BitmapFont::getInstance()
 {
   // Just-in-time initialization
   if( !s_instance )
-    s_instance.reset( new White11BitmapFont );
+    s_instance.reset( new Gold11BitmapFont );
 
   return s_instance.get();
 }
-
+  
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//
-// end White11BitmapFont.cpp
+// end Gold11BitmapFont.cpp
 //---------------------------------------------------------------------------//

@@ -38,7 +38,10 @@ ADD_LIBRARY(qtd1_core
   CursorDatabase.cpp
 
   BitmapFont.cpp
+  11BitmapFont.cpp
   White11BitmapFont.cpp
+  Blue11BitmapFont.cpp
+  Gold11BitmapFont.cpp
   Gold16BitmapFont.cpp
   Silver16BitmapFont.cpp
   Gold22BitmapFont.cpp
