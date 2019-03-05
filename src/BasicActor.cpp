@@ -77,7 +77,10 @@ void BasicActor::setTarget( LevelObject* target, QPointF target_coord )
   {
     d_target = target;
 
-    this->setPath( this->getGrid().constructPath( this, target, target_coord, this->scenePos() ) );
+    // Get approximate position of Actors feet
+    QPointF lower_center_point( this->boundingRect().left() + this->boundingRect().width()/2, this->boundingRect().height() - 20 );
+
+    this->setPath( this->getGrid().constructPath( this, target, target_coord, this->mapToScene( lower_center_point ) ) );
     
     emit targetSet( this, target );
   }
@@ -258,10 +261,10 @@ bool BasicActor::updateTimeDependentStatesImpl( const bool in_walking_state )
       else
       {
         Direction direction = this->getPath().front().first;
-        std::cout << "DIRECTION: " << direction << std::endl;
+        // std::cout << "DIRECTION: " << direction << std::endl;
 
         double& distance = this->getPath().front().second;
-        std::cout << "DISTANCE: " << distance << std::endl;
+        // std::cout << "DISTANCE: " << distance << std::endl;
       
         update_required = true;
         

@@ -14,6 +14,7 @@
 // Std Lib Includes
 #include <list>
 #include <set>
+#include <algorithm>
 
 namespace QtD1{
 
@@ -107,7 +108,6 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
 {
   std::cout << "constructing path with grid elements" << std::endl;
   std::cout << "mouse click coord: " << end_coord.x() << ", " << end_coord.y() << std::endl;
-  std::cout << "character coord: " << start_coord.x() << ", " << start_coord.y() << std::endl;
 
   // List for tracking current nodes being searched
   std::list<PathNode> path_nodes;
@@ -209,23 +209,23 @@ void Grid::updateLevelObjectZValue( LevelObject* level_object ) const
 {
   const GridElement* grid_element = this->findGridElement( level_object );
 
-  // Check if the bounding box of level object is above bottom of grid element
-  if( grid_element->getBoundingBox().bottom() <= level_object->boundingRect().bottom() )
+  if( grid_element ) 
   {
-    level_object->setZValue( grid_element->getZValue() - 1 );
-  }
-  else
-  {
-    level_object->setZValue( grid_element->getZValue() );
+    // Check if the bounding box of level object is above bottom of grid element
+    if( grid_element->getBoundingBox().bottom() <= level_object->boundingRect().bottom() )
+    {
+      level_object->setZValue( grid_element->getZValue() - 1 );
+    }
+    else
+    {
+      level_object->setZValue( grid_element->getZValue() );
+    }
   }
 }
 
 // Find the grid element that the point lies in
 const GridElement* Grid::findGridElement( const QPointF& point ) const
 {
-  // std::cout << "grid element X: " << point.x() << std::endl;
-  // std::cout << "grid element Y: " << point.y() << std::endl;
-
   std::vector<double>::const_iterator d_x_grid_points_it =
     std::lower_bound( d_x_grid_points.begin(), d_x_grid_points.end(), point.x() );
 
@@ -243,12 +243,6 @@ const GridElement* Grid::findGridElement( const QPointF& point ) const
   // Index returned from lower_bound is one after
   if( y_index > 0 )
     --y_index;
-
-  // std::cout << "std::distance x index: " << x_index << std::endl;
-  // std::cout << "x lower bound: " << d_x_grid_points[x_index] << std::endl;
-
-  // std::cout << "std::distance y index: " << y_index << std::endl;
-  // std::cout << "y lower bound: " << d_y_grid_points[y_index] << std::endl;
 
   auto x_index_map_it = d_binary_obb_tree.find( x_index );
   if( x_index_map_it != d_binary_obb_tree.end() )
@@ -275,8 +269,12 @@ const GridElement* Grid::findGridElement( const QPointF& point ) const
 // Find the grid element that the level objects bounding box lies in
 const GridElement* Grid::findGridElement( LevelObject* level_object ) const
 {
-  QPointF lower_left_point( level_object->boundingRect().left(), level_object->boundingRect().height() );
-  return this->findGridElement( level_object->mapToScene( lower_left_point ) );
+  // TODO figure out how to handle non characters
+
+  // Point near feet of character
+  QPointF lower_center_point( level_object->boundingRect().left() + level_object->boundingRect().width()/2, level_object->boundingRect().height() - 20 );
+
+  return this->findGridElement( level_object->mapToScene( lower_center_point ) );
 }
 
 // Construct the grid
@@ -291,12 +289,7 @@ void Grid::constructGrid()
 
       d_grid[ge_index].setBoundingBox( 32*i + 32*j, (32*(d_columns/2) - 16*(j+1) + 16*i) + 224, 64, 32 );
       d_grid[ge_index].setZValue( d_columns - (j+1) + i );
-      // std::cout << "row: " << i << std::endl;
-      // std::cout << "grid element z value: " << d_grid[ge_index].getZValue() << "\n" << std::endl;
-
-      // std::cout << "ge_index: " << ge_index << std::endl;
-      // std::cout << "Grid Element center: " << "x y: " << d_grid[ge_index].getCenterPoint().x() << " " << d_grid[ge_index].getCenterPoint().y() << std::endl;
-      // Set North adjacent grid element
+      
       if( i != 0 && j != d_columns - 1 )
       {
         d_grid[ge_index].setAdjascentGridElement( North, d_grid[j+1+(i-1)*d_columns] );
@@ -358,12 +351,6 @@ void Grid::setCorrespondingPillars( QList<LevelPillar*> pillars )
   {
     QRectF pillar_bb = pillars[i]->mapRectToScene( pillars[i]->boundingRect() );
 
-    // std::cout << "pillar bounding box: " << std::endl;
-    // std::cout << "left: " << pillar_bb.left() << std::endl;
-    // std::cout << "right: " << pillar_bb.right() << std::endl;
-    // std::cout << "top: " << pillar_bb.top() << std::endl;
-    // std::cout << "bottom: " << pillar_bb.bottom() << std::endl;
-
     /*
      * Loop through grid and find matching values for left, right, and top
      * Top is relative to scene coordinate system
@@ -372,23 +359,12 @@ void Grid::setCorrespondingPillars( QList<LevelPillar*> pillars )
     {
       QRectF grid_element_bb = d_grid[j].getBoundingBox();
 
-      // std::cout << std::endl;
-      // std::cout << "grid element bounding box: " << std::endl;
-      // std::cout << "left: " << grid_element_bb.left() << std::endl;
-      // std::cout << "right: " << grid_element_bb.right() << std::endl;
-      // std::cout << "top: " << grid_element_bb.top() << std::endl;
-      // std::cout << "bottom: " << grid_element_bb.bottom() << std::endl;
-      // std::cout << "grid element index: " << j << std::endl;
-      // std::cout << std::endl;
-
       if( grid_element_bb.left() == pillar_bb.left() &&
           grid_element_bb.right() == pillar_bb.right() &&
           grid_element_bb.bottom() == pillar_bb.bottom() )
       {
         d_grid[j].setCorrespondingPillar( pillars[i] );
         d_grid_pillar_map[pillars[i]] = &d_grid[j];
-        // std::cout << "grid z value: " << d_grid[j].getZValue() << std::endl;
-        // std::cout << "pillar z value: " << d_grid[j].getCorrespondingLevelPillar()->zValue() << "\n" << std::endl;
 
         ++success;
 
@@ -437,12 +413,118 @@ void Grid::setPathNodeAdjacencies(
 }
 
 // Construct a path from the current node
-auto Grid::constructShortestPath( PathNode& start_node,
-                                  PathNode& end_node,
-                                  QPointF end_coord, 
-                                  QPointF start_coord ) -> Path
+auto Grid::constructShortestPath( const PathNode& start_node,
+                                  const PathNode& end_node,
+                                  const QPointF& end_coord, 
+                                  const QPointF& start_coord ) -> Path
 {
-  std::cout << "unhighlighting old path" << std::endl;
+  std::cout << "finding shortest path" << std::endl;
+  
+  // List of nodes to be traveresed by an actor
+  NodePath shortest_node_path = constructShortestNodePath( start_node, end_node, end_coord, start_coord );
+  std::cout << "\n\noriginal path" << std::endl;
+  for( auto&& point : shortest_node_path )
+  {
+    std::cout << "x: " << point.second.x() << ", y: " << point.second.y() << ", direction: " << point.first << std::endl;
+  }
+  std::cout << std::endl;
+
+  // returned
+  Path shortest_path;
+
+  // node path length > 1
+  if( shortest_node_path.size() > 1 ) 
+  {
+    // need first, second grid elements
+    NodePath::iterator first, second;
+    first = shortest_node_path.begin();
+    second = first;
+    ++second;
+
+    double intersection_x_start, intersection_y_start, distance_start;
+    Direction direction_start;
+
+    // find closest intersection point with first segment
+    this->calculateLineIntersection( first->second, second->second, start_coord, intersection_x_start, intersection_y_start, direction_start, distance_start );
+
+    // need last, second last grid elements
+    NodePath::reverse_iterator last, second_last;
+    last = shortest_node_path.rbegin();
+    second_last = last;
+    ++second_last;
+
+    double intersection_x_end, intersection_y_end, distance_end;
+    Direction direction_end;
+
+    // find closest intersection point with end segment
+    this->calculateLineIntersection( second_last->second, last->second, end_coord, intersection_x_end, intersection_y_end, direction_end, distance_end );
+
+    // Remove first node point in shortest_node_path
+    // Add intersection point
+    // Add character point
+    // Remove last point
+    // Add end intersection
+    // add target point
+
+    // Check if distance_start is 0
+    if( distance_start > 0 )
+    {
+      Direction old_direction_start = shortest_node_path.front().first;
+      shortest_node_path.pop_front();
+      shortest_node_path.push_front( std::make_pair( old_direction_start, QPointF( intersection_x_start, intersection_y_start ) ) );
+      shortest_node_path.push_front( std::make_pair( direction_start, start_coord ) );
+    } 
+    
+    // Check if distance_end is 0
+    if( distance_end > 0 )
+    {
+      shortest_node_path.pop_back();
+      shortest_node_path.push_back( std::make_pair( direction_end, QPointF( intersection_x_end, intersection_y_end ) ) );
+      shortest_node_path.push_back( std::make_pair( direction_end, end_coord ) );
+    }
+
+    double distance = 0.0;
+
+    NodePath::const_iterator current, next;
+    current = shortest_node_path.begin();
+    next = current;
+    ++next;
+
+    while( next != shortest_node_path.end() )
+    {
+      std::cout << "STILL LOOPING" << std::endl;
+      const double x_diff = current->second.x() -
+        next->second.x();
+
+      const double y_diff = current->second.y() -
+        next->second.y();
+
+      distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
+
+      shortest_path.push_back( std::make_pair( current->first, distance ) );
+
+      std::cout << "Direction: " << current->first << std::endl;
+      std::cout << "Distance: " << distance << std::endl;
+
+      ++current;
+      ++next;
+    }
+  }
+  else
+  {
+    // TODO
+    // Special case for mini path within same grid element, only 1 node
+  }
+  
+  return shortest_path;
+}
+
+// Construct the shortest path of nodes from the current node
+auto Grid::constructShortestNodePath( const PathNode& start_node,
+                                  const PathNode& end_node,
+                                  const QPointF& end_coord, 
+                                  const QPointF& start_coord ) -> NodePath
+{
   // Unhighlight old path
   for( auto&& old_pillar : d_old_highlighted_path )
   {
@@ -451,15 +533,15 @@ auto Grid::constructShortestPath( PathNode& start_node,
   // Clear the old highlighted path
   d_old_highlighted_path.clear();
 
-  std::cout << "finding shortest path" << std::endl;
-  // List of points to be traveresed by an actor
-  Path shortest_path;
+  std::cout << "finding shortest node path" << std::endl;
+  // List of nodes to be traveresed by an actor
+  NodePath shortest_node_path;
+  Direction direction;
 
   // Start at end for current_nodes( the end is the starting point )
   // Check adjacencies and add the one with the lowest weight to
   // shortest_path
   const PathNode* current_node = &start_node;
-  QPointF current_node_center_point = current_node->getCenterPoint();
 
   while( true )
   {
@@ -477,49 +559,159 @@ auto Grid::constructShortestPath( PathNode& start_node,
     else
       std::cout << "current node doesn't equal end node" << std::endl;
 
-    Direction direction;
-
     // Get the adjascent node with lowest weight
-    // std::cout << "current node center: " << current_node->getCenterPoint().x() << " " << current_node->getCenterPoint().y() << std::endl;
-
     const PathNode* next_node =
       current_node->getLowestWeightAdjascentNode( &direction );
 
     // Get the adjascent node center point
     QPointF next_node_center_point = next_node->getCenterPoint();
 
-    // Calculate the distance between the two node center points
-    double distance = 0.0;
-
-    {
-      const double x_diff = current_node_center_point.x() -
-        next_node_center_point.x();
-
-      std::cout << "x 1: " << current_node_center_point.x() << std::endl;
-      std::cout << "x 2: " << next_node_center_point.x() << std::endl;
-
-      const double y_diff = current_node_center_point.y() -
-        next_node_center_point.y();
-
-      // std::cout << "y 1: " << current_node_center_point.y() << std::endl;
-      // std::cout << "y 2: " << next_node_center_point.y() << std::endl;
-
-      // std::cout << "\n x difference: " << x_diff;
-      // std::cout << " y difference: " << y_diff << "\n" << std::endl;
-
-      distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
-    }
-
     // Add actual start and actual end
-    shortest_path.push_back( std::make_pair( direction, distance ) );
+    shortest_node_path.push_back( std::make_pair( direction, current_node->getCenterPoint() ) );
 
     // Move to the next node
     current_node = next_node;
-    current_node_center_point = next_node_center_point;
   }
 
+  // Add the last node to shortest path (direction is not used)
+  shortest_node_path.push_back( std::make_pair( Direction::North, current_node->getCenterPoint() ) );
+
   // Return the list of points
-  return shortest_path;
+  return shortest_node_path;
+}
+
+// Calculate intersection for first and last line segments on path
+void  Grid::calculateLineIntersection( const QPointF& first_grid_point, 
+                                 const QPointF& second_grid_point,
+                                 const QPointF& start_coord, 
+                                 double& intersection_x, 
+                                 double& intersection_y, 
+                                 Direction& direction,
+                                 double& t ) 
+{
+  // start_coord is character position and click target position
+  std::cout << "start_coord: " << start_coord.x() << ", " << start_coord.y() << std::endl;
+
+  // Check if x1 and x2 are equal(vertical)
+  if( first_grid_point.x() == second_grid_point.x() ) 
+  {
+    intersection_x = first_grid_point.x();
+    intersection_y = start_coord.y();
+
+    // Check if start_coord.x < first_grid_point.x
+    if( start_coord.x() < first_grid_point.x() )
+    {
+      direction = East;
+      t = first_grid_point.x() - start_coord.x();
+    }
+    else
+    {
+      direction = West;
+      t = start_coord.x() - first_grid_point.x();
+    }  
+  }
+  else 
+  {
+    double m_line = ( second_grid_point.y() - first_grid_point.y() ) / ( second_grid_point.x() - first_grid_point.x() );
+
+
+    std::cout << first_grid_point.x() << ", " << first_grid_point.y() << std::endl;
+    std::cout << second_grid_point.x() << ", " << second_grid_point.y() << std::endl;
+    std::cout << "m_line: " << m_line << std::endl;
+
+    // calculate intercept
+    double b_line = -1 * ( m_line * first_grid_point.x() ) + first_grid_point.y();
+    std::cout << "b_line: " << b_line << std::endl;
+
+    // calculate all directions
+    t = std::numeric_limits<double>::max();
+
+    double t_north = start_coord.y() - m_line * start_coord.x() - b_line;
+    std::cout << "t_north: " << t_north << std::endl;
+    if( t_north >= 0 && t_north < t ) 
+    {
+      t = t_north;
+      direction = North;
+      intersection_x = start_coord.x();
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_northwest = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 - m_line );
+    std::cout << "t_northwest: " << t_northwest << std::endl;
+    if( t_northwest >= 0 && t_northwest < t ) 
+    {
+      t = t_northwest;
+      direction = Northwest;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_northeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( 1 + m_line );
+    std::cout << "t_northeast: " << t_northeast << std::endl;
+    if( t_northeast >= 0 && t_northeast < t )
+    {
+      t = t_northeast;
+      direction = Northeast;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y() - t;
+    }
+
+    double t_west = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( m_line );
+    std::cout << "t_west: " << t_west << std::endl;
+    if( t_west >= 0 && t_west < t )
+    {
+      t = t_west;
+      direction = West;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y();
+    } 
+
+    double t_east = ( start_coord.y() - m_line * start_coord.x() - b_line ) / m_line;
+    std::cout << "t_east: " << t_east << std::endl;
+    if( t_east >= 0 && t_east < t )
+    {
+      t = t_east;
+      direction = East;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y();
+    }
+
+    double t_southwest = ( m_line * start_coord.x() + b_line - start_coord.y() ) / ( 1 + m_line );
+    std::cout << "t_southwest: " << t_southwest << std::endl;
+    if( t_southwest >= 0 && t_southwest < t )
+    {
+      t = t_southwest;
+      direction = Southwest;
+      intersection_x = start_coord.x() - t;
+      intersection_y = start_coord.y() + t;
+    }
+
+    double t_southeast = ( start_coord.y() - m_line * start_coord.x() - b_line ) / ( m_line - 1 );
+    std::cout << "t_southeast: " << t_southeast << std::endl;
+    if( t_southeast >= 0 && t_southeast < t )
+    {
+      t = t_southeast;
+      direction = Southeast;
+      intersection_x = start_coord.x() + t;
+      intersection_y = start_coord.y() + t;
+    }
+
+    double t_south = m_line * start_coord.x() + b_line - start_coord.y();
+    std::cout << "t_south: " << t_south << std::endl;
+    if( t_south >= 0 && t_south < t )
+    {
+      t = t_south;
+      direction = South;
+      intersection_x = start_coord.x();
+      intersection_y = start_coord.y() + t;
+    }
+    if( t == std::numeric_limits<double>::max() )
+    {
+      std::cout << "\n NO VALID T VALUES" << std::endl;
+    }
+  }
+
+  std::cout << "Line Segment Intersection: Distance(t): " << t << ", Direction: " << direction << std::endl;
 }
 
 // Construct binary search tree
@@ -564,22 +756,6 @@ void Grid::constructBinarySearchTree()
       d_binary_obb_tree[x_index_second][y_index_second].push_back( &d_grid[j + i*d_columns] );
     }
   }
-  // for( int i = 0; i < d_x_grid_points.size(); ++i )
-  // {
-  //   // std::cout << "x index[" << i << "]: " << std::endl;
-  //   for( auto y_element : d_binary_obb_tree[i] )
-  //   {
-  //     // std::cout << "  y_index: " << y_element.first << "(" << d_y_grid_points[y_element.first] << "-" << d_y_grid_points[y_element.first+1] << ")" << std::endl;
-  //     for( auto y_grid_element : y_element.second )
-  //     {
-  //       // std::cout << "    bottom: " << y_grid_element->getBoundingBox().bottom() << std::endl
-  //       //           << "    top: " << y_grid_element->getBoundingBox().top()
-  //       // << std::endl;
-
-  //     }
-  //   }
-  //   // std::cout << std::endl;
-  // }
 }
 
 } // end QtD1 namespace
