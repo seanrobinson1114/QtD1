@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <tuple>
+
 // QtD1 Includes
 #include "BasicActor.h"
 
@@ -260,11 +263,14 @@ bool BasicActor::updateTimeDependentStatesImpl( const bool in_walking_state )
       }
       else
       {
-        Direction direction = this->getPath().front().first;
-        // std::cout << "DIRECTION: " << direction << std::endl;
+        Direction direction = std::get<0>( this->getPath().front() );
+        // Direction direction = this->getPath().front().first;
 
-        double& distance = this->getPath().front().second;
-        // std::cout << "DISTANCE: " << distance << std::endl;
+        double& distance = std::get<1>( this->getPath().front() );
+        // double& distance = this->getPath().front().second;
+
+        double& unit_vector_x = std::get<2>( this->getPath().front() );
+        double& unit_vector_y = std::get<3>( this->getPath().front() );
       
         update_required = true;
         
@@ -280,10 +286,11 @@ bool BasicActor::updateTimeDependentStatesImpl( const bool in_walking_state )
           if( distance < speed )
             speed = distance;
 
-          QPointF direction_vector = QtD1::getDirectionVector( direction );
+          // QPointF direction_vector = QtD1::getDirectionVector( direction );
           
-          d_x_velocity = direction_vector.x()*speed;
-          d_y_velocity = direction_vector.y()*speed;
+          // Replace direction_vector.x() and .y() with new unit vector x and y
+          d_x_velocity = unit_vector_x*speed;
+          d_y_velocity = unit_vector_y*speed;
         }
 
         this->moveBy( d_x_velocity, d_y_velocity );

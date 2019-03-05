@@ -11,6 +11,7 @@
 
 // Std Lib Includes
 #include <set>
+#include <tuple>
 
 // Qt Includes
 #include <QList>
@@ -29,7 +30,7 @@ class Grid
 public:
 
   //! Typedef for the path through the grid
-  typedef std::list<std::pair<Direction,double> > Path;
+  typedef std::list<std::tuple<Direction, double, double, double> > Path;
 
   //! Typedef for the node path through the grid
   typedef std::list<std::pair<Direction,QPointF> > NodePath;

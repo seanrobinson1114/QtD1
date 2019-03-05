@@ -493,18 +493,25 @@ auto Grid::constructShortestPath( const PathNode& start_node,
     while( next != shortest_node_path.end() )
     {
       std::cout << "STILL LOOPING" << std::endl;
-      const double x_diff = current->second.x() -
-        next->second.x();
+      const double x_diff = next->second.x() -
+        current->second.x();
 
-      const double y_diff = current->second.y() -
-        next->second.y();
+      const double y_diff = next->second.y() -
+        current->second.y();
 
+      // Calculate distance
       distance = std::sqrt( x_diff*x_diff + y_diff*y_diff );
 
-      shortest_path.push_back( std::make_pair( current->first, distance ) );
+      // Calculate the x and y of the unit vector
+      const double u_x = x_diff / distance;
+      const double u_y = y_diff / distance;
+
+      shortest_path.push_back( std::make_tuple( current->first, distance, u_x, u_y ) );
 
       std::cout << "Direction: " << current->first << std::endl;
       std::cout << "Distance: " << distance << std::endl;
+      std::cout << "Standard Vector x: " << u_x << std::endl;
+      std::cout << "Standard Vector y: " << u_y << std::endl;
 
       ++current;
       ++next;
