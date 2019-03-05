@@ -127,7 +127,18 @@ void Game::create( const QString& character_name,
                                              d_level, LoadingScreen::newGame );
 
   // Create the level NPCs and actors
-  d_level->createNPCsAndActors();
+  {
+    QVector<NPC*> npcs;
+    QVector<Actor*> special_actors;
+    
+    d_level->createNPCsAndActors( npcs, special_actors );
+
+    for( size_t i = 0; i < npcs.size(); ++i )
+      this->registerNPC( npcs[i] );
+
+    // for( size_t i = 0; i < special_actors.size(); ++i )
+    //   this->registerSpecialActors( special_actors[i] );
+  }
 
   // Add the character to the level
   d_level->insertCharacter( d_character.get(),
@@ -412,55 +423,55 @@ void Game::showEvent( QShowEvent* event )
 }
 
 // Handle hide events
-void Game::hideEvent( QHideEvent* event )
+void Game::hideEvent( QHideEvent* )
 {
 
 }
 
 // Handle resize event
-void Game::resizeEvent( QResizeEvent* event )
+void Game::resizeEvent( QResizeEvent* )
 {
 
 }
 
 // Handle the timer event
-void Game::timerEvent( QTimerEvent* event )
+void Game::timerEvent( QTimerEvent* )
 {
   d_level->advance();
 }
 
 // Handle key press events
-void Game::keyPressEvent( QKeyEvent* event )
+void Game::keyPressEvent( QKeyEvent* )
 {
 
 }
 
 // Handle key release events
-void Game::keyReleaseEvent( QKeyEvent* event )
+void Game::keyReleaseEvent( QKeyEvent* )
 {
 
 }
 
 // Handle mouse move events
-void Game::mouseMoveEvent( QMouseEvent* event )
+void Game::mouseMoveEvent( QMouseEvent* )
 {
 
 }
 
 // Handle mouse press event
-void Game::mousePressEvent( QMouseEvent* event )
+void Game::mousePressEvent( QMouseEvent* )
 {
 
 }
 
 // Handle mouse release event
-void Game::mouseReleaseEvent( QMouseEvent* event )
+void Game::mouseReleaseEvent( QMouseEvent* )
 {
 
 }
 
 // Handle mouse double-click event
-void Game::mouseDoubleClickEvent( QMouseEvent* event )
+void Game::mouseDoubleClickEvent( QMouseEvent* )
 {
 
 }
@@ -475,6 +486,25 @@ void Game::handleCharacterLevelUp( const int )
 void Game::handleCharacterDeath()
 {
   // Load the game menu
+}
+
+// Handle the NPC menu activated
+void Game::handleNPCMenuActivated()
+{
+  this->hideCharacterStats();
+  this->hideQuestLog();
+  this->hideCharacterInventory();
+  this->hideCharacterSpellBook();
+
+  d_game_control_panel->deactivateFocusShortcuts();
+  d_level_viewer->setInteractive( false );
+}
+
+// Handle the NPC menu deactivated
+void Game::handleNPCMenuDeactivated()
+{
+  d_game_control_panel->activateFocusShortcuts();
+  d_level_viewer->setInteractive( true );
 }
 
 void Game::handleTownAssetLoadStarted()
@@ -539,7 +569,7 @@ void Game::handleTownAssetLoadFinished()
   this->connectCharacterSignalsToGameSlots();
 
   // Activate the level NPCs and actors
-  d_level->activateNPCsAndActors();
+  d_level->activateNPCsAndActors( this );
 
   // Activate the character
   d_character->setPos( 3264, 2448 );
@@ -568,6 +598,15 @@ void Game::handleLevelAssetLoadStarted()
 void Game::handleLevelAssetLoadFinished()
 {
 
+}
+
+// Register NPC
+void Game::registerNPC( NPC* new_npc )
+{
+  QObject::connect( new_npc, SIGNAL(interactionMenuActivated()),
+                    this, SLOT(handleNPCMenuActivated()) );
+  QObject::connect( new_npc, SIGNAL(interactionMenuDeactivated()),
+                    this, SLOT(handleNPCMenuDeactivated()) );
 }
 
 // Connect the character signals to the game slots

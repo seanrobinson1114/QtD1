@@ -76,9 +76,9 @@ Farnham::Farnham( QGraphicsObject* parent )
   d_gossip_dialogues[5].setSource( "/sfx/towners/drunk29.wav" );
   d_gossip_dialogues[6].setSource( "/sfx/towners/drunk30.wav" );
   d_gossip_dialogues[7].setSource( "/sfx/towners/drunk31.wav" );
-  d_gossip_dialogues[7].setSource( "/sfx/towners/drunk32.wav" );
-  d_gossip_dialogues[7].setSource( "/sfx/towners/drunk34.wav" );
-  d_gossip_dialogues[7].setSource( "/sfx/towners/drunk35.wav" );
+  d_gossip_dialogues[8].setSource( "/sfx/towners/drunk32.wav" );
+  d_gossip_dialogues[9].setSource( "/sfx/towners/drunk34.wav" );
+  d_gossip_dialogues[10].setSource( "/sfx/towners/drunk35.wav" );
 
   // Load the unused dialogues
   d_unused_dialogues[0].setSource( "/sfx/towners/drunk21.wav" );
@@ -184,6 +184,25 @@ void Farnham::dumpImageAssets()
   d_sprites_loaded = false;
 }
 
+// Play quest dialogue
+void Farnham::discussQuest( const Quest::Type quest )
+{
+  auto dialogue_it = d_quest_dialogues.find( quest );
+  
+  if( dialogue_it != d_quest_dialogues.end() )
+    dialogue_it->second.front().playSound();
+}
+
+// Play gossip dialogue
+void Farnham::gossip()
+{
+  static int gossip_index = 0;
+
+  d_gossip_dialogues[gossip_index].playSound();
+
+  gossip_index = (gossip_index+1)%d_gossip_dialogues.size();
+}
+
 // Greet the character
 void Farnham::greet()
 {
@@ -194,6 +213,12 @@ void Farnham::greet()
 qreal Farnham::getMovementSpeed() const
 {
   return 0.0;
+}
+
+// Check if the NPC has dialogue for the requested quest
+bool Farnham::hasDialogue( const Quest::Type quest ) const
+{
+  return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
   
 } // end QtD1 namespace

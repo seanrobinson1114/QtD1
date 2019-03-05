@@ -112,6 +112,9 @@ public:
   //! Set the container width
   void setContainerWidth( const int width );
 
+  //! Get the text pixmap
+  QPixmap getPixmap() const;
+
   //! Paint the text bitmap
   void paint( QPainter* painter,
               const QStyleOptionGraphicsItem* option,

@@ -6,9 +6,17 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <memory>
+
+// QtD1 Includes
+#include <QPushButton>
+
 // QtD1 Includes
 #include "NPC.h"
+#include "NPCInteractionMenu.h"
 #include "BasicActorStandingByTargetTransition.h"
+#include "QuestManager.h"
 
 namespace QtD1{
 
@@ -18,13 +26,59 @@ NPC::NPC( QGraphicsObject* parent,
   : BasicActor( parent ),
     d_has_walking_state( has_walking_state ),
     d_sprites(),
-    d_active_state( Standing )
-{ /* ... */ }
+    d_active_state( Standing ),
+    d_interaction_menu( NULL )
+{ 
+  // Connect the QuestManager signals to the NPC slots
+  QObject::connect( &QuestManager::getInstance(), SIGNAL( questActivated(const Quest::Type) ),
+                    this, SLOT(activateQuest(const Quest::Type)) );
+  QObject::connect( &QuestManager::getInstance(), SIGNAL( questFinished(const Quest::Type) ),
+                    this, SLOT(deactivateQuest(const Quest::Type)) );
+}
 
 // Check if the object can be attacked
 bool NPC::canBeAttacked() const
 {
   return false;
+}
+
+// Activate a quest
+void NPC::activateQuest( const Quest::Type quest )
+{
+  
+}
+
+// Deactivate a quest
+void NPC::deactivateQuest( const Quest::Type quest )
+{
+
+}
+
+// Stop playing dialogue
+void NPC::stopTalking()
+{
+  
+}
+
+// Show interaction menu
+void NPC::showInteractionMenu()
+{
+  emit interactionMenuActivated();
+  
+  d_interaction_menu->show();
+  d_interaction_menu->raise();
+  d_interaction_menu->setFocus();
+}
+
+// Hide the interaction menu
+void NPC::hideInteractionMenu()
+{
+  this->stopTalking();
+    
+  d_interaction_menu->hide();
+  d_interaction_menu->clearFocus();
+
+  emit interactionMenuDeactivated();
 }
 
 // Handle being targeted by another object
@@ -35,6 +89,8 @@ void NPC::handleBeingTargeted( LevelObject* object )
     emit targetedByCharacter( object );
 
     this->greet();
+
+    this->showInteractionMenu();
   }
 }
 
@@ -130,6 +186,26 @@ void NPC::handleWalkingStateEntered()
 void NPC::handleWalkingStateExited()
 {
   this->restartActiveSprite();
+}
+
+// Load the interaction menu
+void NPC::loadInteractionMenu( QWidget* parent )
+{
+  // Only load the menu once
+  if( !d_interaction_menu )
+  {
+    d_interaction_menu = new NPCInteractionMenu( "Farnham",
+                                                 "Farnham The Drunk",
+                                                 "Say Goodbye",
+                                                 parent );
+
+    QObject::connect( d_interaction_menu, SIGNAL(exit()),
+                      this, SLOT(hideInteractionMenu()) );
+    QObject::connect( d_interaction_menu, SIGNAL(gossip()),
+                      this, SLOT(gossip()) );
+    QObject::connect( d_interaction_menu, SIGNAL(discussQuest(const Quest::Type)),
+                      this, SLOT(discussQuest(const Quest::Type)) );
+  }
 }
 
 // Update the time dependent states

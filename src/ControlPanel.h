@@ -74,6 +74,12 @@ public slots:
   //! Change object description display
   void changeObjectDescriptionDisplay( QString objectDescription );
 
+  //! Activate the control panel focus shortcuts
+  void activateFocusShortcuts();
+  
+  //! Deactivate the control panel focus shortcuts
+  void deactivateFocusShortcuts();
+
 private:
 
   //! Initialize the control panel buttons

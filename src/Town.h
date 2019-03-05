@@ -39,10 +39,11 @@ public:
   QString getImageAssetName() const override;
 
   //! Create the level NPCs and actors
-  void createNPCsAndActors() final override;
+  void createNPCsAndActors( QVector<NPC*>& npcs,
+                            QVector<Actor*>& special_actors ) final override;
 
   //! Activate the NPCs and actors
-  void activateNPCsAndActors() final override;
+  void activateNPCsAndActors( QWidget* parent ) final override;
 
   //! Insert the character
   void insertCharacter( Character* character,

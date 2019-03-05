@@ -51,9 +51,17 @@ public:
 
   //! Finalize image asset loading
   void finalizeImageAssetLoading() final override;
-
+  
   //! Dump the image assets
   void dumpImageAssets() final override;
+
+public slots:
+  
+  //! Play quest dialogue
+  void discussQuest( const Quest::Type quest )final override;
+
+  //! Play gossip dialogue
+  void gossip() final override;
 
 protected:
 
@@ -62,6 +70,9 @@ protected:
 
   //! Get the movement speed (pixels per game tic)
   qreal getMovementSpeed() const final override;
+
+  //! Check if the NPC has dialogue for the requested quest
+  bool hasDialogue( const Quest::Type quest ) const final override;
 
 private:
 

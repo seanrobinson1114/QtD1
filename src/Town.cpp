@@ -40,22 +40,26 @@ QString Town::getImageAssetName() const
 }
 
 // Create the level NPCs and actors
-void Town::createNPCsAndActors()
+void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
 {
   // This memory will be managed by the scene
   d_farnham = new Farnham;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
+
+  npcs << d_farnham;
 }
 
 // Activate the NPCs and actors
-void Town::activateNPCsAndActors()
+void Town::activateNPCsAndActors( QWidget* parent_widget )
 {
   // Set the direction so that the correct sprite sheet gets activated
   //d_farnham->setDirection( Direction::Southeast );
   d_farnham->setPos( 2600, 2640 );
   d_farnham->activate();
   d_farnham->startStateMachine();
+
+  d_farnham->loadInteractionMenu( parent_widget );
 }
 
 // Insert the character

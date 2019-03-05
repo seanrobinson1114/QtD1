@@ -66,7 +66,9 @@ QString BitmapText::getText() const
 void BitmapText::setText( const QString& text )
 {
   if( d_text_behavior == NoTextWrap )
-    d_text_lines = text.split( '\n' );
+  {
+    this->setTextWithNoWrap( text );
+  }
   else if( d_text_behavior == TextWrap )
   {
     this->setTextWithTextWrap( text );
@@ -75,6 +77,12 @@ void BitmapText::setText( const QString& text )
   {
     this->setTextWithWordWrap( text );
   }
+}
+
+// Set the text without wrapping
+void BitmapText::setTextWithNoWrap( const QString& text )
+{
+  d_text_lines = text.split( '\n' );
 }
 
 // Set the text with text wrapping
@@ -292,6 +300,12 @@ void BitmapText::load()
 
     this->update();
   }
+}
+
+// Get the text pixmap
+QPixmap BitmapText::getPixmap() const
+{
+  return d_text_image;
 }
 
 // Paint the text bitmap

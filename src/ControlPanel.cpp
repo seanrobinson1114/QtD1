@@ -152,6 +152,26 @@ void ControlPanel::changeObjectDescriptionDisplay( QString objectDescription )
   d_hover_display->setText( objectDescription );
 }
 
+// Activate the control panel focus shortcuts
+void ControlPanel::activateFocusShortcuts()
+{
+  d_char_button->setShortcut( tr( "c" ) );
+  d_quest_button->setShortcut( tr( "q" ) );
+  d_menu_button->setShortcut( tr( "Esc" ) );
+  d_inv_button->setShortcut( tr( "i" ) );
+  d_spell_button->setShortcut( tr( "s" ) );
+}
+
+// Deactivate the control panel focus shortcuts
+void ControlPanel::deactivateFocusShortcuts()
+{
+  d_char_button->setShortcut( tr( "" ) );
+  d_quest_button->setShortcut( tr( "" ) );
+  d_menu_button->setShortcut( tr( "" ) );
+  d_inv_button->setShortcut( tr( "" ) );
+  d_spell_button->setShortcut( tr( "" ) );
+}
+
 void ControlPanel::loadControlPanelButtons()
 {
   // Create the tab buttons
@@ -213,19 +233,12 @@ void ControlPanel::connectButtonsToSignals()
 {
   // Connect the buttons clicked signal with our custom signals and add shortcuts
   QObject::connect( d_char_button, SIGNAL( pressed() ), this, SLOT( toggleCharacterStats() ) );
-  d_char_button->setShortcut( tr( "c" ) );
-
   QObject::connect( d_quest_button, SIGNAL( pressed() ), this, SLOT( toggleQuestLog() ) );
-  d_quest_button->setShortcut( tr( "q" ) );
-
   QObject::connect( d_menu_button, SIGNAL( pressed() ), this, SLOT( toggleGameMenu() ) );
-  d_menu_button->setShortcut( tr( "Esc" ) );
-
   QObject::connect( d_inv_button, SIGNAL( pressed() ), this, SLOT( toggleInventory() ) );
-  d_inv_button->setShortcut( tr( "i" ) );
-
   QObject::connect( d_spell_button, SIGNAL( pressed() ), this, SLOT( toggleSpellBook() ) );
-  d_spell_button->setShortcut( tr( "s" ) );
+
+  this->activateFocusShortcuts();
 }
 
 } // end QtD1 namespace

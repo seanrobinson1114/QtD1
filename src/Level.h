@@ -21,6 +21,7 @@
 #include "LevelSector.h"
 #include "ImageAssetLoader.h"
 #include "Character.h"
+#include "NPC.h"
 #include "Music.h"
 #include "Grid.h"
 
@@ -62,10 +63,11 @@ public:
   void createBackground();
 
   //! Create the level NPCs and actors
-  virtual void createNPCsAndActors() = 0;
+  virtual void createNPCsAndActors( QVector<NPC*>& npcs,
+                                    QVector<Actor*>& special_actors ) = 0;
 
   //! Activate the NPCs and actors
-  virtual void activateNPCsAndActors() = 0;
+  virtual void activateNPCsAndActors( QWidget* parent_widget ) = 0;
 
   //! Add an actor
   void addActor( Actor* actor,

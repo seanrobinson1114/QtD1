@@ -33,6 +33,7 @@ ADD_LIBRARY(qtd1_core
   FrameLoader.cpp
   PCXFrameLoader.cpp
   CelFrameLoader.cpp
+  UIArtLoader.cpp
   MenuSprite.cpp
   CursorDatabase.cpp
 
@@ -54,6 +55,7 @@ ADD_LIBRARY(qtd1_core
   GameSprite.cpp
   Direction.cpp
   Quest.cpp
+  QuestManager.cpp
   CharacterStats.cpp
   Inventory.cpp
   RogueInventory.cpp
@@ -93,6 +95,7 @@ ADD_LIBRARY(qtd1_core
   Rogue.cpp
   Sorcerer.cpp
   Warrior.cpp
+  NPCInteractionMenu.cpp
   NPC.cpp
   Farnham.cpp
   LevelPillarData.cpp

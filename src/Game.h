@@ -24,6 +24,8 @@
 #include "Sound.h"
 #include "ControlPanel.h"
 
+class NPC;
+
 namespace QtD1{
 
 //! The game class
@@ -161,11 +163,16 @@ public slots:
   //! Hide the game options menu
   void hideGameOptionsMenu();
 
+  //! Register NPC
+  void registerNPC( NPC* new_npc );
+
 private slots:
 
   // Game event slots
   void handleCharacterLevelUp( const int new_level );
   void handleCharacterDeath();
+  void handleNPCMenuActivated();
+  void handleNPCMenuDeactivated();
 
   void handleTownAssetLoadStarted();
   void handleTownAssetLoadFinished();
