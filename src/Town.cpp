@@ -12,13 +12,15 @@
 #include "LevelSectorFactory.h"
 #include "Grid.h"
 #include "Farnham.h"
+#include "Adria.h"
 
 namespace QtD1{
 
 // Constructor
 Town::Town( QObject* parent )
   : Level( parent, "/music/dtowne.wav" ),
-    d_farnham( NULL )
+    d_farnham( NULL ),
+    d_adria( NULL )
 { /* ... */ }
 
 // Get the type
@@ -44,22 +46,30 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
 {
   // This memory will be managed by the scene
   d_farnham = new Farnham;
+  d_adria = new Adria;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
+  this->addLevelObject( d_adria, QPointF( 0, 0 ) );
 
   npcs << d_farnham;
+  npcs << d_adria;
 }
 
 // Activate the NPCs and actors
 void Town::activateNPCsAndActors( QWidget* parent_widget )
 {
-  // Set the direction so that the correct sprite sheet gets activated
+  // Activate Farnham and load interactive menu
   //d_farnham->setDirection( Direction::Southeast );
   d_farnham->setPos( 2600, 2640 );
   d_farnham->activate();
   d_farnham->startStateMachine();
-
   d_farnham->loadInteractionMenu( parent_widget );
+
+  // Activate Adria and load interactive menu
+  d_adria->setPos( 4945, 1760 );
+  d_adria->activate();
+  d_adria->startStateMachine();
+  d_adria->loadInteractionMenu( parent_widget );
 }
 
 // Insert the character
