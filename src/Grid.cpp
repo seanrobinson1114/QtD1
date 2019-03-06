@@ -121,12 +121,15 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
   unique_grid_elements.insert( end );
 
   auto current_node_it = path_nodes.begin();
-
+  //auto start_node_it = path_nodes.end();
+  
   while( current_node_it != path_nodes.end() )
   {
     // Check if start has been reached
     if( &current_node_it->getCorrespondingGridElement() == start )
       break;
+    // if( &current_node_it->getCorrespondingGridElement() == start )
+    //   start_node_it = current_node_it;
 
     /*
      * Get the grid elements adjacencies
@@ -134,58 +137,58 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
      * Set their weights and add to current nodes
      */
 
-     // North <--> South
-    this->setPathNodeAdjacencies( North,
-                                  South,
-                                  *current_node_it,
-                                  path_nodes,
-                                  unique_grid_elements );
-
-     // Northwest <--> Southeast
+    // Northwest <--> Southeast
     this->setPathNodeAdjacencies( Northwest,
                                   Southeast,
                                   *current_node_it,
                                   path_nodes,
                                   unique_grid_elements );
 
-     // Northeast <--> Southwest
-    this->setPathNodeAdjacencies( Northeast,
-                                  Southwest,
-                                  *current_node_it,
-                                  path_nodes,
-                                  unique_grid_elements );
-
-     // West <--> East
-    this->setPathNodeAdjacencies( West,
-                                  East,
-                                  *current_node_it,
-                                  path_nodes,
-                                  unique_grid_elements );
-
-     // East <--> West
-    this->setPathNodeAdjacencies( East,
-                                  West,
-                                  *current_node_it,
-                                  path_nodes,
-                                  unique_grid_elements );
-
-     // Southwest <--> Northeast
-    this->setPathNodeAdjacencies( Southwest,
-                                  Northeast,
-                                  *current_node_it,
-                                  path_nodes,
-                                  unique_grid_elements );
-
-     // Southeast <--> Northwest
+    // Southeast <--> Northwest
     this->setPathNodeAdjacencies( Southeast,
                                   Northwest,
                                   *current_node_it,
                                   path_nodes,
                                   unique_grid_elements );
 
-     // South <--> North
+    // Northeast <--> Southwest
+    this->setPathNodeAdjacencies( Northeast,
+                                  Southwest,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
+
+    // Southwest <--> Northeast
+    this->setPathNodeAdjacencies( Southwest,
+                                  Northeast,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
+    
+    // North <--> South
+    this->setPathNodeAdjacencies( North,
+                                  South,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
+
+    // South <--> North
     this->setPathNodeAdjacencies( South,
                                   North,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
+
+    // West <--> East
+    this->setPathNodeAdjacencies( West,
+                                  East,
+                                  *current_node_it,
+                                  path_nodes,
+                                  unique_grid_elements );
+
+    // East <--> West
+    this->setPathNodeAdjacencies( East,
+                                  West,
                                   *current_node_it,
                                   path_nodes,
                                   unique_grid_elements );
@@ -194,6 +197,7 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
   }
 
   // There is no path between the start and end point
+  //if( start_node_it == path_nodes.end() )
   if( current_node_it == path_nodes.end() )
   {
     std::cout << "No path between points" << std::endl;
@@ -202,6 +206,7 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
 
   // Construct the shortest path between the start and end node
   return this->constructShortestPath( *current_node_it, path_nodes.front(), end_coord, start_coord );
+  //return this->constructShortestPath( *start_node_it, path_nodes.front(), end_coord, start_coord );
 }
 
 // Update Level Objects z value
