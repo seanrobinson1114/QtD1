@@ -58,6 +58,9 @@ public:
   ~BitmapText()
   { /* ...*/ }
 
+  //! Get a registered font
+  static BitmapFont* getRegisteredFont( const QString& font_name );
+
   //! Get the text
   QString getText() const;
 

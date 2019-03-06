@@ -40,43 +40,43 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
   ui_art_frame_loader->setTransparentColor( QColor( "black" ) );
   ui_art_frame_loader->loadFrames();
 
-  QImage interaction_menu_boarder_image =
+  QImage interaction_menu_border_image =
     ui_art_frame_loader->getLoadedFrames().front();
 
-  // Crop the boarder image
-  interaction_menu_boarder_image =
-    interaction_menu_boarder_image.copy( 274, 55, 351, 215 );
+  // Crop the border image
+  interaction_menu_border_image =
+    interaction_menu_border_image.copy( 274, 55, 351, 215 );
   
-  // Stretch the boarder image
-  interaction_menu_boarder_image =
-    interaction_menu_boarder_image.scaled( interaction_menu_boarder_image.width()*0.85, interaction_menu_boarder_image.height()*1.5 );
+  // Stretch the border image
+  interaction_menu_border_image =
+    interaction_menu_border_image.scaled( interaction_menu_border_image.width()*0.85, interaction_menu_border_image.height()*1.5 );
   
   // Create the interaction menu background
   QLabel* interaction_menu_background = new QLabel( this );
-  interaction_menu_background->setFixedSize( interaction_menu_boarder_image.size() );
+  interaction_menu_background->setFixedSize( interaction_menu_border_image.size() );
   {
-    QPixmap background( interaction_menu_boarder_image.width()-10,
-                        interaction_menu_boarder_image.height()-2 );
+    QPixmap background( interaction_menu_border_image.width()-10,
+                        interaction_menu_border_image.height()-2 );
     background.fill( QColor( 0, 0, 0, 127 ) );
     
     interaction_menu_background->setPixmap( background );
     interaction_menu_background->setAlignment( Qt::AlignCenter );
   }
     
-  // Create the interaction menu boarder
-  QLabel* interaction_menu_boarder = new QLabel( interaction_menu_background );
-  interaction_menu_boarder->setPixmap( QPixmap::fromImage( interaction_menu_boarder_image ) );
-  interaction_menu_boarder->setFixedSize( interaction_menu_boarder_image.size() );
-  interaction_menu_boarder->move( 3, 0 );
+  // Create the interaction menu border
+  QLabel* interaction_menu_border = new QLabel( interaction_menu_background );
+  interaction_menu_border->setPixmap( QPixmap::fromImage( interaction_menu_border_image ) );
+  interaction_menu_border->setFixedSize( interaction_menu_border_image.size() );
+  interaction_menu_border->move( 3, 0 );
 
   // Move the interaction menu to the correct location
-  this->setFixedSize( interaction_menu_boarder->size() );
+  this->setFixedSize( interaction_menu_border->size() );
   this->move( 427, 125 );
 
   // Create the primary menu parent
   d_primary_menu = new QLabel( interaction_menu_background );
   d_primary_menu->setStyleSheet( QString( "background: transparent" ) );
-  d_primary_menu->setFixedSize( QSize( interaction_menu_boarder_image.width()-13, interaction_menu_boarder_image.height()-7 ) );
+  d_primary_menu->setFixedSize( QSize( interaction_menu_border_image.width()-13, interaction_menu_border_image.height()-7 ) );
   d_primary_menu->move( 7, 3 );
   
   // Create the primary title region
@@ -106,7 +106,7 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     prompt_text.load();
 
     prompt_region->setStyleSheet( QString( "background: transparent" ) );
-    prompt_region->setFixedSize( QSize( interaction_menu_boarder_image.width()-13, 50 ) );
+    prompt_region->setFixedSize( QSize( interaction_menu_border_image.width()-13, 50 ) );
     prompt_region->setAlignment( Qt::AlignHCenter | Qt::AlignBottom );
     prompt_region->setPixmap( prompt_text.getPixmap() );
     prompt_region->move( 0, 51 );

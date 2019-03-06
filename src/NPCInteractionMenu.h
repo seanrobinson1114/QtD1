@@ -20,6 +20,7 @@
 
 namespace QtD1{
 
+//! The NPC interaction menu class
 class NPCInteractionMenu : public QWidget
 {
   Q_OBJECT

@@ -49,6 +49,21 @@ BitmapText::BitmapText( QDeclarativeItem* parent )
   this->setFlag( QGraphicsItem::ItemHasNoContents, false );
 }
 
+// Get a registered font
+BitmapFont* BitmapText::getRegisteredFont( const QString& font_name )
+{
+  if( s_registered_fonts.find( font_name ) !=
+      s_registered_fonts.end() )
+  {
+    return s_registered_fonts.find( font_name )->second;
+  }
+  else
+  {
+    qWarning( "BitmapText::setFontName cannot use font %s! Returning default font.", (const char*)font_name.data() );
+    return s_registered_fonts.begin()->second;
+  }
+}
+
 // Get the text
 QString BitmapText::getText() const
 {
@@ -167,17 +182,9 @@ QString BitmapText::getFontName() const
 void BitmapText::setFontName( const QString& font_name )
 {
   // Check if the font name has been registered
-  if( s_registered_fonts.find( font_name ) !=
-      s_registered_fonts.end() )
-  {
-    d_font_name = font_name;
-
-    d_font = s_registered_fonts.find( font_name )->second;
-  }
-  else
-  {
-    qWarning( "BitmapText::setFontName cannot use font %s!", (const char*)font_name.data() );
-  }
+  d_font = this->getRegisteredFont( font_name );
+  
+  d_font_name = font_name;
 }
 
 // Get the text behavior

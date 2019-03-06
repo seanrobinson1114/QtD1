@@ -99,6 +99,7 @@ ADD_LIBRARY(qtd1_core
   Sorcerer.cpp
   Warrior.cpp
   NPCInteractionMenu.cpp
+  NPCDialogueBox.cpp
   NPC.cpp
   Farnham.cpp
   LevelPillarData.cpp

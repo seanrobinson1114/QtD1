@@ -15,8 +15,10 @@
 // QtD1 Includes
 #include "NPC.h"
 #include "NPCInteractionMenu.h"
+#include "NPCDialogueBox.h"
 #include "BasicActorStandingByTargetTransition.h"
 #include "QuestManager.h"
+#include "BitmapText.h"
 
 namespace QtD1{
 
@@ -27,7 +29,10 @@ NPC::NPC( QGraphicsObject* parent,
     d_has_walking_state( has_walking_state ),
     d_sprites(),
     d_active_state( Standing ),
-    d_interaction_menu( NULL )
+    d_interaction_menu( NULL ),
+    d_dialogue_font( "QtD1Gold30" ),
+    d_dialogue_font_size( BitmapText::getRegisteredFont( d_dialogue_font )->getSize() ),
+    d_dialogue_box( NULL )
 { 
   // Connect the QuestManager signals to the NPC slots
   QObject::connect( &QuestManager::getInstance(), SIGNAL( questActivated(const Quest::Type) ),
@@ -206,12 +211,90 @@ void NPC::loadInteractionMenu( QWidget* parent )
     QObject::connect( d_interaction_menu, SIGNAL(discussQuest(const Quest::Type)),
                       this, SLOT(discussQuest(const Quest::Type)) );
   }
+
+  // Only load the dialogue box once
+  if( !d_dialogue_box )
+  {
+    d_dialogue_box = new NPCDialogueBox( parent );
+
+    QObject::connect( d_dialogue_box, SIGNAL(dialogueFinished()),
+                      this, SLOT(handleDialogueFinished()) );
+  }
 }
 
 // Update the time dependent states
 bool NPC::updateTimeDependentStates()
 {
   return this->updateTimeDependentStatesImpl( false );
+}
+
+// Load the dialogue data (just-in-time)
+void NPC::loadDialogueData( DialogueData& dialogue_data ) const
+{
+  if( !dialogue_data.loaded )
+  {
+    // Load the sound
+    dialogue_data.dialogue.reset( new Sound );
+    dialogue_data.dialogue->setSource( dialogue_data.dialogue_file_name );
+
+    // Load the text
+    BitmapText dialogue_text;
+    dialogue_text.setFontName( this->getDialogueFont() );
+
+    // Add extra padding to the text box width to help with word wrapping
+    dialogue_text.setContainerWidth( this->getDialogueBoxWidth() - 70 );
+    dialogue_text.setTextWithWordWrap( dialogue_data.raw_dialogue_text );
+    dialogue_text.load();
+
+    dialogue_data.dialogue_text = dialogue_text.getPixmap();
+  }
+}
+
+// Get the dialogue font
+QString NPC::getDialogueFont() const
+{
+  return d_dialogue_font;
+}
+
+// Get the dialogue box width
+int NPC::getDialogueBoxWidth() const
+{
+  if( d_dialogue_box )
+    return d_dialogue_box->width();
+  else
+    return 0;
+}
+
+// Display dialogue
+void NPC::displayDialogue( QPixmap dialogue_text,
+                           const double scroll_delay_time,
+                           const double scroll_speed )
+{
+  d_interaction_menu->hide();
+  d_interaction_menu->clearFocus();
+
+  std::cout << "scroll delay time (s): " << scroll_delay_time << "\n"
+            << "scroll speed (fps): " << scroll_speed << std::endl;
+  d_dialogue_box->displayDialogue( dialogue_text,
+                                   d_dialogue_font_size,
+                                   scroll_delay_time,
+                                   scroll_speed );
+  d_dialogue_box->show();
+  d_dialogue_box->raise();
+  d_dialogue_box->setFocus();
+}
+
+// Handle dialogue finished
+void NPC::handleDialogueFinished()
+{
+  this->stopTalking();
+
+  d_dialogue_box->hide();
+  d_dialogue_box->clearFocus();
+
+  d_interaction_menu->show();
+  d_interaction_menu->raise();
+  d_interaction_menu->setFocus();
 }
   
 } // end QtD1 namespace

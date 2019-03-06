@@ -12,10 +12,12 @@
 // QtD1 Includes
 #include "BasicActor.h"
 #include "Quest.h"
+#include "Sound.h"
 
 namespace QtD1{
 
 class NPCInteractionMenu;
+class NPCDialogueBox;
 
 //! The NPC base class
 class NPC : public BasicActor
@@ -68,18 +70,36 @@ protected slots:
   //! Handle being targeted by another object
   void handleBeingTargeted( LevelObject* object ) override;
 
-  //! Show interaction menu
-  void showInteractionMenu();
-
-  //! Hide the interaction menu
-  void hideInteractionMenu();
-
 protected:
 
   //! The NPC state enum
   enum State{
     Standing = 0,
     Walking
+  };
+
+  //! The dialogue data
+  struct DialogueData
+  {
+    //! Constructor
+    DialogueData()
+      : dialogue_file_name(),
+        raw_dialogue_text(),
+        loaded( false ),
+        dialogue(),
+        dialogue_text()
+    { /* ... */ }
+
+    //! Destructor
+    ~DialogueData()
+    { /* ... */ }
+    
+    QString dialogue_file_name;
+    QString raw_dialogue_text;
+
+    bool loaded;
+    std::unique_ptr<Sound> dialogue;
+    QPixmap dialogue_text;
   };
 
   //! The NPC state map
@@ -98,8 +118,31 @@ protected:
 
   //! Check if the NPC has dialogue for the requested quest
   virtual bool hasDialogue( const Quest::Type quest ) const = 0;
-                                                                  
+
+  //! Load the dialogue data (just-in-time)
+  void loadDialogueData( DialogueData& data ) const;
+
+  //! Get the dialogue font
+  QString getDialogueFont() const;
+
+  //! Get the dialogue box width
+  int getDialogueBoxWidth() const;
+
+  //! Display dialogue
+  void displayDialogue( QPixmap dialogue_text,
+                        const double scroll_delay_time,
+                        const double scroll_speed );
+
 private slots:
+
+  // Show interaction menu (signals will be emitted)
+  void showInteractionMenu();
+
+  // Hide the interaction menu (signals will be emitted)
+  void hideInteractionMenu();
+
+  // Handle dialogue finished
+  void handleDialogueFinished();
 
   // Handle standing state entered
   void handleStandingStateEntered();
@@ -129,6 +172,15 @@ private:
 
   // The interaction menu
   NPCInteractionMenu* d_interaction_menu;
+
+  // The dialogue font
+  QString d_dialogue_font;
+
+  // The dialogue font size
+  int d_dialogue_font_size;
+
+  // The NPC dialogue box
+  NPCDialogueBox* d_dialogue_box;
 };
   
 } // end QtD1 namespace
