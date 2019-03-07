@@ -74,6 +74,15 @@ protected:
   //! Check if the NPC has dialogue for the requested quest
   bool hasDialogue( const Quest::Type quest ) const final override;
 
+  //! Get the NPC name (used in interaction menu)
+  QString getName() const final override;
+
+  //! Get the NPC title (used in interaction menu)
+  QString getMenuTitle() const final override;
+
+  //! Get the NPC fairwell (used in interaction menu)
+  QString getMenuFairwell() const final override;
+
 private:
 
   // The image asset name

@@ -25,7 +25,7 @@ Adria::Adria( QGraphicsObject* parent )
     d_unused_dialogues( 8 )
 {
   // Load the greeting
-  d_greeting.setSource( "/sfx/towners/witch01.wav" );
+  d_greeting.setSource( "/sfx/towners/witch38.wav" );
 
   // Load the quest dialogues
   d_quest_dialogues.emplace( Quest::Type::TheButcher, 2 );
@@ -304,6 +304,24 @@ qreal Adria::getMovementSpeed() const
 bool Adria::hasDialogue( const Quest::Type quest ) const
 {
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
+}
+
+// Get the NPC name (used in interaction menu)
+QString Adria::getName() const
+{
+  return "Adria";
+}
+
+// Get the NPC title (used in interaction menu)
+QString Adria::getMenuTitle() const
+{
+  return "Witch's Shack";
+}
+
+// Get the NPC fairwell (used in interaction menu)
+QString Adria::getMenuFairwell() const
+{
+  return "Leave The Shack";
 }
   
 } // end QtD1 namespace

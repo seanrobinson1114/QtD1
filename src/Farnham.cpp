@@ -306,6 +306,24 @@ bool Farnham::hasDialogue( const Quest::Type quest ) const
 {
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
+
+// Get the NPC name (used in interaction menu)
+QString Farnham::getName() const
+{
+  return "Farnham";
+}
+
+// Get the NPC title (used in interaction menu)
+QString Farnham::getMenuTitle() const
+{
+  return "Farnham The Drunk";
+}
+
+// Get the NPC fairwell (used in interaction menu)
+QString Farnham::getMenuFairwell() const
+{
+  return "Say Goodbye";
+}
   
 } // end QtD1 namespace
 
