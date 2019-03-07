@@ -59,6 +59,7 @@ ADD_LIBRARY(qtd1_core
   Direction.cpp
   Quest.cpp
   QuestManager.cpp
+  QuestPushButton.cpp
   CharacterStats.cpp
   Inventory.cpp
   RogueInventory.cpp

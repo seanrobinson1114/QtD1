@@ -23,6 +23,7 @@
 #include "qtd1_config.h"
 #include "AudioDevice.h"
 #include "MainWindow.h"
+#include "QuestManager.h"
 
 namespace QtD1{
 
@@ -573,6 +574,24 @@ void Game::handleTownAssetLoadFinished()
 
   // Activate the level NPCs and actors
   d_level->activateNPCsAndActors( this );
+
+  // Activate all quests
+  QuestManager::getInstance().activateQuest( Quest::Type::TheButcher );
+  QuestManager::getInstance().activateQuest( Quest::Type::PoisonWater );
+  QuestManager::getInstance().activateQuest( Quest::Type::KingLeoricsCurse );
+  QuestManager::getInstance().activateQuest( Quest::Type::OgdensSign );
+  QuestManager::getInstance().activateQuest( Quest::Type::GharbadTheWeak );
+  QuestManager::getInstance().activateQuest( Quest::Type::TheMagicRock );
+  QuestManager::getInstance().activateQuest( Quest::Type::ArmorOfValor );
+  QuestManager::getInstance().activateQuest( Quest::Type::HallsOfTheBlind );
+  QuestManager::getInstance().activateQuest( Quest::Type::ZharTheMad );
+  QuestManager::getInstance().activateQuest( Quest::Type::TheBlackMushroom );
+  QuestManager::getInstance().activateQuest( Quest::Type::TheAnvilOfFury );
+  QuestManager::getInstance().activateQuest( Quest::Type::TheWarlordOfBlood );
+  QuestManager::getInstance().activateQuest( Quest::Type::Lachdanan );
+  QuestManager::getInstance().activateQuest( Quest::Type::TheChamberOfBone );
+  QuestManager::getInstance().activateQuest( Quest::Type::ArchbishopLazarus );
+  QuestManager::getInstance().activateQuest( Quest::Type::Diablo );
 
   // Activate the character
   d_character->setPos( 3248, 2444 );

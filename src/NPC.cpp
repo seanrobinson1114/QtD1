@@ -36,9 +36,9 @@ NPC::NPC( QGraphicsObject* parent,
     d_dialogue_box( NULL )
 { 
   // Connect the QuestManager signals to the NPC slots
-  QObject::connect( &QuestManager::getInstance(), SIGNAL( questActivated(const Quest::Type) ),
+  QObject::connect( &QuestManager::getInstance(), SIGNAL(questActivated(const Quest::Type) ),
                     this, SLOT(activateQuest(const Quest::Type)) );
-  QObject::connect( &QuestManager::getInstance(), SIGNAL( questFinished(const Quest::Type) ),
+  QObject::connect( &QuestManager::getInstance(), SIGNAL(questFinished(const Quest::Type) ),
                     this, SLOT(deactivateQuest(const Quest::Type)) );
 }
 
@@ -57,13 +57,15 @@ bool NPC::canBeAttacked() const
 // Activate a quest
 void NPC::activateQuest( const Quest::Type quest )
 {
-  
+  // Only activate the quest if this NPC has dialogue for it
+  if( this->hasDialogue( quest ) )
+    d_interaction_menu->activateQuest( quest );
 }
 
 // Deactivate a quest
 void NPC::deactivateQuest( const Quest::Type quest )
 {
-
+  d_interaction_menu->deactivateQuest( quest );
 }
 
 // Stop playing dialogue

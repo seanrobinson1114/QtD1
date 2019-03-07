@@ -6,12 +6,6 @@
 //!
 //---------------------------------------------------------------------------//
 
-// QtD1 Includes
-#include "ControlPanel.h"
-#include "Rogue.h"
-#include "Sorcerer.h"
-#include "Warrior.h"
-
 // Std Lib Includes
 #include <memory>
 #include <tuple>
@@ -22,6 +16,12 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QImageReader>
+
+// QtD1 Includes
+#include "ControlPanel.h"
+#include "Rogue.h"
+#include "Sorcerer.h"
+#include "Warrior.h"
 
 namespace QtD1{
 

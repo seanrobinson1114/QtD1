@@ -11,6 +11,7 @@
 
 // QtD1 Includes
 #include "NPCInteractionMenu.h"
+#include "QuestPushButton.h"
 #include "UIArtLoader.h"
 #include "BitmapText.h"
 
@@ -25,6 +26,8 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     d_primary_menu( NULL ),
     d_talk_menu( NULL ),
     d_talk_menu_button( NULL ),
+    d_talk_buttons_box( NULL ),
+    d_talk_button_order(),
     d_gossip_button( NULL ),
     d_quest_discussion_buttons(),
     d_go_back_button( NULL ),
@@ -184,6 +187,9 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     title_region->setPixmap( title_text.getPixmap() );
   }
 
+  // Create the talk buttons box
+  d_talk_buttons_box = new QLabel( d_talk_menu );
+
   // Create the gossip button
   {
     BitmapText gossip_button_text;
@@ -194,19 +200,26 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
 
     QIcon gossip_button_icon( gossip_button_text.getPixmap() );
     
-    d_gossip_button = new QPushButton( d_talk_menu );
+    d_gossip_button = new QPushButton( d_talk_buttons_box );
     d_gossip_button->setFocusProxy( d_talk_menu );
     d_gossip_button->setStyleSheet( QString( "background: transparent" ) );
     d_gossip_button->setIcon( gossip_button_icon );
     d_gossip_button->setIconSize( gossip_button_text.getPixmap().size() );
     d_gossip_button->resize( gossip_button_text.getPixmap().size() );
-    d_gossip_button->move( (d_primary_menu->width()-gossip_button_text.getPixmap().width())/2, d_talk_menu->height()/2 );
     d_gossip_button->raise();
+
+    // Resize the talk buttons box
+    d_talk_buttons_box->resize( d_gossip_button->size() );
+
+    // Add the button to the button order
+    d_talk_button_order << d_gossip_button;
     
     QObject::connect( d_gossip_button, SIGNAL(pressed()),
                       this, SIGNAL(gossip()) );
-    //d_gossip_button->setShortcut( tr( "Esc" ) );
   }
+
+  // Move the talk buttons box
+  this->recenterTalkButtonsBox();
 
   // Create the back button
   {
@@ -245,13 +258,124 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
 // Activate a quest
 void NPCInteractionMenu::activateQuest( const Quest::Type quest )
 {
+  auto quest_discussion_buttons_it =
+    d_quest_discussion_buttons.find( quest );
+  
+  if( quest_discussion_buttons_it == d_quest_discussion_buttons.end() )
+  {
+    BitmapText quest_button_text;
+    quest_button_text.setFontName( "QtD1White11" );
+    quest_button_text.setContainerWidth( 150 );
+    quest_button_text.setTextWithNoWrap( QtD1::questTypeToString( quest ) );
+    quest_button_text.load();
 
+    QIcon quest_button_icon( quest_button_text.getPixmap() );
+    
+    QuestPushButton* quest_button =
+      new QuestPushButton( quest, d_talk_buttons_box );
+    quest_button->setFocusProxy( d_talk_menu );
+    quest_button->setStyleSheet( QString( "background: transparent" ) );
+    quest_button->setIcon( quest_button_icon );
+    quest_button->setIconSize( quest_button_text.getPixmap().size() );
+    quest_button->resize( quest_button_text.getPixmap().size() );
+    quest_button->move( 0, d_talk_buttons_box->height()+quest_button->height() );
+    quest_button->raise();
+
+    QObject::connect( quest_button, SIGNAL(pressedQuest(const Quest::Type)),
+                      this, SIGNAL(discussQuest(const Quest::Type)) );
+
+    d_quest_discussion_buttons[quest] = quest_button;
+
+    // Add the quest button to the talk button order
+    d_talk_button_order << quest_button;
+
+    int button_box_height =
+      d_talk_buttons_box->height() + 2*quest_button->height();
+
+    int button_box_width = d_talk_buttons_box->width();
+
+    if( quest_button->width() > button_box_width )
+      button_box_width = quest_button->width();
+
+    d_talk_buttons_box->resize( QSize(button_box_width, button_box_height) );
+
+    this->recenterTalkButtons();
+    this->recenterTalkButtonsBox();
+  }
 }
 
 // Deactivate a quest
 void NPCInteractionMenu::deactivateQuest( const Quest::Type quest )
 {
+  auto quest_discussion_buttons_it =
+    d_quest_discussion_buttons.find( quest );
+  
+  if( quest_discussion_buttons_it != d_quest_discussion_buttons.end() )
+  {
+    // Find the order of the button
+    auto removed_quest_button_it = d_talk_button_order.begin();
 
+    while( removed_quest_button_it != d_talk_button_order.end() )
+    {
+      if( *removed_quest_button_it == quest_discussion_buttons_it->second )
+        break;
+
+      ++removed_quest_button_it;
+    }
+
+    // Loop through all buttons that come after this button and move them up
+    if( removed_quest_button_it != d_talk_button_order.end() )
+    {
+      auto remaining_button_it = removed_quest_button_it;
+      ++remaining_button_it;
+      
+      while( remaining_button_it != d_talk_button_order.end() )
+      {
+        (*remaining_button_it)->move( (*remaining_button_it)->x(),
+                                      (*remaining_button_it)->y() -
+                                      2*(*removed_quest_button_it)->height() );
+
+        (*remaining_button_it)->raise();
+        
+        ++remaining_button_it;
+      }
+
+      // Remove the button from the order list
+      d_talk_button_order.erase( removed_quest_button_it );
+
+      // Resize the talk buttons box
+      d_talk_buttons_box->resize( QSize(d_talk_buttons_box->width(),
+                                        d_talk_buttons_box->height() -
+                                        (*removed_quest_button_it)->height()) );
+      this->recenterTalkButtonsBox();
+    }
+
+    // Destroy the button
+    delete quest_discussion_buttons_it->second;
+
+    d_quest_discussion_buttons.erase( quest_discussion_buttons_it );
+  }
+}
+
+// Re-center the talk buttons box
+void NPCInteractionMenu::recenterTalkButtonsBox()
+{
+  d_talk_buttons_box->move( (d_talk_menu->width()-d_talk_buttons_box->width())/2, (d_talk_menu->height()-d_talk_buttons_box->height())/2 );
+  
+  d_talk_buttons_box->raise();
+}
+
+// Re-center the talk buttons
+void NPCInteractionMenu::recenterTalkButtons()
+{
+  auto talk_button_it = d_talk_button_order.begin();
+
+  while( talk_button_it != d_talk_button_order.end() )
+  {
+    (*talk_button_it)->move( (d_talk_buttons_box->width()-(*talk_button_it)->width())/2, (*talk_button_it)->y() );
+      
+    ++talk_button_it;
+  }
 }
 
 // Show the talk menu

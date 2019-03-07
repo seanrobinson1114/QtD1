@@ -71,6 +71,12 @@ protected:
 
 private:
 
+  // Re-center the talk buttons box
+  void recenterTalkButtonsBox();
+
+  // Re-center the talk buttons
+  void recenterTalkButtons();
+
   // The primary menu
   QLabel* d_primary_menu;
 
@@ -80,11 +86,17 @@ private:
   // The talk menu button
   QPushButton* d_talk_menu_button;
 
+  // The talk buttons box
+  QLabel* d_talk_buttons_box;
+
+  // The talk button order
+  QList<QPushButton*> d_talk_button_order;
+
   // The gossip button
   QPushButton* d_gossip_button;
 
   // The quest discussion buttons
-  QMap<Quest::Type,QPushButton*> d_quest_discussion_buttons;
+  std::map<Quest::Type,QPushButton*> d_quest_discussion_buttons;
 
   // The go back button
   QPushButton* d_go_back_button;

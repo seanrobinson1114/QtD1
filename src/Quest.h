@@ -35,7 +35,7 @@ public:
     KingLeoricsCurse,
     PoisonWater,
     TheButcher,
-    OdgensSign,
+    OgdensSign,
     GharbadTheWeak,
     TheMagicRock,
     ArmorOfValor,

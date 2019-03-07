@@ -31,104 +31,141 @@ Farnham::Farnham( QGraphicsObject* parent )
   // Load the quest dialogues
   d_quest_dialogues.emplace( Quest::Type::TheButcher, 2 );
   d_quest_dialogues[Quest::Type::TheButcher][0].dialogue_file_name = "/sfx/towners/drunk10.wav";
-  d_quest_dialogues[Quest::Type::TheButcher][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheButcher][0].raw_dialogue_text =
+    "Big! Big cleaver killing all my friends. Couldn't stop him, had to run "
+    "away, couldn't save them. Trapped in a room with so many bodies... so "
+    "many friends... NOOOOOOOOOO!";
+  
   d_quest_dialogues[Quest::Type::TheButcher][1].dialogue_file_name = "/sfx/towners/drunk11.wav";
-  d_quest_dialogues[Quest::Type::TheButcher][1].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheButcher][1].raw_dialogue_text = "...";
 
   d_quest_dialogues.emplace( Quest::Type::PoisonWater, 1 );
   d_quest_dialogues[Quest::Type::PoisonWater][0].dialogue_file_name = "/sfx/towners/drunk04.wav";
-  d_quest_dialogues[Quest::Type::PoisonWater][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::PoisonWater][0].raw_dialogue_text =
+    "You drink water?";
 
   d_quest_dialogues.emplace( Quest::Type::KingLeoricsCurse, 1 );
   d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].dialogue_file_name = "/sfx/towners/drunk01.wav";
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].raw_dialogue_text =
+    "I don't care about that. Listen, no skeleton is gonna be MY king. Leoric "
+    "is King. King, so you hear me? HAIL TO THE KING!";
 
-  d_quest_dialogues.emplace( Quest::Type::OdgensSign, 1 );
-  d_quest_dialogues[Quest::Type::OdgensSign][0].dialogue_file_name = "/sfx/towners/drunk02.wav";
-  d_quest_dialogues[Quest::Type::OdgensSign][0].raw_dialogue_text = "Test";
+  d_quest_dialogues.emplace( Quest::Type::OgdensSign, 1 );
+  d_quest_dialogues[Quest::Type::OgdensSign][0].dialogue_file_name = "/sfx/towners/drunk02.wav";
+  d_quest_dialogues[Quest::Type::OgdensSign][0].raw_dialogue_text =
+    "You know what I think? Somebody took that sign, and they gonna want lots "
+    "of money for it. If I was Ogden... and I'm not, but if I was... I'd just "
+    "buy a new sign with some pretty drawing on it. Maybe a nice mug of ale "
+    "or a piece of cheese...";
 
   d_quest_dialogues.emplace( Quest::Type::TheMagicRock,  1 );
   d_quest_dialogues[Quest::Type::TheMagicRock][0].dialogue_file_name = "/sfx/towners/drunk19.wav";
-  d_quest_dialogues[Quest::Type::TheMagicRock][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheMagicRock][0].raw_dialogue_text =
+    "I used to have a nice ring; it was a really expensive one, with blue and "
+    "green and red and silver. Don't remember what happened to it, though. I "
+    "really miss that ring...";
 
   d_quest_dialogues.emplace( Quest::Type::ArmorOfValor, 2 );
   d_quest_dialogues[Quest::Type::ArmorOfValor][0].dialogue_file_name = "/sfx/towners/drunk06.wav";
-  d_quest_dialogues[Quest::Type::ArmorOfValor][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::ArmorOfValor][0].raw_dialogue_text =
+    "Zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz...";
+  
   d_quest_dialogues[Quest::Type::ArmorOfValor][1].dialogue_file_name = "/sfx/towners/drunk15.wav";
-  d_quest_dialogues[Quest::Type::ArmorOfValor][1].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::ArmorOfValor][1].raw_dialogue_text = "...";
 
   d_quest_dialogues.emplace( Quest::Type::TheChamberOfBone, 1 );
   d_quest_dialogues[Quest::Type::TheChamberOfBone][0].dialogue_file_name = "/sfx/towners/drunk07.wav";
-  d_quest_dialogues[Quest::Type::TheChamberOfBone][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheChamberOfBone][0].raw_dialogue_text =
+    "Okay, so listen. There's this chamber of wood, see. And his wife, you "
+    "know - her - tells the tree... cause you gotta wait. Then I says, that "
+    "might work against him, but if you think I'm gonna PAY for this... "
+    "you... uh... yeah.";
 
   d_quest_dialogues.emplace( Quest::Type::HallsOfTheBlind, 1 );
   d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].dialogue_file_name = "/sfx/towners/drunk12.wav";
-  d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].raw_dialogue_text =
+    "Look here... that's pretty funny, huh? Get it? Blind - look here?";
 
   d_quest_dialogues.emplace( Quest::Type::TheBlackMushroom, 1 );
   d_quest_dialogues[Quest::Type::TheBlackMushroom][0].dialogue_file_name = "/sfx/towners/drunk20.wav";
-  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].raw_dialogue_text =
+    "Ogden mixes a MEAN black mushroom, but I get sick if I drink that. "
+    "Listen, listen... here's the secret - moderation is the key!";
 
   d_quest_dialogues.emplace( Quest::Type::TheAnvilOfFury, 1 );
   d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].dialogue_file_name = "/sfx/towners/drunk14.wav";
-  d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].raw_dialogue_text =
+    "Griswold can't sell his anvil. What will he do then? And I'd be angry "
+    "too if someone took my anvil!";
 
   d_quest_dialogues.emplace( Quest::Type::TheWarlordOfBlood, 1 );
   d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].dialogue_file_name = "/sfx/towners/drunk17.wav";
-  d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].raw_dialogue_text =
+    "Always you gotta talk about Blood? What about flowers, and sunshine, and "
+    "that pretty girl that brings the drinks. Listen here, friend - you're "
+    "obsessive, you know that?";
+
+  d_quest_dialogues.emplace( Quest::Type::Lachdanan, 1 );
+  d_quest_dialogues[Quest::Type::Lachdanan][0].dialogue_file_name = "/sfx/towners/drunk13.wav";
+  d_quest_dialogues[Quest::Type::Lachdanan][0].raw_dialogue_text =
+    "Lachdanan is dead. Everybody knows that, and you can't fool me into "
+    "thinking any other way. You can't talk to the dead. I know!";
 
   d_quest_dialogues.emplace( Quest::Type::ArchbishopLazarus, 1 );
-  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/drunk12.wav";
-  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text = "Test";
+  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/drunk03.wav";
+  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text =
+    "They stab, then bite, then they're all around you. Liar! LIAR! They're "
+    "all dead! Dead! Do you hear me? They just keep falling and falling... "
+    "their blood spilling out all over the floor... all his fault...";
 
   // Load the gossip dialogues
   d_gossip_dialogues[0].dialogue_file_name = "/sfx/towners/drunk23.wav";
   d_gossip_dialogues[0].raw_dialogue_text =
     "I wanna tell ya somethin', 'cause I know all about this stuff. It's my "
-    "specialty. This here is the best... Theeeee best! That other ale ain't "
+    "specialty! This here is the best! Theee best! That other ale ain't "
     "no good since those stupid dogs...";
   
   d_gossip_dialogues[1].dialogue_file_name = "/sfx/towners/drunk24.wav";
   d_gossip_dialogues[1].raw_dialogue_text =
-    "No one ever lis... listens to me. Somewhere - I ain't too sure - but "
-    "somewhere under the church is a whole pile o' gold. Gleamin' and "
-    "shinin' and just waitin' for someone to get it.";
+    "No one ever lis... listens to me. Somewhere, I ain't too sure, but "
+    "somewhere under the church is a whole pile o' gold! Gleamin' and "
+    "shinin', just waitin' for someone to get it.";
   
   d_gossip_dialogues[2].dialogue_file_name = "/sfx/towners/drunk25.wav";
   d_gossip_dialogues[2].raw_dialogue_text =
     "I know you got your own ideas, and I know you're not going to believe "
-    "this, but that weapon you got there, it just ain't no good against "
+    "this, but that weapon you got there? It just ain't no good against "
     "those big brutes. Oh, I don't care what Griswold says, they can't "
-    "make anything like they used to in the old days.";
+    "make anything like they used to 'n the old days.";
   
   d_gossip_dialogues[3].dialogue_file_name = "/sfx/towners/drunk26.wav";
   d_gossip_dialogues[3].raw_dialogue_text =
-    "If I was you... and I ain't... but if I was, I'd sell all that stuff "
-    "you got and get out of here. That boy out there... he's always got "
-    "somethin' good, but you gotta give him some gold or he won't event "
+    "If I was you - and I ain't, but if I was - I'd sell all that stuff "
+    "you got, and get out of here. That boy out there, he's always got "
+    "somethin' good, but you gotta give him some gold, or he won't event "
     "show you what he's got.";
   
   d_gossip_dialogues[4].dialogue_file_name = "/sfx/towners/drunk28.wav";
   d_gossip_dialogues[4].raw_dialogue_text =
-    "The gal who brings the drinks? Oh, yeah, what a pretty lady. So nice, "
-    "too.";
+    "The gal who brings the drinks? Oh, yeah. What a pretty lady. So nice, "
+    "too!";
   
   d_gossip_dialogues[5].dialogue_file_name = "/sfx/towners/drunk29.wav";
   d_gossip_dialogues[5].raw_dialogue_text =
     "Why don't that old crone do somethin' for a change? Sure, sure, she's "
-    "got stuff, but you listen to me... she's unnatural. I ain't never seen "
-    "her eat or drink - and you can't trust somebody who doesn't drink at "
+    "got stuff, but you listen to me - she's unnatural! I ain't never seen "
+    "her eat or drink, and you can't trust somebody who doesn't drink at "
     "least a little.";
   
   d_gossip_dialogues[6].dialogue_file_name = "/sfx/towners/drunk30.wav";
   d_gossip_dialogues[6].raw_dialogue_text =
-    "Cain isn't what he says he is - sure, sure, he talks a good story. Some "
-    "of them are real scary, heheh, or funny. But I think he knows more than "
+    "Cain isn't what he says he is. Sure, sure, he talks a good story - some "
+    "of 'em are real scary, heheh, or funny - but I think he knows more than "
     "he knows he knows.";
   
   d_gossip_dialogues[7].dialogue_file_name = "/sfx/towners/drunk31.wav";
   d_gossip_dialogues[7].raw_dialogue_text =
-    "Griswold? Good old Griswold. I love him like a brother! We fought "
+    "Griswold? Good ol' Griswold. I love him like a brother! We fought "
     "together, you know, back when... we... Lazarus... Lazarus... "
     "LAZARUS!!!";
   
@@ -148,9 +185,9 @@ Farnham::Farnham( QGraphicsObject* parent )
   
   d_gossip_dialogues[10].dialogue_file_name = "/sfx/towners/drunk35.wav";
   d_gossip_dialogues[10].raw_dialogue_text =
-    "Odgen is the best man in town. I don't think his wife likes me much, "
+    "Ogden is the best man in town. I don't think his wife likes me much, "
     "but as long as she keeps tappin' kegs, I'll like her just fine. Seems "
-    "like I been spendin' more time with Odgen than most, but he's so good "
+    "like I been spendin' more time with Ogden than most, but he's so good "
     "to me...";
 
   // Load the unused dialogues

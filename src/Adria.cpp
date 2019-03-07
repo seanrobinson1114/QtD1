@@ -42,9 +42,9 @@ Adria::Adria( QGraphicsObject* parent )
   d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].dialogue_file_name = "/sfx/towners/drunk01.wav";
   d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].raw_dialogue_text = "Test";
 
-  d_quest_dialogues.emplace( Quest::Type::OdgensSign, 1 );
-  d_quest_dialogues[Quest::Type::OdgensSign][0].dialogue_file_name = "/sfx/towners/drunk02.wav";
-  d_quest_dialogues[Quest::Type::OdgensSign][0].raw_dialogue_text = "Test";
+  d_quest_dialogues.emplace( Quest::Type::OgdensSign, 1 );
+  d_quest_dialogues[Quest::Type::OgdensSign][0].dialogue_file_name = "/sfx/towners/drunk02.wav";
+  d_quest_dialogues[Quest::Type::OgdensSign][0].raw_dialogue_text = "Test";
 
   d_quest_dialogues.emplace( Quest::Type::TheMagicRock,  1 );
   d_quest_dialogues[Quest::Type::TheMagicRock][0].dialogue_file_name = "/sfx/towners/drunk19.wav";
@@ -147,9 +147,9 @@ Adria::Adria( QGraphicsObject* parent )
   
   d_gossip_dialogues[10].dialogue_file_name = "/sfx/towners/drunk35.wav";
   d_gossip_dialogues[10].raw_dialogue_text =
-    "Odgen is the best man in town. I don't think his wife likes me much, "
+    "Ogden is the best man in town. I don't think his wife likes me much, "
     "but as long as she keeps tappin' kegs, I'll like her just fine. Seems "
-    "like I been spendin' more time with Odgen than most, but he's so good "
+    "like I been spendin' more time with Ogden than most, but he's so good "
     "to me...";
 
   // Load the unused dialogues

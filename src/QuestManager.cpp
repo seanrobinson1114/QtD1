@@ -34,7 +34,7 @@ QuestManager::QuestManager()
   d_possible_quests << Quest::Type::KingLeoricsCurse
                     << Quest::Type::PoisonWater
                     << Quest::Type::TheButcher
-                    << Quest::Type::OdgensSign
+                    << Quest::Type::OgdensSign
                     << Quest::Type::GharbadTheWeak
                     << Quest::Type::TheMagicRock
                     << Quest::Type::ArmorOfValor

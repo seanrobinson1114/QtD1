@@ -12,14 +12,14 @@
 namespace QtD1{
 
 // Convert the quest to a string
-QString questToString( const Quest::Type quest )
+QString questTypeToString( const Quest::Type quest )
 {
   switch( quest )
   {
     case Quest::Type::KingLeoricsCurse: return "King Leorics Curse";
     case Quest::Type::PoisonWater: return "Poison Water";
     case Quest::Type::TheButcher: return "The Butcher";
-    case Quest::Type::OdgensSign: return "Odgens Sign";
+    case Quest::Type::OgdensSign: return "Ogdens Sign";
     case Quest::Type::GharbadTheWeak: return "Gharbad The Weak";
     case Quest::Type::TheMagicRock: return "The Magic Rock";
     case Quest::Type::ArmorOfValor: return "Armor Of Valor";
