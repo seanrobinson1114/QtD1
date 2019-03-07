@@ -102,6 +102,7 @@ ADD_LIBRARY(qtd1_core
   NPCDialogueBox.cpp
   NPC.cpp
   Farnham.cpp
+  Adria.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

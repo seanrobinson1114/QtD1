@@ -60,6 +60,9 @@ private:
 
   // Farnham
   NPC* d_farnham;
+
+  // Adria
+  NPC* d_adria;
 };
   
 } // end QtD1 namespace
