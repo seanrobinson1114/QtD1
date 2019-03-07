@@ -44,7 +44,7 @@ Adria::Adria( QGraphicsObject* parent )
   d_quest_dialogues[Quest::Type::PoisonWater][0].raw_dialogue_text = 
     "The people of Tristram will die if you cannot "
     "restore fresh water to their wells. Know this - demons are at the heart "
-    "of this matter, but they remain ignorant of what they have spawned."
+    "of this matter, but they remain ignorant of what they have spawned.";
 
   // King Leoric quest
   d_quest_dialogues.emplace( Quest::Type::KingLeoricsCurse, 1 );
