@@ -575,7 +575,7 @@ void Game::handleTownAssetLoadFinished()
   d_level->activateNPCsAndActors( this );
 
   // Activate the character
-  d_character->setPos( 3250, 2548 );
+  d_character->setPos( 3248, 2444 );
   d_character->activate();
   d_character->startStateMachine();
 

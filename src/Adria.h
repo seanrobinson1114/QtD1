@@ -90,13 +90,13 @@ private:
   Sound d_greeting;
 
   // The quest dialogues
-  std::map<Quest::Type,std::vector<Sound> > d_quest_dialogues;
+  std::map<Quest::Type,std::vector<DialogueData> > d_quest_dialogues;
 
   // The gossip dialogues
-  std::vector<Sound> d_gossip_dialogues;
+  std::vector<DialogueData> d_gossip_dialogues;
 
   // The unused dialogues
-  std::vector<Sound> d_unused_dialogues;
+  std::vector<DialogueData> d_unused_dialogues;
 };
   
 } // end QtD1 namespace
