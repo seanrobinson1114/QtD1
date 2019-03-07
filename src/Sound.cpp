@@ -52,6 +52,12 @@ void Sound::setSource( const QString& source )
   }
 }
 
+// Get the duration of the sound (seconds)
+double Sound::getDuration() const
+{
+  return d_chunk->getDuration();
+}
+
 // Play the sound
 Q_INVOKABLE void Sound::playSound()
 {
@@ -60,6 +66,16 @@ Q_INVOKABLE void Sound::playSound()
   // Check if the audio device is open
   if( audio_device.isOpen() )
     audio_device.playChunk( *d_chunk );
+}
+
+// Play the sound
+void Sound::playSoundOnChannel( int channel )
+{
+  AudioDevice& audio_device = AudioDevice::getInstance();
+
+  // Check if the audio device is open
+  if( audio_device.isOpen() )
+    audio_device.playChunk( *d_chunk, channel );
 }
 
 QML_REGISTER_TYPE( Sound );

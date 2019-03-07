@@ -34,6 +34,9 @@ public:
   virtual ~NPC()
   { /* ... */ }
 
+  //! The reserved mixer channel (for playing dialogue audio)
+  static int getReservedMixerChannel();
+
   //! Check if the object can be attacked
   bool canBeAttacked() const final override;
 
@@ -119,19 +122,14 @@ protected:
   //! Check if the NPC has dialogue for the requested quest
   virtual bool hasDialogue( const Quest::Type quest ) const = 0;
 
-  //! Load the dialogue data (just-in-time)
-  void loadDialogueData( DialogueData& data ) const;
-
   //! Get the dialogue font
   QString getDialogueFont() const;
 
   //! Get the dialogue box width
   int getDialogueBoxWidth() const;
 
-  //! Display dialogue
-  void displayDialogue( QPixmap dialogue_text,
-                        const double scroll_delay_time,
-                        const double scroll_speed );
+  //! Play and display dialogue
+  void playAndDisplayDialogue( DialogueData& data );
 
 private slots:
 
@@ -157,6 +155,9 @@ private:
 
   // Load the interaction menu
   void loadInteractionMenu();
+
+  // Load the dialogue data (just-in-time)
+  void loadDialogueData( DialogueData& data ) const;
 
   // Update the time dependent states
   bool updateTimeDependentStates() override;

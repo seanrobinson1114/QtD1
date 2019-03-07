@@ -11,6 +11,7 @@
 
 // QtD1 Includes
 #include "MixChunkWrapper.h"
+#include "AudioDevice.h"
 
 namespace QtD1{
 
@@ -22,6 +23,7 @@ MixChunkWrapper::MixChunkWrapper( const QString& filename )
   QFile file( filename );
   
   this->loadFromDevice( file );
+  this->calculateDuration();
 }
 
 // Constructor (from device)
@@ -30,6 +32,7 @@ MixChunkWrapper::MixChunkWrapper( QIODevice& device )
     d_raw_chunk_data()
 {
   this->loadFromDevice( device );
+  this->calculateDuration();
 }
 
 // Constructor (from buffer)
@@ -47,6 +50,8 @@ MixChunkWrapper::MixChunkWrapper( const QByteArray& data )
 
   if( d_raw_mix_chunk == NULL )
     qFatal( "Error: Could not load the sound from memory!" );
+
+  this->calculateDuration();
 }
 
 // Destructor
@@ -82,6 +87,25 @@ void MixChunkWrapper::loadFromDevice( QIODevice& device )
     qFatal( "Error: Could not load the sound from file!" );
 }
 
+// Calculate duration
+void MixChunkWrapper::calculateDuration()
+{
+  AudioDevice& audio_device = AudioDevice::getInstance();
+  
+  if( !audio_device.isOpen() )
+    qFatal( "Error: The audio device must be open before loading sounds!" );
+
+  // Chunks are converted to audio device format...
+  // bytes / samplesize == sample points
+  Uint32 points = d_raw_mix_chunk->alen/((audio_device.getFormat() & 0xFF)/8);
+
+  // sample points / channels == sample frames
+  Uint32 frames = points/audio_device.getNumberOfChannels();
+
+  // (sample frames) / frequency == play length in s */
+  d_duration = (double)frames/audio_device.getFrequency();
+}
+
 // Get the raw chunk data
 Uint8* MixChunkWrapper::getRawData()
 {
@@ -110,6 +134,12 @@ Uint8 MixChunkWrapper::getVolume() const
 void MixChunkWrapper::setVolume( int volume )
 {
   Mix_VolumeChunk( d_raw_mix_chunk, volume );
+}
+
+// Get the duration of the chunk (in seconds)
+double MixChunkWrapper::getDuration() const
+{
+  return d_duration;
 }
 
 // Get the raw chunk pointer

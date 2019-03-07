@@ -276,15 +276,7 @@ void Farnham::discussQuest( const Quest::Type quest )
   auto dialogue_it = d_quest_dialogues.find( quest );
   
   if( dialogue_it != d_quest_dialogues.end() )
-  {
-    this->loadDialogueData( dialogue_it->second.front() );
-    
-    dialogue_it->second.front().dialogue->playSound();
-
-    this->displayDialogue( dialogue_it->second.front().dialogue_text,
-                           5.0,
-                           4.0 );
-  }
+    this->playAndDisplayDialogue( dialogue_it->second.front() );
 }
 
 // Play gossip dialogue
@@ -292,14 +284,8 @@ void Farnham::gossip()
 {
   static int gossip_index = 0;
 
-  this->loadDialogueData( d_gossip_dialogues[gossip_index] );
-
-  d_gossip_dialogues[gossip_index].dialogue->playSound();
+  this->playAndDisplayDialogue( d_gossip_dialogues[gossip_index] );
   
-  this->displayDialogue( d_gossip_dialogues[gossip_index].dialogue_text,
-                         2.0,
-                         20.0 );
-
   gossip_index = (gossip_index+1)%d_gossip_dialogues.size();
 } 
 

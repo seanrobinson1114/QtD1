@@ -42,8 +42,14 @@ public:
   //! Set the sound file source
   void setSource( const QString& source );
 
+  //! Get the duration of the sound (seconds)
+  double getDuration() const;
+
   //! Play the sound
   Q_INVOKABLE void playSound();
+
+  //! Play the sound on the requested channel
+  void playSoundOnChannel( int channel );
 
 private:
 

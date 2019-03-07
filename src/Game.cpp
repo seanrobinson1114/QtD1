@@ -52,6 +52,9 @@ Game* Game::getInstance()
     d_level( new Town ),
     d_level_viewer( new QGraphicsView( d_level, this ) )
 {
+  // Reserve the first mixer channel for dialogue
+  AudioDevice::getInstance().reserveMixerChannels( NPC::getReservedMixerChannel()+1 );
+    
   // Move the loading screen
   d_loading_screen->move( 0, 0 );
 

@@ -15,6 +15,7 @@
 // Qt Includes
 #include <QWidget>
 #include <QLabel>
+#include <QPropertyAnimation>
 
 namespace QtD1{
 
@@ -39,7 +40,7 @@ public:
   void displayDialogue( QPixmap dialogue_text,
                         const int dialogue_font_size,
                         const double scroll_delay_time,
-                        const double scroll_speed );
+                        const double scroll_duration );
 
 signals:
 
@@ -68,20 +69,17 @@ private:
   // The scroll animation timer
   int d_scroll_animation_timer_id;
 
-  // The scroll delay time
-  double d_scroll_delay_time;
-
-  // The scroll elapsed time
-  double d_scroll_elapsed_time;
-
-  // The scroll speed
-  int d_scroll_animation_delay_time;
+  // The scroll duration (ms)
+  int d_scroll_duration;
 
   // The dialogue box
   QLabel* d_dialogue_box;
   
   // The dialogue text
   QLabel* d_dialogue_text;
+
+  // The property animation
+  QPropertyAnimation* d_text_scroll_animation;
 };
   
 } // end QtD1 namespace

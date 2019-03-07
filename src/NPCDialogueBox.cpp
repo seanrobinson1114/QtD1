@@ -17,12 +17,10 @@ namespace QtD1{
 NPCDialogueBox::NPCDialogueBox( QWidget* parent )
   : QWidget( parent ),
     d_scroll_animation_timer_id( -1 ),
-    d_scroll_delay_time( 0 ),
-    d_scroll_elapsed_time( 0 ),
-    d_scroll_animation_delay_time( 1 ),
     d_dialogue_box( NULL ),
-    d_dialogue_text( NULL )
-{ 
+    d_dialogue_text( NULL ),
+    d_text_scroll_animation()
+{
   // Load the interaction menu image
   std::unique_ptr<UIArtLoader> ui_art_frame_loader( new UIArtLoader );
 
@@ -71,39 +69,36 @@ NPCDialogueBox::NPCDialogueBox( QWidget* parent )
   // Initialize the dialogue text label
   d_dialogue_text = new QLabel( d_dialogue_box );
 
+  // Create the text scroll animation
+  d_text_scroll_animation = new QPropertyAnimation( d_dialogue_text, "pos" );
+  
+  // Forward the property animation signals
+  QObject::connect( d_text_scroll_animation, SIGNAL(finished()),
+                    this, SIGNAL(dialogueFinished()) );
+
   // Set this widgets size and location
   this->setFixedSize( dialogue_box_border_image.size() );
   this->move( 115, 125 );
 }
 
 // Display dialogue
-/*! \details Scroll delay time is in seconds, Scroll speed is in 
- * frames per second
+/*! \details Scroll delay time is in seconds, Scroll duration is in seconds
  */
 void NPCDialogueBox::displayDialogue( QPixmap dialogue_text,
                                       const int dialogue_font_size,
                                       const double scroll_delay_time,
-                                      const double scroll_speed )
+                                      const double scroll_duration )
 {
   // Reset the dialogue text
   d_dialogue_text->setPixmap( dialogue_text );
   d_dialogue_text->setFixedSize( dialogue_text.size() );
   d_dialogue_text->move( 0, d_dialogue_box->height()-dialogue_font_size );
 
-  // Convert the delay time from second to ms
-  d_scroll_delay_time = scroll_delay_time*1000.0;
-  d_scroll_elapsed_time = 0.0;
+  // Convert the scroll duration from seconds to ms
+  d_scroll_duration = scroll_duration*1000;
 
-  // Convert the scroll speed in fps to frame delay in ms
-  d_scroll_animation_delay_time = 1000.0/scroll_speed;
-
-  if( d_scroll_animation_delay_time <= 0 )
-    d_scroll_animation_delay_time = 1;
-  
-  std::cout << "scroll delay time: " << d_scroll_delay_time << "\n"
-            << "scroll animation delay time: " << d_scroll_animation_delay_time << std::endl;
   // Start the animation timer
-  d_scroll_animation_timer_id = this->startTimer( d_scroll_animation_delay_time );
+  d_scroll_animation_timer_id = this->startTimer( scroll_delay_time*1000 );
 }
 
 // Get the dialogue box width
@@ -128,15 +123,16 @@ void NPCDialogueBox::mouseReleaseEvent( QMouseEvent* event )
   emit dialogueFinished();
 }
 
-// Handle show events
-//void NPCDialogueBox::showEvent( QShowEvent* )
-//{ /* ... */ }
-
 // Handle hide events
 void NPCDialogueBox::hideEvent( QHideEvent* event )
 {
-  this->killTimer( d_scroll_animation_timer_id );
-  d_scroll_animation_timer_id = -1;
+  if( d_scroll_animation_timer_id != -1 )
+  {
+    this->killTimer( d_scroll_animation_timer_id );
+    d_scroll_animation_timer_id = -1;
+  }
+
+  d_text_scroll_animation->stop();
 
   QWidget::hideEvent( event );
 }
@@ -144,17 +140,16 @@ void NPCDialogueBox::hideEvent( QHideEvent* event )
 // Handle the timer event
 void NPCDialogueBox::timerEvent( QTimerEvent* event )
 {
-  d_scroll_elapsed_time += d_scroll_animation_delay_time;
+  // Kill the timer
+  this->killTimer( d_scroll_animation_timer_id );
+  d_scroll_animation_timer_id = -1;
 
-  if( d_scroll_elapsed_time >= d_scroll_delay_time )
-  {
-    if( d_dialogue_text->y() + d_dialogue_text->height() <= 0 )
-    {
-      //emit dialogueFinished();
-    }
-    else
-      d_dialogue_text->move( 0, d_dialogue_text->y()-1 );
-  }
+  // Set up the property animation
+  d_text_scroll_animation->setDuration( d_scroll_duration );
+  d_text_scroll_animation->setStartValue( QPoint(d_dialogue_text->x(), d_dialogue_text->y()) );
+  d_text_scroll_animation->setEndValue( QPoint(d_dialogue_text->x(), -d_dialogue_text->height()) );
+
+  d_text_scroll_animation->start();
 }
 
 } // end QtD1 namespace

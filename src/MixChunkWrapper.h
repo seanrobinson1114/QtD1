@@ -58,6 +58,9 @@ public:
   //! Set the volume of the chunk
   void setVolume( int volume );
 
+  //! Get the duration of the chunk (in seconds)
+  double getDuration() const;
+
   //! Get the raw chunk pointer
   Mix_Chunk* getRawMixChunkPtr();
 
@@ -74,11 +77,17 @@ private:
   // Load from device
   void loadFromDevice( QIODevice& device );
 
+  // Calculate duration
+  void calculateDuration();
+
   // The raw mix chunk
   Mix_Chunk* d_raw_mix_chunk;
 
   // The raw chunk data (may be empty depending on constructor used)
   QByteArray d_raw_chunk_data;
+
+  // The duration (seconds)
+  double d_duration;
 };
 
 } // end QtD1 namespace

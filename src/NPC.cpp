@@ -19,6 +19,7 @@
 #include "BasicActorStandingByTargetTransition.h"
 #include "QuestManager.h"
 #include "BitmapText.h"
+#include "AudioDevice.h"
 
 namespace QtD1{
 
@@ -39,6 +40,12 @@ NPC::NPC( QGraphicsObject* parent,
                     this, SLOT(activateQuest(const Quest::Type)) );
   QObject::connect( &QuestManager::getInstance(), SIGNAL( questFinished(const Quest::Type) ),
                     this, SLOT(deactivateQuest(const Quest::Type)) );
+}
+
+// The reserved mixer channel (for playing audio)
+int NPC::getReservedMixerChannel()
+{
+  return 0;
 }
 
 // Check if the object can be attacked
@@ -62,7 +69,7 @@ void NPC::deactivateQuest( const Quest::Type quest )
 // Stop playing dialogue
 void NPC::stopTalking()
 {
-  
+  AudioDevice::getInstance().haltMixerChannel( this->getReservedMixerChannel() );
 }
 
 // Show interaction menu
@@ -265,23 +272,27 @@ int NPC::getDialogueBoxWidth() const
     return 0;
 }
 
-// Display dialogue
-void NPC::displayDialogue( QPixmap dialogue_text,
-                           const double scroll_delay_time,
-                           const double scroll_speed )
+// Play and display dialogue
+void NPC::playAndDisplayDialogue( DialogueData& data )
 {
+  // Load the dialoge data just-in-time
+  this->loadDialogueData( data );
+
+  // Hide the interaction menu
   d_interaction_menu->hide();
   d_interaction_menu->clearFocus();
 
-  std::cout << "scroll delay time (s): " << scroll_delay_time << "\n"
-            << "scroll speed (fps): " << scroll_speed << std::endl;
-  d_dialogue_box->displayDialogue( dialogue_text,
+  // Display the dialogue
+  d_dialogue_box->displayDialogue( data.dialogue_text,
                                    d_dialogue_font_size,
-                                   scroll_delay_time,
-                                   scroll_speed );
+                                   2,
+                                   data.dialogue->getDuration() );
   d_dialogue_box->show();
   d_dialogue_box->raise();
   d_dialogue_box->setFocus();
+
+  // Play the dialogue
+  data.dialogue->playSoundOnChannel( this->getReservedMixerChannel() );
 }
 
 // Handle dialogue finished
