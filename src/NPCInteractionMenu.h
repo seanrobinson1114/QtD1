@@ -20,6 +20,9 @@
 
 namespace QtD1{
 
+class MenuPushButton;
+class SmallPentSpinMenuPushButton;
+
 //! The NPC interaction menu class
 class NPCInteractionMenu : public QWidget
 {
@@ -69,6 +72,17 @@ protected:
   //! Handle key press events
   void keyPressEvent( QKeyEvent* event ) final override;
 
+  //! Handle show events
+  void showEvent( QShowEvent* event ) final override;
+
+  //! Handle hide events
+  void hideEvent( QHideEvent* event ) final override;
+
+private slots:
+
+  // Handle a menu push button pressed
+  void handleMenuPushButtonPressed();
+  
 private:
 
   // Re-center the talk buttons box
@@ -84,25 +98,28 @@ private:
   QLabel* d_talk_menu;
 
   // The talk menu button
-  QPushButton* d_talk_menu_button;
+  SmallPentSpinMenuPushButton* d_talk_menu_button;
 
   // The talk buttons box
   QLabel* d_talk_buttons_box;
 
   // The talk button order
-  QList<QPushButton*> d_talk_button_order;
+  QList<SmallPentSpinMenuPushButton*> d_talk_button_order;
 
   // The gossip button
-  QPushButton* d_gossip_button;
+  SmallPentSpinMenuPushButton* d_gossip_button;
 
   // The quest discussion buttons
-  std::map<Quest::Type,QPushButton*> d_quest_discussion_buttons;
+  std::map<Quest::Type,SmallPentSpinMenuPushButton*> d_quest_discussion_buttons;
+
+  // The active talk button
+  SmallPentSpinMenuPushButton* d_active_menu_button;
 
   // The go back button
-  QPushButton* d_go_back_button;
+  MenuPushButton* d_go_back_button;
   
   // The exit button
-  QPushButton* d_exit_button;
+  MenuPushButton* d_exit_button;
 };
 
 } // end QtD1 namespace

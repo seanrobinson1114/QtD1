@@ -35,6 +35,8 @@ ADD_LIBRARY(qtd1_core
   CelFrameLoader.cpp
   UIArtLoader.cpp
   MenuSprite.cpp
+  MenuPushButton.cpp
+  SmallPentSpinMenuPushButton.cpp
   CursorDatabase.cpp
 
   BitmapFont.cpp
@@ -59,7 +61,7 @@ ADD_LIBRARY(qtd1_core
   Direction.cpp
   Quest.cpp
   QuestManager.cpp
-  QuestPushButton.cpp
+  QuestMenuPushButton.cpp
   CharacterStats.cpp
   Inventory.cpp
   RogueInventory.cpp
