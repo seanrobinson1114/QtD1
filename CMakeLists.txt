@@ -125,5 +125,5 @@ IF(QTD1_ENABLE_TESTING)
   # Enable the make test target
   ENABLE_TESTING()
 
-  ADD_SUBDIRECTORY(test)
+  #ADD_SUBDIRECTORY(test)
 ENDIF()
