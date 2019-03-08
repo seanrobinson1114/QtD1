@@ -13,15 +13,14 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QMap>
 
 // QtD1 Includes
 #include "Quest.h"
 
 namespace QtD1{
 
-class MenuPushButton;
-class SmallPentSpinMenuPushButton;
+class PentSpinMenuPushButtonBox;
+class QuestPentSpinMenuPushButtonBox;
 
 //! The NPC interaction menu class
 class NPCInteractionMenu : public QWidget
@@ -70,56 +69,30 @@ protected slots:
 protected:
 
   //! Handle key press events
-  void keyPressEvent( QKeyEvent* event ) final override;
-
-  //! Handle show events
-  void showEvent( QShowEvent* event ) final override;
-
-  //! Handle hide events
-  void hideEvent( QHideEvent* event ) final override;
-
-private slots:
-
-  // Handle a menu push button pressed
-  void handleMenuPushButtonPressed();
+  void keyPressEvent( QKeyEvent* event ) final override;  
   
 private:
 
-  // Re-center the talk buttons box
-  void recenterTalkButtonsBox();
-
-  // Re-center the talk buttons
-  void recenterTalkButtons();
+  // Re-center the talk menu button box
+  void recenterTalkMenuButtonBox();
 
   // The primary menu
   QLabel* d_primary_menu;
 
+  // The primary menu button box
+  PentSpinMenuPushButtonBox* d_primary_menu_button_box;
+
+  // The exit button
+  QPushButton* d_exit_button;
+
   // The talk menu
   QLabel* d_talk_menu;
 
-  // The talk menu button
-  SmallPentSpinMenuPushButton* d_talk_menu_button;
-
-  // The talk buttons box
-  QLabel* d_talk_buttons_box;
-
-  // The talk button order
-  QList<SmallPentSpinMenuPushButton*> d_talk_button_order;
-
-  // The gossip button
-  SmallPentSpinMenuPushButton* d_gossip_button;
-
-  // The quest discussion buttons
-  std::map<Quest::Type,SmallPentSpinMenuPushButton*> d_quest_discussion_buttons;
-
-  // The active talk button
-  SmallPentSpinMenuPushButton* d_active_menu_button;
+  // The talk button box
+  QuestPentSpinMenuPushButtonBox* d_talk_menu_button_box;
 
   // The go back button
-  MenuPushButton* d_go_back_button;
-  
-  // The exit button
-  MenuPushButton* d_exit_button;
+  QPushButton* d_go_back_button;
 };
 
 } // end QtD1 namespace

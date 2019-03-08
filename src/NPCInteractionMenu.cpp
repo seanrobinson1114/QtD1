@@ -11,10 +11,12 @@
 
 // QtD1 Includes
 #include "NPCInteractionMenu.h"
-#include "QuestMenuPushButton.h"
 #include "UIArtLoader.h"
 #include "BitmapText.h"
 #include "MenuPushButton.h"
+#include "SmallPentSpinMenuPushButton.h"
+#include "PentSpinMenuPushButtonBox.h"
+#include "QuestPentSpinMenuPushButtonBox.h"
 
 namespace QtD1{
 
@@ -25,15 +27,11 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
                                         QWidget* parent )
   : QWidget( parent ),
     d_primary_menu( NULL ),
+    d_primary_menu_button_box( NULL ),
+    d_exit_button( NULL ),
     d_talk_menu( NULL ),
-    d_talk_menu_button( NULL ),
-    d_talk_buttons_box( NULL ),
-    d_talk_button_order(),
-    d_gossip_button( NULL ),
-    d_quest_discussion_buttons(),
-    d_active_menu_button( NULL ),
-    d_go_back_button( NULL ),
-    d_exit_button( NULL )
+    d_talk_menu_button_box( NULL ),
+    d_go_back_button( NULL )
 {
   // Disable focus borders/outlines on push buttons
   this->setStyleSheet( QString( "QPushButton:focus { border: none; outline: none; }" ) );
@@ -117,23 +115,23 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     prompt_region->move( 0, 51 );
   }
 
+  // Create the primary menu button box
+  d_primary_menu_button_box = new PentSpinMenuPushButtonBox( d_primary_menu );
+  d_primary_menu_button_box->setFocusProxy( d_primary_menu );
+
   // Create the talk menu button
   {
-    d_talk_menu_button = new SmallPentSpinMenuPushButton(
-                                                QString("Talk to ") + npc_name,
-                                                "QtD1Blue11",
-                                                d_primary_menu );
-    d_talk_menu_button->setFocusProxy( d_primary_menu );
-    d_talk_menu_button->setStyleSheet( QString( "background: transparent" ) );
-    d_talk_menu_button->move( (d_primary_menu->width()-d_talk_menu_button->width())/2, 150 );
-    d_talk_menu_button->raise();
+    SmallPentSpinMenuPushButton* talk_menu_button =
+      new SmallPentSpinMenuPushButton( QString("Talk to ") + npc_name,
+                                       "QtD1Blue11",
+                                       d_primary_menu_button_box );
+    talk_menu_button->setStyleSheet( QString( "background: transparent" ) );
 
-    // Set this as the active button
-    d_active_menu_button = d_talk_menu_button;
+    // Add the button to the button box
+    d_primary_menu_button_box->addButton( talk_menu_button );
+    d_primary_menu_button_box->move( (d_primary_menu->width()-d_primary_menu_button_box->width())/2, 150 );
 
-    QObject::connect( d_talk_menu_button, SIGNAL(pressed()),
-                      this, SLOT(handleMenuPushButtonPressed()) );
-    QObject::connect( d_talk_menu_button, SIGNAL(released()),
+    QObject::connect( talk_menu_button, SIGNAL(released()),
                       this, SLOT(showTalkMenu()) );
   }
   
@@ -142,7 +140,6 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
     d_exit_button = new MenuPushButton( exit_menu_text,
                                         "QtD1White11",
                                         d_primary_menu );
-    d_exit_button->setFocusProxy( d_primary_menu );
     d_exit_button->setStyleSheet( QString( "background: transparent" ) );
     d_exit_button->move( (d_primary_menu->width()-d_exit_button->width())/2, 250 );
     d_exit_button->raise();
@@ -175,38 +172,35 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
   }
 
   // Create the talk buttons box
-  d_talk_buttons_box = new QLabel( d_talk_menu );
+  d_talk_menu_button_box = new QuestPentSpinMenuPushButtonBox( d_talk_menu );
+  d_talk_menu_button_box->setFocusProxy( d_talk_menu );
+
+  QObject::connect( d_talk_menu_button_box, SIGNAL(questSelected(const Quest::Type)),
+                    this, SIGNAL(discussQuest(const Quest::Type)) );
 
   // Create the gossip button
   {
-    d_gossip_button = new SmallPentSpinMenuPushButton( "Gossip",
-                                                       "QtD1Blue11",
-                                                       d_talk_buttons_box );
-    d_gossip_button->setFocusProxy( d_talk_menu );
-    d_gossip_button->setStyleSheet( QString( "background: transparent" ) );
-    d_gossip_button->raise();
+    SmallPentSpinMenuPushButton* gossip_button =
+      new SmallPentSpinMenuPushButton( "Gossip",
+                                       "QtD1Blue11",
+                                       d_talk_menu_button_box );
+    gossip_button->setStyleSheet( QString( "background: transparent" ) );
 
-    // Resize the talk buttons box
-    d_talk_buttons_box->resize( d_gossip_button->size() );
+    // Add the button to the talk menu button box
+    d_talk_menu_button_box->addButton( gossip_button );
 
-    // Add the button to the button order
-    d_talk_button_order << d_gossip_button;
-
-    QObject::connect( d_gossip_button, SIGNAL(pressed()),
-                      this, SLOT(handleMenuPushButtonPressed()) );
-    QObject::connect( d_gossip_button, SIGNAL(released()),
+    QObject::connect( gossip_button, SIGNAL(released()),
                       this, SIGNAL(gossip()) );
-  }
 
-  // Move the talk buttons box
-  this->recenterTalkButtonsBox();
+    // Move the talk buttons box
+    this->recenterTalkMenuButtonBox();
+  }
 
   // Create the back button
   {
     d_go_back_button = new MenuPushButton( "Back",
                                            "QtD1White11",
                                            d_talk_menu );
-    d_go_back_button->setFocusProxy( d_talk_menu );
     d_go_back_button->setStyleSheet( QString( "background: transparent" ) );
     d_go_back_button->move( (d_primary_menu->width()-d_go_back_button->width())/2, 280 );
     d_go_back_button->raise();
@@ -228,159 +222,44 @@ NPCInteractionMenu::NPCInteractionMenu( const QString& npc_name,
 // Activate a quest
 void NPCInteractionMenu::activateQuest( const Quest::Type quest )
 {
-  auto quest_discussion_buttons_it =
-    d_quest_discussion_buttons.find( quest );
-  
-  if( quest_discussion_buttons_it == d_quest_discussion_buttons.end() )
-  {
-    QuestMenuPushButton* quest_button =
-      new QuestMenuPushButton( quest, "QtD1White11", d_talk_buttons_box );
-    quest_button->setStyleSheet( QString( "background: transparent" ) );
-    quest_button->move( 0, d_talk_buttons_box->height()+quest_button->height() );
-    quest_button->raise();
-
-    QObject::connect( quest_button, SIGNAL(pressed()),
-                      this, SLOT(handleMenuPushButtonPressed()) );
-    QObject::connect( quest_button, SIGNAL(releasedQuest(const Quest::Type)),
-                      this, SIGNAL(discussQuest(const Quest::Type)) );
-
-    d_quest_discussion_buttons[quest] = quest_button;
-
-    // Add the quest button to the talk button order
-    d_talk_button_order.back()->setDownButton( quest_button );
-    d_talk_button_order.front()->setUpButton( quest_button );
-    quest_button->setUpButton( d_talk_button_order.back() );
-    quest_button->setDownButton( d_talk_button_order.front() );
-    
-    d_talk_button_order << quest_button;
-
-    int button_box_height =
-      d_talk_buttons_box->height() + 2*quest_button->height();
-
-    int button_box_width = d_talk_buttons_box->width();
-
-    if( quest_button->width() > button_box_width )
-      button_box_width = quest_button->width();
-
-    d_talk_buttons_box->resize( QSize(button_box_width, button_box_height) );
-
-    this->recenterTalkButtons();
-    this->recenterTalkButtonsBox();
-  }
+  d_talk_menu_button_box->activateQuest( quest );
+  this->recenterTalkMenuButtonBox();
 }
 
 // Deactivate a quest
 void NPCInteractionMenu::deactivateQuest( const Quest::Type quest )
 {
-  auto quest_discussion_buttons_it =
-    d_quest_discussion_buttons.find( quest );
-  
-  if( quest_discussion_buttons_it != d_quest_discussion_buttons.end() )
-  {
-    // Find the order of the button
-    auto removed_quest_button_it = d_talk_button_order.begin();
+  d_talk_menu_button_box->deactivateQuest( quest );
 
-    while( removed_quest_button_it != d_talk_button_order.end() )
-    {
-      if( *removed_quest_button_it == quest_discussion_buttons_it->second )
-        break;
-
-      ++removed_quest_button_it;
-    }
-
-    // Loop through all buttons that come after this button and move them up
-    if( removed_quest_button_it != d_talk_button_order.end() )
-    {
-      auto remaining_button_it = removed_quest_button_it;
-      ++remaining_button_it;
-      
-      while( remaining_button_it != d_talk_button_order.end() )
-      {
-        (*remaining_button_it)->move( (*remaining_button_it)->x(),
-                                      (*remaining_button_it)->y() -
-                                      2*(*removed_quest_button_it)->height() );
-
-        (*remaining_button_it)->raise();
-        
-        ++remaining_button_it;
-      }
-
-      // Remove the button from the order list
-      auto up_button = (*removed_quest_button_it)->getUpButton();
-      auto down_button = (*removed_quest_button_it)->getDownButton();
-
-      up_button->setDownButton( down_button );
-      down_button->setUpButton( up_button );
-      
-      d_talk_button_order.erase( removed_quest_button_it );
-
-      // Resize the talk buttons box
-      d_talk_buttons_box->resize( QSize(d_talk_buttons_box->width(),
-                                        d_talk_buttons_box->height() -
-                                        (*removed_quest_button_it)->height()) );
-      this->recenterTalkButtonsBox();
-    }
-
-    // Destroy the button
-    delete quest_discussion_buttons_it->second;
-
-    d_quest_discussion_buttons.erase( quest_discussion_buttons_it );
-  }
+  this->recenterTalkMenuButtonBox();
 }
 
 // Re-center the talk buttons box
-void NPCInteractionMenu::recenterTalkButtonsBox()
+void NPCInteractionMenu::recenterTalkMenuButtonBox()
 {
-  d_talk_buttons_box->move( (d_talk_menu->width()-d_talk_buttons_box->width())/2, (d_talk_menu->height()-d_talk_buttons_box->height())/2 );
+  d_talk_menu_button_box->move( (d_talk_menu->width()-d_talk_menu_button_box->width())/2, (d_talk_menu->height()-d_talk_menu_button_box->height())/2 );
   
-  d_talk_buttons_box->raise();
-}
-
-// Re-center the talk buttons
-void NPCInteractionMenu::recenterTalkButtons()
-{
-  auto talk_button_it = d_talk_button_order.begin();
-
-  while( talk_button_it != d_talk_button_order.end() )
-  {
-    (*talk_button_it)->move( (d_talk_buttons_box->width()-(*talk_button_it)->width())/2, (*talk_button_it)->y() );
-      
-    ++talk_button_it;
-  }
+  d_talk_menu_button_box->raise();
 }
 
 // Show the talk menu
 void NPCInteractionMenu::showTalkMenu()
 {
   d_primary_menu->hide();
-  //d_primary_menu->clearFocus();
+  d_primary_menu_button_box->resetActiveButton();
   
   d_talk_menu->show();
   d_talk_menu->raise();
-  d_talk_menu->setFocus();
-
-  if( d_active_menu_button )
-    d_active_menu_button->deactivate();
-
-  d_active_menu_button = d_gossip_button;
-  d_active_menu_button->activate();
 }
 
 // Show the primary menu
 void NPCInteractionMenu::showPrimaryMenu()
 {
   d_talk_menu->hide();
-  //d_talk_menu->clearFocus();
+  d_talk_menu_button_box->resetActiveButton();
   
   d_primary_menu->show();
   d_primary_menu->raise();
-  d_primary_menu->setFocus();
-
-  if( d_active_menu_button )
-    d_active_menu_button->deactivate();
-  
-  d_active_menu_button = d_talk_menu_button;
-  d_active_menu_button->activate();
 }
 
 // Handle key press events
@@ -388,31 +267,25 @@ void NPCInteractionMenu::keyPressEvent( QKeyEvent* event )
 {
   if( event->key() == Qt::Key_Up )
   {
-    if( d_active_menu_button )
-    {
-      d_active_menu_button->deactivate();
-
-      d_active_menu_button = d_active_menu_button->getUpButton();
-
-      d_active_menu_button->activate();
-    }
+    if( d_primary_menu->isVisible() )
+      d_primary_menu_button_box->moveActiveButtonUp();
+    else
+      d_talk_menu_button_box->moveActiveButtonUp();
   }
   else if( event->key() == Qt::Key_Down )
   {
-    if( d_active_menu_button )
-    {
-      d_active_menu_button->deactivate();
-
-      d_active_menu_button = d_active_menu_button->getDownButton();
-
-      d_active_menu_button->activate();
-    }
+    if( d_primary_menu->isVisible() )
+      d_primary_menu_button_box->moveActiveButtonDown();
+    else
+      d_talk_menu_button_box->moveActiveButtonDown();
   }
   else if( event->key() == Qt::Key_Enter ||
            event->key() == Qt::Key_Return )
   {
-    if( d_active_menu_button )
-      d_active_menu_button->click();
+    if( d_primary_menu->isVisible() )
+      d_primary_menu_button_box->clickActiveButton();
+    else
+      d_talk_menu_button_box->clickActiveButton();
   }
   else if( event->key() == Qt::Key_Escape )
   {
@@ -423,42 +296,6 @@ void NPCInteractionMenu::keyPressEvent( QKeyEvent* event )
   }
   else
     QWidget::keyPressEvent( event );
-}
-
-// Handle show events
-void NPCInteractionMenu::showEvent( QShowEvent* event )
-{
-  if( d_active_menu_button )
-    d_active_menu_button->activate();
-
-  QWidget::showEvent( event );
-}
-
-// Handle hide events
-void NPCInteractionMenu::hideEvent( QHideEvent* event )
-{
-  if( d_active_menu_button )
-    d_active_menu_button->deactivate();
-  
-  QWidget::hideEvent( event );
-}
-
-// Handle a menu push button pressed
-void NPCInteractionMenu::handleMenuPushButtonPressed()
-{
-  QObject* raw_sender = QObject::sender();
-
-  SmallPentSpinMenuPushButton* sender =
-    dynamic_cast<SmallPentSpinMenuPushButton*>( raw_sender );
-
-  if( sender )
-  {
-    if( d_active_menu_button )
-      d_active_menu_button->deactivate();
-
-    d_active_menu_button = sender;
-    d_active_menu_button->activate();
-  }
 }
 
 } // end QtD1 includes

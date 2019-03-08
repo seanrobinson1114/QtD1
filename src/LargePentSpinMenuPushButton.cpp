@@ -1,27 +1,27 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   SmallPentSpinMenuPushButton.cpp
+//! \file   LargePentSpinMenuPushButton.cpp
 //! \author Alex Robinson
-//! \brief  The small pent spin menu push button class definition
+//! \brief  The large pent spin menu push button class definition
 //!
 //---------------------------------------------------------------------------//
 
 // QtD1 Includes
-#include "SmallPentSpinMenuPushButton.h"
+#include "LargePentSpinMenuPushButton.h"
 #include "MenuSprite.h"
 
 namespace QtD1{
 
-QVector<QPixmap> SmallPentSpinMenuPushButton::s_pent_spin_frames;
+QVector<QPixmap> LargePentSpinMenuPushButton::s_pent_spin_frames;
 
 // Constructor
-SmallPentSpinMenuPushButton::SmallPentSpinMenuPushButton(
+LargePentSpinMenuPushButton::LargePentSpinMenuPushButton(
                                                const QString& button_text,
                                                const QString& bitmap_font_name,
                                                QWidget* parent )
   : PentSpinMenuPushButton( button_text,
                             bitmap_font_name,
-                            12, 12,
+                            48, 48,
                             parent )
 {
   // Initialize the pent spin frames
@@ -29,12 +29,12 @@ SmallPentSpinMenuPushButton::SmallPentSpinMenuPushButton(
 }
 
 // Initialize the pent spint frames
-void SmallPentSpinMenuPushButton::initializePentSpinFrames()
+void LargePentSpinMenuPushButton::initializePentSpinFrames()
 {
   if( s_pent_spin_frames.empty() )
   {
     MenuSprite menu_sprite;
-    menu_sprite.setSource( "/data/pentspn2.cel+levels/towndata/town.pal" );
+    menu_sprite.setSource( "/data/PentSpin.cel+levels/towndata/town.pal" );
     menu_sprite.loadSync();
 
     menu_sprite.getFrames( s_pent_spin_frames );
@@ -42,7 +42,7 @@ void SmallPentSpinMenuPushButton::initializePentSpinFrames()
 }
 
 // Get the pent spin frame
-QPixmap SmallPentSpinMenuPushButton::getPentSpinFrame( const int frame_index ) const
+QPixmap LargePentSpinMenuPushButton::getPentSpinFrame( const int frame_index ) const
 {
   if( frame_index < 0 )
     return s_pent_spin_frames.front();
@@ -53,7 +53,7 @@ QPixmap SmallPentSpinMenuPushButton::getPentSpinFrame( const int frame_index ) c
 }
 
 // Increment pent spin frame index
-void SmallPentSpinMenuPushButton::incrementPentSpinFrame( int& frame_index ) const
+void LargePentSpinMenuPushButton::incrementPentSpinFrame( int& frame_index ) const
 {
   frame_index = (frame_index+1)%s_pent_spin_frames.size();
 }
@@ -61,5 +61,5 @@ void SmallPentSpinMenuPushButton::incrementPentSpinFrame( int& frame_index ) con
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//
-// end SmallPentSpinMenuPushButton.cpp
+// end LargePentSpinMenuPushButton.cpp
 //---------------------------------------------------------------------------//
