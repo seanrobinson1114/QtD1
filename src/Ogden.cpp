@@ -142,7 +142,7 @@ Ogden::Ogden( QGraphicsObject* parent )
 
   // Archbishop Lazarus quest
   d_quest_dialogues.emplace( Quest::Type::ArchbishopLazarus, 1 );
-  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/witch03.wav";
+  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/tavown01.wav";
   d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text = 
     "I did not know this Lazarus of whom you speak, but I do sense "
     "a great conflict within his being. He poses a great danger, "
