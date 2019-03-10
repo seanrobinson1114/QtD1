@@ -110,6 +110,7 @@ ADD_LIBRARY(qtd1_core
   NPC.cpp
   Farnham.cpp
   Adria.cpp
+  Ogden.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

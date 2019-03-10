@@ -63,6 +63,9 @@ private:
 
   // Adria
   NPC* d_adria;
+
+  // Odgen
+  NPC* d_ogden;
 };
   
 } // end QtD1 namespace
