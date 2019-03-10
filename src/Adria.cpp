@@ -8,6 +8,7 @@
 
 // QtD1 Includes
 #include "Adria.h"
+#include "AdriaInteractionMenu.h"
 
 namespace QtD1{
 
@@ -443,24 +444,12 @@ bool Adria::hasDialogue( const Quest::Type quest ) const
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
 
-// Get the NPC name (used in interaction menu)
-QString Adria::getName() const
+// Load the interaction menu
+NPCInteractionMenu* Adria::createInteractionMenu( QWidget* parent )
 {
-  return "Adria";
+  return new AdriaInteractionMenu( parent );
 }
 
-// Get the NPC title (used in interaction menu)
-QString Adria::getMenuTitle() const
-{
-  return "Witch's Shack";
-}
-
-// Get the NPC fairwell (used in interaction menu)
-QString Adria::getMenuFairwell() const
-{
-  return "Leave The Shack";
-}
-  
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

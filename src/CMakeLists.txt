@@ -105,7 +105,12 @@ ADD_LIBRARY(qtd1_core
   Rogue.cpp
   Sorcerer.cpp
   Warrior.cpp
+  NPCInteractionSubmenu.cpp
+  PrimaryNPCInteractionSubmenu.cpp
+  DiscussionNPCInteractionSubmenu.cpp
   NPCInteractionMenu.cpp
+  FarnhamInteractionMenu.cpp
+  AdriaInteractionMenu.cpp
   NPCDialogueBox.cpp
   NPC.cpp
   Farnham.cpp

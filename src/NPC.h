@@ -116,20 +116,14 @@ protected:
   //! Initialize the state machine
   virtual void initializeStateMachine( QStateMachine& state_machine );
 
+  //! Load the interaction menu
+  virtual NPCInteractionMenu* createInteractionMenu( QWidget* parent ) = 0;
+
   //! Greet the character
   virtual void greet() = 0;
 
   //! Check if the NPC has dialogue for the requested quest
   virtual bool hasDialogue( const Quest::Type quest ) const = 0;
-
-  //! Get the NPC name (used in interaction menu)
-  virtual QString getName() const = 0;
-
-  //! Get the NPC title (used in interaction menu)
-  virtual QString getMenuTitle() const = 0;
-
-  //! Get the NPC fairwell (used in interaction menu)
-  virtual QString getMenuFairwell() const = 0;
 
   //! Get the dialogue font
   QString getDialogueFont() const;

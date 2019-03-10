@@ -8,7 +8,7 @@
 
 // QtD1 Includes
 #include "Farnham.h"
-#include "BitmapText.h"
+#include "FarnhamInteractionMenu.h"
 
 namespace QtD1{
 
@@ -344,22 +344,10 @@ bool Farnham::hasDialogue( const Quest::Type quest ) const
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
 
-// Get the NPC name (used in interaction menu)
-QString Farnham::getName() const
+// Load the interaction menu
+NPCInteractionMenu* Farnham::createInteractionMenu( QWidget* parent )
 {
-  return "Farnham";
-}
-
-// Get the NPC title (used in interaction menu)
-QString Farnham::getMenuTitle() const
-{
-  return "Farnham The Drunk";
-}
-
-// Get the NPC fairwell (used in interaction menu)
-QString Farnham::getMenuFairwell() const
-{
-  return "Say Goodbye";
+  return new FarnhamInteractionMenu( parent );
 }
   
 } // end QtD1 namespace
