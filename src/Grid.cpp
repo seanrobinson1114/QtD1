@@ -206,7 +206,6 @@ auto Grid::constructPath( const GridElement* start, const GridElement* end, QPoi
 
   // Construct the shortest path between the start and end node
   return this->constructShortestPath( *current_node_it, path_nodes.front(), end_coord, start_coord );
-  //return this->constructShortestPath( *start_node_it, path_nodes.front(), end_coord, start_coord );
 }
 
 // Update Level Objects z value
@@ -464,13 +463,6 @@ auto Grid::constructShortestPath( const PathNode& start_node,
     // find closest intersection point with end segment
     this->calculateLineIntersection( second_last->second, last->second, end_coord, intersection_x_end, intersection_y_end, direction_end, distance_end );
 
-    // Remove first node point in shortest_node_path
-    // Add intersection point
-    // Add character point
-    // Remove last point
-    // Add end intersection
-    // add target point
-
     // Check if distance_start is 0
     if( distance_start > 0 )
     {
@@ -483,9 +475,9 @@ auto Grid::constructShortestPath( const PathNode& start_node,
     // Check if distance_end is 0
     if( distance_end > 0 )
     {
-      shortest_node_path.pop_back();
-      shortest_node_path.push_back( std::make_pair( direction_end, QPointF( intersection_x_end, intersection_y_end ) ) );
-      shortest_node_path.push_back( std::make_pair( direction_end, end_coord ) );
+      // shortest_node_path.pop_back();
+      // shortest_node_path.push_back( std::make_pair( direction_end, QPointF( intersection_x_end, intersection_y_end ) ) );
+      // shortest_node_path.push_back( std::make_pair( direction_end, end_coord ) );
     }
 
     double distance = 0.0;

@@ -14,6 +14,7 @@
 #include "Farnham.h"
 #include "Adria.h"
 #include "Ogden.h"
+#include "Gillian.h"
 
 namespace QtD1{
 
@@ -22,7 +23,8 @@ Town::Town( QObject* parent )
   : Level( parent, "/music/dtowne.wav" ),
     d_farnham( NULL ),
     d_adria( NULL ),
-    d_ogden( NULL )
+    d_ogden( NULL ),
+    d_gillian( NULL )
 { /* ... */ }
 
 // Get the type
@@ -50,14 +52,17 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   d_farnham = new Farnham;
   d_adria = new Adria;
   d_ogden = new Ogden;
+  d_gillian = new Gillian;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
   this->addLevelObject( d_adria, QPointF( 0, 0 ) );
   this->addLevelObject( d_ogden, QPointF( 0, 0 ) );
+  this->addLevelObject( d_gillian, QPointF( 0, 0 ) );
 
   npcs << d_farnham;
   npcs << d_adria;
   npcs << d_ogden;
+  npcs << d_gillian;
 }
 
 // Activate the NPCs and actors
@@ -80,6 +85,12 @@ void Town::activateNPCsAndActors( QWidget* parent_widget )
   d_ogden->activate();
   d_ogden->startStateMachine();
   d_ogden->loadInteractionMenu( parent_widget );
+
+  // Activate Gillian and load interactive menu
+  d_gillian->setPos( 2288, 1910 );
+  d_gillian->activate();
+  d_gillian->startStateMachine();
+  d_gillian->loadInteractionMenu( parent_widget );
 }
 
 // Insert the character

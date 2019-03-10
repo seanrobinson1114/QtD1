@@ -110,7 +110,7 @@ private:
   
 } // end QtD1 namespace
 
-#endif // end Ogden_H
+#endif // end OGDEN_H
 
 //---------------------------------------------------------------------------//
 // end Ogden.h
