@@ -111,12 +111,13 @@ ADD_LIBRARY(qtd1_core
   NPCInteractionMenu.cpp
   FarnhamInteractionMenu.cpp
   AdriaInteractionMenu.cpp
+  OgdenInteractionMenu.cpp
   NPCDialogueBox.cpp
   NPC.cpp
   Farnham.cpp
   Adria.cpp
   Ogden.cpp
-  Gillian.cpp
+  #Gillian.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp
