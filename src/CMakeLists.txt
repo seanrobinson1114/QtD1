@@ -113,6 +113,7 @@ ADD_LIBRARY(qtd1_core
   AdriaInteractionMenu.cpp
   OgdenInteractionMenu.cpp
   GillianInteractionMenu.cpp
+  PepinInteractionMenu.cpp
   NPCDialogueBox.cpp
   NPC.cpp
   Farnham.cpp

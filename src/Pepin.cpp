@@ -8,6 +8,7 @@
 
 // QtD1 Includes
 #include "Pepin.h"
+#include "PepinInteractionMenu.h"
 
 namespace QtD1{
 
@@ -409,22 +410,10 @@ bool Pepin::hasDialogue( const Quest::Type quest ) const
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
 
-// Get the NPC name (used in interaction menu)
-QString Pepin::getName() const
+// Load the interaction menu
+NPCInteractionMenu* Pepin::createInteractionMenu( QWidget* parent )
 {
-  return "Pepin";
-}
-
-// Get the NPC title (used in interaction menu)
-QString Pepin::getMenuTitle() const
-{
-  return "Tavern of the Rising Sun";
-}
-
-// Get the NPC fairwell (used in interaction menu)
-QString Pepin::getMenuFairwell() const
-{
-  return "Leave";
+  return new PepinInteractionMenu( parent );
 }
   
 } // end QtD1 namespace
