@@ -58,12 +58,12 @@ void PentSpinMenuPushButtonBox::addButton( PentSpinMenuPushButton* button )
       box_width = button->width();
 
     this->resize( QSize(box_width, box_height) );
-
-    // Center all buttons in the box
-    this->recenterButtons();
   }
 
   d_button_order << button;
+
+  // Center all buttons in the box
+  this->recenterButtons();
 
   QObject::connect( button, SIGNAL(pressed()),
                     this, SLOT(handleMenuPushButtonPressed()) );
