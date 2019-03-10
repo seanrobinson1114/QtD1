@@ -112,6 +112,7 @@ ADD_LIBRARY(qtd1_core
   Adria.cpp
   Ogden.cpp
   Gillian.cpp
+  Pepin.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

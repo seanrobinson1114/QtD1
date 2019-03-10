@@ -69,6 +69,9 @@ private:
 
   // Gillian
   NPC* d_gillian;
+
+  // Pepin
+  NPC* d_pepin;
 };
   
 } // end QtD1 namespace
