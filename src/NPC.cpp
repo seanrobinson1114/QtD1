@@ -208,10 +208,7 @@ void NPC::loadInteractionMenu( QWidget* parent )
   // Only load the menu once
   if( !d_interaction_menu )
   {
-    d_interaction_menu = new NPCInteractionMenu( this->getName(),
-                                                 this->getMenuTitle(),
-                                                 this->getMenuFairwell(),
-                                                 parent );
+    d_interaction_menu = this->createInteractionMenu( parent );
 
     QObject::connect( d_interaction_menu, SIGNAL(exit()),
                       this, SLOT(hideInteractionMenu()) );

@@ -8,6 +8,7 @@
 
 // QtD1 Includes
 #include "Ogden.h"
+#include "OgdenInteractionMenu.h"
 
 namespace QtD1{
 
@@ -141,7 +142,7 @@ Ogden::Ogden( QGraphicsObject* parent )
 
   // Archbishop Lazarus quest
   d_quest_dialogues.emplace( Quest::Type::ArchbishopLazarus, 1 );
-  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/witch03.wav";
+  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/tavown01.wav";
   d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text = 
     "I did not know this Lazarus of whom you speak, but I do sense "
     "a great conflict within his being. He poses a great danger, "
@@ -409,24 +410,12 @@ bool Ogden::hasDialogue( const Quest::Type quest ) const
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
 
-// Get the NPC name (used in interaction menu)
-QString Ogden::getName() const
+// Load the interaction menu
+NPCInteractionMenu* Ogden::createInteractionMenu( QWidget* parent )
 {
-  return "Ogden";
+  return new OgdenInteractionMenu( parent );
 }
 
-// Get the NPC title (used in interaction menu)
-QString Ogden::getMenuTitle() const
-{
-  return "Tavern of the Rising Sun";
-}
-
-// Get the NPC fairwell (used in interaction menu)
-QString Ogden::getMenuFairwell() const
-{
-  return "Leave The Tavern";
-}
-  
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//

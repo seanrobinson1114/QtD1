@@ -8,6 +8,7 @@
 
 // QtD1 Includes
 #include "Gillian.h"
+#include "GillianInteractionMenu.h"
 
 namespace QtD1{
 
@@ -409,22 +410,10 @@ bool Gillian::hasDialogue( const Quest::Type quest ) const
   return d_quest_dialogues.find( quest ) != d_quest_dialogues.end();
 }
 
-// Get the NPC name (used in interaction menu)
-QString Gillian::getName() const
+// Load the interaction menu
+NPCInteractionMenu* Gillian::createInteractionMenu( QWidget* parent )
 {
-  return "Gillian";
-}
-
-// Get the NPC title (used in interaction menu)
-QString Gillian::getMenuTitle() const
-{
-  return "Tavern of the Rising Sun";
-}
-
-// Get the NPC fairwell (used in interaction menu)
-QString Gillian::getMenuFairwell() const
-{
-  return "Leave";
+  return new GillianInteractionMenu( parent );
 }
   
 } // end QtD1 namespace

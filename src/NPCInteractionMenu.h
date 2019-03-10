@@ -11,16 +11,15 @@
 
 // Qt Includes
 #include <QWidget>
-#include <QLabel>
-#include <QPushButton>
 
 // QtD1 Includes
 #include "Quest.h"
 
 namespace QtD1{
 
-class PentSpinMenuPushButtonBox;
-class QuestPentSpinMenuPushButtonBox;
+class NPCInteractionSubmenu;
+class PrimaryNPCInteractionSubmenu;
+class DiscussionNPCInteractionSubmenu;
 
 //! The NPC interaction menu class
 class NPCInteractionMenu : public QWidget
@@ -28,12 +27,6 @@ class NPCInteractionMenu : public QWidget
   Q_OBJECT
 
 public:
-
-  //! Constructor
-  NPCInteractionMenu( const QString& npc_name,
-                      const QString& interaction_menu_title_text,
-                      const QString& exit_menu_text,
-                      QWidget* parent = 0 );
 
   //! Destructor
   ~NPCInteractionMenu()
@@ -60,39 +53,39 @@ public slots:
 
 protected slots:
 
-  //! Show the talk menu
-  void showTalkMenu();
-
-  //! Show the primary menu
-  void showPrimaryMenu();
+  //! Show the submenu
+  void showSubmenu( NPCInteractionSubmenu* submenu );
   
 protected:
+
+  //! Constructor
+  NPCInteractionMenu( QWidget* parent = 0 );
+
+  //! Set the primary submenu
+  void setPrimarySubmenu( PrimaryNPCInteractionSubmenu* submenu );
+
+  //! Set the discussion submenu
+  void setDiscussionSubmenu( DiscussionNPCInteractionSubmenu* submenu );
+
+  //! Set the extra submenus
+  void setExtraSubmenus( QList<NPCInteractionSubmenu*> extra_submenus );
 
   //! Handle key press events
   void keyPressEvent( QKeyEvent* event ) final override;  
   
 private:
 
-  // Re-center the talk menu button box
-  void recenterTalkMenuButtonBox();
+  // The primary submenu
+  PrimaryNPCInteractionSubmenu* d_primary_submenu;
 
-  // The primary menu
-  QLabel* d_primary_menu;
+  // The discussion submenu
+  DiscussionNPCInteractionSubmenu* d_discussion_submenu;
 
-  // The primary menu button box
-  PentSpinMenuPushButtonBox* d_primary_menu_button_box;
-
-  // The exit button
-  QPushButton* d_exit_button;
-
-  // The talk menu
-  QLabel* d_talk_menu;
-
-  // The talk button box
-  QuestPentSpinMenuPushButtonBox* d_talk_menu_button_box;
-
-  // The go back button
-  QPushButton* d_go_back_button;
+  // The submenus
+  QList<NPCInteractionSubmenu*> d_extra_submenus;
+  
+  // The active submenu
+  NPCInteractionSubmenu* d_active_submenu;
 };
 
 } // end QtD1 namespace
