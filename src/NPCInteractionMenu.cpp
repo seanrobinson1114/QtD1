@@ -109,18 +109,15 @@ void NPCInteractionMenu::keyPressEvent( QKeyEvent* event )
 {
   if( event->key() == Qt::Key_Up )
   {
-    std::cout << "up pressed" << std::endl;
     d_active_submenu->moveActiveButtonUp();
   }
   else if( event->key() == Qt::Key_Down )
   {
-    std::cout << "down pressed" << std::endl;
     d_active_submenu->moveActiveButtonDown();
   }
   else if( event->key() == Qt::Key_Enter ||
            event->key() == Qt::Key_Return )
   {
-    std::cout << "enter pressed" << std::endl;
     d_active_submenu->clickActiveButton();
   }
   else if( event->key() == Qt::Key_Escape )

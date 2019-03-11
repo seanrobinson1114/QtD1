@@ -1,13 +1,13 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   NPCDialogueBox.h
+//! \file   DialogueBox.h
 //! \author Alex Robinson
-//! \brief  The NPC dialogue box base class declaration
+//! \brief  The dialogue box base class declaration
 //!
 //---------------------------------------------------------------------------//
 
-#ifndef NPC_DIALOGUE_BOX_H
-#define NPC_DIALOGUE_BOX_H
+#ifndef DIALOGUE_BOX_H
+#define DIALOGUE_BOX_H
 
 // Std Lib Includes
 #include <memory>
@@ -19,18 +19,18 @@
 
 namespace QtD1{
 
-//! The NPC dialogue box class
-class NPCDialogueBox : public QWidget
+//! The dialogue box class
+class DialogueBox : public QWidget
 {
   Q_OBJECT
 
 public:
 
   //! Constructor
-  NPCDialogueBox( QWidget* parent = 0 );
+  DialogueBox( QWidget* parent = 0 );
 
   //! Destructor
-  ~NPCDialogueBox()
+  ~DialogueBox()
   { /* ... */ }
 
   //! Get the dialogue box width
@@ -66,6 +66,12 @@ protected:
 
 private:
 
+  // Initialize the background
+  static void initializeBackground();
+
+  // The dialogue box background
+  static std::unique_ptr<QPixmap> s_background;
+
   // The scroll animation timer
   int d_scroll_animation_timer_id;
 
@@ -84,8 +90,8 @@ private:
   
 } // end QtD1 namespace
 
-#endif // end NPC_DIALOGUE_BOX
+#endif // end DIALOGUE_BOX
 
 //---------------------------------------------------------------------------//
-// end NPCDialogueBox.h
+// end DialogueBox.h
 //---------------------------------------------------------------------------//

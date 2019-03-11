@@ -15,7 +15,7 @@
 // QtD1 Includes
 #include "NPC.h"
 #include "NPCInteractionMenu.h"
-#include "NPCDialogueBox.h"
+#include "DialogueBox.h"
 #include "BasicActorStandingByTargetTransition.h"
 #include "QuestManager.h"
 #include "BitmapText.h"
@@ -221,7 +221,7 @@ void NPC::loadInteractionMenu( QWidget* parent )
   // Only load the dialogue box once
   if( !d_dialogue_box )
   {
-    d_dialogue_box = new NPCDialogueBox( parent );
+    d_dialogue_box = new DialogueBox( parent );
 
     QObject::connect( d_dialogue_box, SIGNAL(dialogueFinished()),
                       this, SLOT(handleDialogueFinished()) );

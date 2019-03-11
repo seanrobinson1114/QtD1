@@ -1,63 +1,39 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   NPCDialogueBox.h
+//! \file   DialogueBox.h
 //! \author Alex Robinson
-//! \brief  The NPC dialogue box base class definition
+//! \brief  The dialogue box base class definition
 //!
 //---------------------------------------------------------------------------//
 
+// Qt Includes
+#include <QPainter>
+
 // QtD1 Includes
-#include "NPCDialogueBox.h"
+#include "DialogueBox.h"
 #include "UIArtLoader.h"
 #include "BitmapText.h"
 
 namespace QtD1{
 
+// Initialize static member data
+std::unique_ptr<QPixmap> DialogueBox::s_background;
+
 // Constructor
-NPCDialogueBox::NPCDialogueBox( QWidget* parent )
+DialogueBox::DialogueBox( QWidget* parent )
   : QWidget( parent ),
     d_scroll_animation_timer_id( -1 ),
     d_dialogue_box( NULL ),
     d_dialogue_text( NULL ),
     d_text_scroll_animation()
 {
-  // Load the interaction menu image
-  std::unique_ptr<UIArtLoader> ui_art_frame_loader( new UIArtLoader );
-
-  ui_art_frame_loader->setSource( "/ui_art/seldiff.pcx" );
-  ui_art_frame_loader->setTransparentColor( QColor( "black" ) );
-  ui_art_frame_loader->loadFrames();
-
-  QImage dialogue_box_border_image =
-    ui_art_frame_loader->getLoadedFrames().front();
-
-  // Crop the border image
-  dialogue_box_border_image =
-    dialogue_box_border_image.copy( 274, 90, 351, 180 );
-
-  // Stretch the border image
-  dialogue_box_border_image =
-    dialogue_box_border_image.scaled( dialogue_box_border_image.width()*1.70,
-                                      dialogue_box_border_image.height()*1.792 );
+  this->initializeBackground();
 
   // Create the dialogue box background
   QLabel* dialogue_box_background = new QLabel( this );
-  dialogue_box_background->setFixedSize( dialogue_box_border_image.width()-23,
-                                         dialogue_box_border_image.height()-3 );
-
-  {
-    QPixmap background( dialogue_box_background->size() );
-    background.fill( QColor( 0, 0, 0, 127 ) );
-
-    dialogue_box_background->setPixmap( background );
-  }
-
-  // Create the dialogue border
-  QLabel* dialogue_box_border = new QLabel( dialogue_box_background );
-  dialogue_box_border->setPixmap( QPixmap::fromImage( dialogue_box_border_image ) );
-  dialogue_box_border->setFixedSize( dialogue_box_border_image.size() );
-  dialogue_box_border->move( -6, 0 );
-
+  dialogue_box_background->setFixedSize( s_background->size() );
+  dialogue_box_background->setPixmap( *s_background );
+  
   // Create the dialogue text box
   d_dialogue_box = new QLabel( dialogue_box_background );
   d_dialogue_box->setFixedSize( dialogue_box_background->width()-40,
@@ -77,14 +53,51 @@ NPCDialogueBox::NPCDialogueBox( QWidget* parent )
                     this, SIGNAL(dialogueFinished()) );
 
   // Set this widgets size and location
-  this->setFixedSize( dialogue_box_border_image.size() );
+  this->setFixedSize( dialogue_box_background->size() );
   this->move( 115, 125 );
+}
+
+// Initialize the background
+void DialogueBox::initializeBackground()
+{
+  if( !s_background )
+  {
+    // Load the interaction menu image
+    std::unique_ptr<UIArtLoader> ui_art_frame_loader( new UIArtLoader );
+
+    ui_art_frame_loader->setSource( "/ui_art/seldiff.pcx" );
+    ui_art_frame_loader->setTransparentColor( QColor( "black" ) );
+    ui_art_frame_loader->loadFrames();
+
+    QImage dialogue_box_border_image =
+      ui_art_frame_loader->getLoadedFrames().front();
+    
+    // Crop the border image
+    dialogue_box_border_image =
+      dialogue_box_border_image.copy( 274, 90, 351, 180 );
+    
+    // Stretch the border image
+    dialogue_box_border_image =
+      dialogue_box_border_image.scaled( dialogue_box_border_image.width()*1.70,
+                                        dialogue_box_border_image.height()*1.792 );
+    
+    s_background.reset( new QPixmap( dialogue_box_border_image.width()-23,
+                                     dialogue_box_border_image.height()-3 ) );
+
+    s_background->fill( QColor( 0, 0, 0, 127 ) );
+
+    // Draw the border image on the pixmap
+    QPainter painter( s_background.get() );
+    painter.drawImage( QPoint( 0, 0 ),
+                       dialogue_box_border_image,
+                       QRect( 6, 0, s_background->width(), s_background->height() ) );
+  }
 }
 
 // Display dialogue
 /*! \details Scroll delay time is in seconds, Scroll duration is in seconds
  */
-void NPCDialogueBox::displayDialogue( QPixmap dialogue_text,
+void DialogueBox::displayDialogue( QPixmap dialogue_text,
                                       const int dialogue_font_size,
                                       const double scroll_delay_time,
                                       const double scroll_duration )
@@ -102,13 +115,13 @@ void NPCDialogueBox::displayDialogue( QPixmap dialogue_text,
 }
 
 // Get the dialogue box width
-int NPCDialogueBox::getDialogueBoxWidth() const
+int DialogueBox::getDialogueBoxWidth() const
 {
   return d_dialogue_box->width();
 }
 
 // Handle key press events
-void NPCDialogueBox::keyPressEvent( QKeyEvent* event )
+void DialogueBox::keyPressEvent( QKeyEvent* event )
 { 
   if( event->key() == Qt::Key_Enter ||
       event->key() == Qt::Key_Escape )
@@ -118,13 +131,13 @@ void NPCDialogueBox::keyPressEvent( QKeyEvent* event )
 }
 
 // Handle mouse click events
-void NPCDialogueBox::mouseReleaseEvent( QMouseEvent* event )
+void DialogueBox::mouseReleaseEvent( QMouseEvent* event )
 {
   emit dialogueFinished();
 }
 
 // Handle hide events
-void NPCDialogueBox::hideEvent( QHideEvent* event )
+void DialogueBox::hideEvent( QHideEvent* event )
 {
   if( d_scroll_animation_timer_id != -1 )
   {
@@ -138,7 +151,7 @@ void NPCDialogueBox::hideEvent( QHideEvent* event )
 }
 
 // Handle the timer event
-void NPCDialogueBox::timerEvent( QTimerEvent* event )
+void DialogueBox::timerEvent( QTimerEvent* event )
 {
   // Kill the timer
   this->killTimer( d_scroll_animation_timer_id );
@@ -155,5 +168,5 @@ void NPCDialogueBox::timerEvent( QTimerEvent* event )
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//
-// end NPCDialogueBox.h
+// end DialogueBox.h
 //---------------------------------------------------------------------------//

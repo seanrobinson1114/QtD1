@@ -17,7 +17,7 @@
 namespace QtD1{
 
 class NPCInteractionMenu;
-class NPCDialogueBox;
+class DialogueBox;
 
 //! The NPC base class
 class NPC : public BasicActor
@@ -184,7 +184,7 @@ private:
   int d_dialogue_font_size;
 
   // The NPC dialogue box
-  NPCDialogueBox* d_dialogue_box;
+  DialogueBox* d_dialogue_box;
 };
   
 } // end QtD1 namespace

@@ -108,6 +108,8 @@ void NPCInteractionSubmenu::initializePrimarySubmenuFrame()
 // Initialize the trade submenu frame
 void NPCInteractionSubmenu::initializeTradeSubmenuFrame()
 {
+  
+  
   s_frames[NPCInteractionSubmenu::Type::Trade];
 }
 
