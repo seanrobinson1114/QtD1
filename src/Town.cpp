@@ -16,6 +16,7 @@
 #include "Ogden.h"
 #include "Gillian.h"
 #include "Pepin.h"
+#include "Deckard.h"
 
 namespace QtD1{
 
@@ -26,7 +27,8 @@ Town::Town( QObject* parent )
     d_adria( NULL ),
     d_ogden( NULL ),
     d_gillian( NULL ),
-    d_pepin( NULL )
+    d_pepin( NULL ),
+    d_deckard( NULL )
 { /* ... */ }
 
 // Get the type
@@ -56,18 +58,21 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   d_ogden = new Ogden;
   d_gillian = new Gillian;
   d_pepin = new Pepin;
+  d_deckard = new Deckard;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
   this->addLevelObject( d_adria, QPointF( 0, 0 ) );
   this->addLevelObject( d_ogden, QPointF( 0, 0 ) );
   this->addLevelObject( d_gillian, QPointF( 0, 0 ) );
   this->addLevelObject( d_pepin, QPointF( 0, 0 ) );
+  this->addLevelObject( d_deckard, QPointF( 0, 0 ) );
 
   npcs << d_farnham;
   npcs << d_adria;
   npcs << d_ogden;
   npcs << d_gillian;
   npcs << d_pepin;
+  npcs << d_deckard;
 }
 
 // Activate the NPCs and actors
@@ -102,6 +107,12 @@ void Town::activateNPCsAndActors( QWidget* parent_widget )
   d_pepin->activate();
   d_pepin->startStateMachine();
   d_pepin->loadInteractionMenu( parent_widget );
+
+  // Activate Deckard and load interactive menu
+  d_deckard->setPos( 2740, 2285 );
+  d_deckard->activate();
+  d_deckard->startStateMachine();
+  d_deckard->loadInteractionMenu( parent_widget );
 }
 
 // Insert the character
