@@ -23,7 +23,9 @@ PentSpinMenuPushButtonBox::PentSpinMenuPushButtonBox( QWidget* parent )
   : QWidget( parent ),
     d_button_order(),
     d_active_button( NULL )
-{ /* ... */ }
+{ 
+  this->setFocusProxy( parent );
+}
 
 // Add a button
 void PentSpinMenuPushButtonBox::addButton( PentSpinMenuPushButton* button )

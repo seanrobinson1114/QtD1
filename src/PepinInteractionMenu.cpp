@@ -18,11 +18,15 @@ PepinInteractionMenu::PepinInteractionMenu( QWidget* parent )
   : NPCInteractionMenu( parent )
 {
   // Create the primary interaction submenu
+  QList<QString> extra_button_titles;
+  extra_button_titles << "Receive Healing";
+  extra_button_titles << "Buy Items";
+  
   PrimaryNPCInteractionSubmenu* primary_submenu =
-    new PrimaryNPCInteractionSubmenu( "Pepin",
+    new PrimaryNPCInteractionSubmenu( "Welcome To The\nHealer's Home",
                                       "Talk To Pepin",
-                                      QList<QString>(),
-                                      "Say Goodbye",
+                                      extra_button_titles,
+                                      "Leave Healer's Home",
                                       this );
 
   // Create the discussion interaction submenu

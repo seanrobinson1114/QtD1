@@ -9,6 +9,9 @@
 #ifndef PRIMARY_NPC_INTERACTION_SUBMENU_H
 #define PRIMARY_NPC_INTERACTION_SUBMENU_H
 
+// Qt Includes
+#include <QLabel>
+
 // QtD1 Includes
 #include "NPCInteractionSubmenu.h"
 
@@ -62,6 +65,14 @@ protected slots:
   void handleBackButtonPushed() final override;
 
 private:
+
+  // Create a basic title region
+  void createBasicTitleRegion( const QString& raw_title_text,
+                               QLabel* title_region ) const;
+
+  // Create an advanced title region
+  void createAdvancedTitleRegion( const QString& raw_title_text,
+                                  QLabel* title_region ) const;
 
   // The button box
   PentSpinMenuPushButtonBox* d_button_box;

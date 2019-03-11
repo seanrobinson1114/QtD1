@@ -29,6 +29,7 @@ MenuPushButton::MenuPushButton( const QString& raw_button_text,
   this->setIcon( button_icon );
   this->setIconSize( button_text.getPixmap().size() );
   this->resize( button_text.getPixmap().size() );
+  this->setFocusProxy( parent );
 }
   
 } // end QtD1 namespace

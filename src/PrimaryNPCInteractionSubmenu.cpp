@@ -36,17 +36,14 @@ PrimaryNPCInteractionSubmenu::PrimaryNPCInteractionSubmenu(
   // Create the title region
   {
     QLabel* title_region = new QLabel( background );
-
-    BitmapText title_text;
-    title_text.setFontName( "QtD1Gold11" );
-    title_text.setContainerWidth( 200 );
-    title_text.setTextWithNoWrap( raw_title_text );
-    title_text.load();
-
+    
     title_region->setStyleSheet( QString( "background: transparent" ) );
-    title_region->setFixedSize( QSize( background->width(), 50 ) );
-    title_region->setAlignment( Qt::AlignCenter );
-    title_region->setPixmap( title_text.getPixmap() );
+    title_region->setFixedSize( QSize( background->width(), 55 ) );
+    
+    if( raw_title_text.contains( '\n' ) )
+      this->createAdvancedTitleRegion( raw_title_text, title_region );
+    else
+      this->createBasicTitleRegion( raw_title_text, title_region );
   }
 
   // Create the prompt region
@@ -111,6 +108,8 @@ PrimaryNPCInteractionSubmenu::PrimaryNPCInteractionSubmenu(
   d_button_box->move( (background->width()-d_button_box->width())/2,
                       (background->height()-d_button_box->height())/2 );
 
+  this->setFocusProxy( d_button_box );
+
   // Create the exit button
   QPushButton* exit_button = new MenuPushButton( back_button_name,
                                                  "QtD1White11",
@@ -162,6 +161,78 @@ void PrimaryNPCInteractionSubmenu::handleBackButtonPushed()
   emit exit();
 
   d_button_box->resetActiveButton();
+}
+
+// Create a basic title region
+void PrimaryNPCInteractionSubmenu::createBasicTitleRegion(
+                                                 const QString& raw_title_text,
+                                                 QLabel* title_region ) const
+{
+  BitmapText title_text;
+  title_text.setFontName( "QtD1Gold11" );
+  title_text.setContainerWidth( 200 );
+  title_text.setTextWithNoWrap( raw_title_text );
+  title_text.load();
+  
+  title_region->setAlignment( Qt::AlignCenter );
+  title_region->setPixmap( title_text.getPixmap() );
+}
+
+  // Create an advanced title region
+void PrimaryNPCInteractionSubmenu::createAdvancedTitleRegion(
+                                                 const QString& raw_title_text,
+                                                 QLabel* title_region ) const
+{
+  QStringList raw_title_text_lines = raw_title_text.split( '\n' );
+
+  // Render each line of text separately
+  QList<QPixmap> title_text_lines;
+  int width = 0;
+  int height = 0;
+
+  for( auto&& raw_text : raw_title_text_lines )
+  {
+    std::cout << "title line: " << raw_text.toStdString() << std::endl;
+    BitmapText title_text;
+    title_text.setFontName( "QtD1Gold11" );
+    title_text.setContainerWidth( 200 );
+    title_text.setTextWithNoWrap( raw_text );
+    title_text.load();
+
+    if( title_text.getPixmap().width() > width )
+      width = title_text.getPixmap().width();
+
+    height += 2*title_text.getPixmap().height();
+
+    title_text_lines << title_text.getPixmap();
+  }
+
+  height -= title_text_lines.back().height();
+
+  // Create a title text region that will manage each text line
+  QLabel* title_text_region = new QLabel( title_region );
+  title_text_region->setStyleSheet( QString( "background: transparent" ) );
+  title_text_region->setFixedSize( QSize( width, height ) );
+
+  // Center each line in the title text region
+  int current_height = 0;
+  
+  for( auto&& title_text_line_pixmap : title_text_lines )
+  {
+    QLabel* title_text_line = new QLabel( title_text_region );
+    title_text_line->setStyleSheet( QString( "background: transparent" ) );
+    title_text_line->setFixedSize( title_text_line_pixmap.size() );
+    title_text_line->setPixmap( title_text_line_pixmap );
+    
+    title_text_line->move( (title_text_region->width()-title_text_line->width())/2,
+                           current_height );
+
+    current_height += 2*title_text_line->height();
+  }
+
+  // Center the title text region
+  title_text_region->move( (title_region->width()-title_text_region->width())/2,
+                           (title_region->height()-title_text_region->height())/2 );
 }
   
 } // end QtD1 namespace

@@ -31,6 +31,7 @@ NPCInteractionSubmenu::NPCInteractionSubmenu( QWidget* parent )
 { 
   // Disable focus borders/outlines on push buttons
   this->setStyleSheet( QString( "QPushButton:focus { border: none; outline: none; }" ) );
+  this->setFocusProxy( parent );
 }
 
 // Get the submenu frame
