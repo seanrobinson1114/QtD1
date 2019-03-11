@@ -116,6 +116,7 @@ ADD_LIBRARY(qtd1_core
   PepinInteractionMenu.cpp
   DeckardInteractionMenu.cpp
   GriswoldInteractionMenu.cpp
+  WirtInteractionMenu.cpp
   DialogueBox.cpp
   NPC.cpp
   Farnham.cpp
@@ -125,6 +126,7 @@ ADD_LIBRARY(qtd1_core
   Pepin.cpp
   Deckard.cpp
   Griswold.cpp
+  Wirt.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

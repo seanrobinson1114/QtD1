@@ -18,6 +18,7 @@
 #include "Pepin.h"
 #include "Deckard.h"
 #include "Griswold.h"
+#include "Wirt.h"
 
 namespace QtD1{
 
@@ -30,7 +31,8 @@ Town::Town( QObject* parent )
     d_gillian( NULL ),
     d_pepin( NULL ),
     d_deckard( NULL ),
-    d_griswold( NULL )
+    d_griswold( NULL ),
+    d_wirt( NULL )
 { /* ... */ }
 
 // Get the type
@@ -62,6 +64,7 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   d_pepin = new Pepin;
   d_deckard = new Deckard;
   d_griswold = new Griswold;
+  d_wirt = new Wirt;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
   this->addLevelObject( d_adria, QPointF( 0, 0 ) );
@@ -70,6 +73,7 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   this->addLevelObject( d_pepin, QPointF( 0, 0 ) );
   this->addLevelObject( d_deckard, QPointF( 0, 0 ) );
   this->addLevelObject( d_griswold, QPointF( 0, 0 ) );
+  this->addLevelObject( d_wirt, QPointF( 0, 0 ) );
 
   npcs << d_farnham;
   npcs << d_adria;
@@ -78,6 +82,7 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   npcs << d_pepin;
   npcs << d_deckard;
   npcs << d_griswold;
+  npcs << d_wirt;
 }
 
 // Activate the NPCs and actors
@@ -124,6 +129,12 @@ void Town::activateNPCsAndActors( QWidget* parent_widget )
   d_griswold->activate();
   d_griswold->startStateMachine();
   d_griswold->loadInteractionMenu( parent_widget );
+
+  // Activate Wirt and load interactive menu
+  d_wirt->setPos( 1675, 1215 );
+  d_wirt->activate();
+  d_wirt->startStateMachine();
+  d_wirt->loadInteractionMenu( parent_widget );
 }
 
 // Insert the character
