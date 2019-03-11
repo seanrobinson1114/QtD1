@@ -75,6 +75,9 @@ private:
 
   // Deckard
   NPC* d_deckard;
+
+  // Griswold
+  NPC* d_griswold;
 };
   
 } // end QtD1 namespace
