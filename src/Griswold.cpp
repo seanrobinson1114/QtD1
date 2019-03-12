@@ -458,7 +458,7 @@ bool Griswold::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Griswold::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Griswold::createInteractionMenu( QWidget* parent, Character* character )
 {
   return new GriswoldInteractionMenu( parent );
 }

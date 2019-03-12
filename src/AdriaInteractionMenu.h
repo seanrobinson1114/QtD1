@@ -14,6 +14,8 @@
 
 namespace QtD1{
 
+class Character;
+
 //! The Adria interaction menu
 class AdriaInteractionMenu : public NPCInteractionMenu
 {
@@ -22,7 +24,7 @@ class AdriaInteractionMenu : public NPCInteractionMenu
 public:
 
   //! Constructor
-  AdriaInteractionMenu( QWidget* parent = 0 );
+  AdriaInteractionMenu( Character* character, QWidget* parent = 0 );
 
   //! Destructor
   ~AdriaInteractionMenu()

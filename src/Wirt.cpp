@@ -387,7 +387,7 @@ bool Wirt::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Wirt::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Wirt::createInteractionMenu( QWidget* parent, Character* character )
 {
   return new WirtInteractionMenu( parent );
 }

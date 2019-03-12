@@ -419,7 +419,7 @@ bool Deckard::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Deckard::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Deckard::createInteractionMenu( QWidget* parent, Character* character )
 {
   return new DeckardInteractionMenu( parent );
 }

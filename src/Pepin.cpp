@@ -419,9 +419,9 @@ bool Pepin::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Pepin::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Pepin::createInteractionMenu( QWidget* parent, Character* character )
 {
-  return new PepinInteractionMenu( parent );
+  return new PepinInteractionMenu( character, parent );
 }
   
 } // end QtD1 namespace

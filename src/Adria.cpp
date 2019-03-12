@@ -445,9 +445,9 @@ bool Adria::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Adria::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Adria::createInteractionMenu( QWidget* parent, Character* character )
 {
-  return new AdriaInteractionMenu( parent );
+  return new AdriaInteractionMenu( character, parent );
 }
 
 } // end QtD1 namespace

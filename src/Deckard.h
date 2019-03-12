@@ -75,7 +75,7 @@ protected:
   bool hasDialogue( const Quest::Type quest ) const final override;
 
   //! Load the interaction menu
-  NPCInteractionMenu* createInteractionMenu( QWidget* parent ) final override;
+  NPCInteractionMenu* createInteractionMenu( QWidget* parent, Character* character ) final override;
 
 private:
 

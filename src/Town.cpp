@@ -86,55 +86,56 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
 }
 
 // Activate the NPCs and actors
-void Town::activateNPCsAndActors( QWidget* parent_widget )
+void Town::activateNPCsAndActors( QWidget* parent_widget,
+                                  Character* character  )
 {
   // Activate Farnham and load interactive menu
   d_farnham->setPos( 2600, 2640 );
   d_farnham->activate();
   d_farnham->startStateMachine();
-  d_farnham->loadInteractionMenu( parent_widget );
+  d_farnham->loadInteractionMenu( parent_widget, character );
 
   // Activate Adria and load interactive menu
   d_adria->setPos( 4945, 1760 );
   d_adria->activate();
   d_adria->startStateMachine();
-  d_adria->loadInteractionMenu( parent_widget );
+  d_adria->loadInteractionMenu( parent_widget, character );
 
   // Activate Ogden and load interactive menu
   d_ogden->setPos( 2790, 2025 );
   d_ogden->activate();
   d_ogden->startStateMachine();
-  d_ogden->loadInteractionMenu( parent_widget );
+  d_ogden->loadInteractionMenu( parent_widget, character );
 
   // Activate Gillian and load interactive menu
   d_gillian->setPos( 2288, 1910 );
   d_gillian->activate();
   d_gillian->startStateMachine();
-  d_gillian->loadInteractionMenu( parent_widget );
+  d_gillian->loadInteractionMenu( parent_widget, character );
 
   // Activate Pepin and load interactive menu
   d_pepin->setPos( 2255, 2305 );
   d_pepin->activate();
   d_pepin->startStateMachine();
-  d_pepin->loadInteractionMenu( parent_widget );
+  d_pepin->loadInteractionMenu( parent_widget, character );
 
   // Activate Deckard and load interactive menu
   d_deckard->setPos( 2740, 2285 );
   d_deckard->activate();
   d_deckard->startStateMachine();
-  d_deckard->loadInteractionMenu( parent_widget );
+  d_deckard->loadInteractionMenu( parent_widget, character );
 
   // Activate Griswold and load interactive menu
   d_griswold->setPos( 3000, 2165 );
   d_griswold->activate();
   d_griswold->startStateMachine();
-  d_griswold->loadInteractionMenu( parent_widget );
+  d_griswold->loadInteractionMenu( parent_widget, character );
 
   // Activate Wirt and load interactive menu
   d_wirt->setPos( 1675, 1215 );
   d_wirt->activate();
   d_wirt->startStateMachine();
-  d_wirt->loadInteractionMenu( parent_widget );
+  d_wirt->loadInteractionMenu( parent_widget, character );
 }
 
 // Insert the character

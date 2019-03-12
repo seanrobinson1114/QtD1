@@ -14,6 +14,8 @@
 
 namespace QtD1{
 
+class Character;
+  
 //! The Pepin interaction menu
 class PepinInteractionMenu : public NPCInteractionMenu
 {
@@ -22,7 +24,7 @@ class PepinInteractionMenu : public NPCInteractionMenu
 public:
 
   //! Constructor
-  PepinInteractionMenu( QWidget* parent = 0 );
+  PepinInteractionMenu( Character* character, QWidget* parent = 0 );
 
   //! Destructor
   ~PepinInteractionMenu()

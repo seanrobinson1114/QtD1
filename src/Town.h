@@ -43,7 +43,8 @@ public:
                             QVector<Actor*>& special_actors ) final override;
 
   //! Activate the NPCs and actors
-  void activateNPCsAndActors( QWidget* parent ) final override;
+  void activateNPCsAndActors( QWidget* parent,
+                              Character* character ) final override;
 
   //! Insert the character
   void insertCharacter( Character* character,

@@ -144,10 +144,11 @@ Ogden::Ogden( QGraphicsObject* parent )
   d_quest_dialogues.emplace( Quest::Type::ArchbishopLazarus, 1 );
   d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/tavown01.wav";
   d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text = 
-    "I did not know this Lazarus of whom you speak, but I do sense "
-    "a great conflict within his being. He poses a great danger, "
-    "and will stop at nothing to serve the powers of darkness which "
-    "have claimed him as theirs.";
+    "Lazarus was the Archbishop who led many of the townspeople into the "
+    "labyrinth. I lost many good friends that day, and Lazarus never "
+    "returned. I suppose he was killed along with most of the others. If you "
+    "would do me a favor, good master - please do not talk to Farnham about "
+    "that day.";
 
   // Lachdanan quest
   d_quest_dialogues.emplace( Quest::Type::Lachdanan, 1 );
@@ -411,7 +412,7 @@ bool Ogden::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Ogden::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Ogden::createInteractionMenu( QWidget* parent, Character* )
 {
   return new OgdenInteractionMenu( parent );
 }

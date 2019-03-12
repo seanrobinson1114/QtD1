@@ -120,8 +120,8 @@ public:
 
 signals:
 
-  void healthChanged( const int current_health );
-  void manaChanged( const int current_mana );
+  void healthChanged( const int current_health, const int max_health );
+  void manaChanged( const int current_mana, const int max_mana );
   void baseStatsChanged();
   void statsChanged();
   void levelUp( const int new_level );

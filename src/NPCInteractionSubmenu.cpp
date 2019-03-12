@@ -130,7 +130,27 @@ void NPCInteractionSubmenu::assignSubmenuToNamedButton(
   else
   {
     qWarning( "NPCInteractionSubmenu Warning: no button with name %s",
-              button_name );
+              button_name.toStdString().c_str() );
+  }
+}
+
+// Assign an action to a named button
+void NPCInteractionSubmenu::assignActionToNamedButton(
+                                                    const QString& button_name,
+                                                    QObject* obj,
+                                                    const char* action )
+{
+  auto button_it = d_named_buttons.find( button_name );
+
+  if( button_it != d_named_buttons.end() )
+  {
+    QObject::connect( button_it->second, SIGNAL(released()),
+                      obj, action );
+  }
+  else
+  {
+    qWarning( "NPCInteractionSubmenu Warning: no button with name %s",
+              button_name.toStdString().c_str() );
   }
 }
 

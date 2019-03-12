@@ -10,11 +10,14 @@
 #include "PepinInteractionMenu.h"
 #include "PrimaryNPCInteractionSubmenu.h"
 #include "DiscussionNPCInteractionSubmenu.h"
+#include "Character.h"
 
 namespace QtD1{
 
 // Constructor
-PepinInteractionMenu::PepinInteractionMenu( QWidget* parent )
+PepinInteractionMenu::PepinInteractionMenu( Character* character,
+                                            QWidget* parent )
+                                            
   : NPCInteractionMenu( parent )
 {
   // Create the primary interaction submenu
@@ -38,6 +41,13 @@ PepinInteractionMenu::PepinInteractionMenu( QWidget* parent )
   // Set the button connections
   primary_submenu->assignSubmenuToNamedButton( "Talk To Pepin",
                                                discussion_submenu );
+  primary_submenu->assignActionToNamedButton( "Receive Healing",
+                                              character,
+                                              SLOT(restoreHealth()) );
+  primary_submenu->assignActionToNamedButton( "Receive Healing",
+                                              character,
+                                              SLOT(restoreMana()) );
+  
   discussion_submenu->assignBackSubmenu( primary_submenu );
 
   this->setPrimarySubmenu( primary_submenu );
