@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   PepinInteractionMenu.cpp
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Pepin interaction menu class definition
 //!
 //---------------------------------------------------------------------------//

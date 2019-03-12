@@ -22,264 +22,272 @@ Pepin::Pepin( QGraphicsObject* parent )
     d_sprites_loaded( false ),
     d_greeting(),
     d_quest_dialogues(),
-    d_gossip_dialogues( 8 ),
-    d_unused_dialogues( 20 )
+    d_gossip_dialogues( 9 ),
+    d_unused_dialogues( 21 )
 {
   // Load the greeting
-  d_greeting.setSource( "/sfx/towners/tavown36.wav" );
+  d_greeting.setSource( "/sfx/towners/healer37.wav" );
 
   // Load the quest dialogues
 
   // Butcher quest
   d_quest_dialogues.emplace( Quest::Type::TheButcher, 1 );
-  d_quest_dialogues[Quest::Type::TheButcher][0].dialogue_file_name = "/sfx/towners/tavown08.wav";
+  d_quest_dialogues[Quest::Type::TheButcher][0].dialogue_file_name = "/sfx/towners/healer08.wav";
   d_quest_dialogues[Quest::Type::TheButcher][0].raw_dialogue_text = 
-    "Yes, Farnham has mumbled something about a hulking brute who wielded "
-    "a fierce weapon. I believe he called him a butcher.";
+    "By the Light, I know of this vile demon. There were many that bore "
+    "the scars of his wrath upon their bodies when the few survivors of "
+    "the charge led by Lazarus crawled from the Cathedral. I don't know "
+    "what he used to slice open his victims, but it could not have been "
+    "of this world. It left wounds festering with disease and even I found "
+    "them almost impossible to treat. Beware if you plan to battle this fiend...";
 
   // Poisoned Water Supply quest
-  d_quest_dialogues.emplace( Quest::Type::PoisonWater, 1 );
-  d_quest_dialogues[Quest::Type::PoisonWater][0].dialogue_file_name = "/sfx/towners/tavown02.wav";
+  d_quest_dialogues.emplace( Quest::Type::PoisonWater, 3 );
+  d_quest_dialogues[Quest::Type::PoisonWater][0].dialogue_file_name = "/sfx/towners/healer20.wav";
   d_quest_dialogues[Quest::Type::PoisonWater][0].raw_dialogue_text = 
-    "I have always tried to keep a large supply of foodstuffs and drink "
-    "in our storage cellar, but with the entire town having no source of "
-    "fresh water, even our stores will soon run dry. Please, do what you "
-    "can or I don't know what we will do.";
+    "I'm glad I caught up to you in time! Our wells have become brackish "
+    "and stagnant and some of the townspeople have become ill drinking "
+    "from them. Our reserves of fresh water are quickly running dry. I "
+    "believe that there is a passage that leads to the springs that serve "
+    "our town. Please find what has caused this calamity, or we all will "
+    "surely perish.";
+  d_quest_dialogues[Quest::Type::PoisonWater][1].dialogue_file_name = "/sfx/towners/healer21.wav";
+  d_quest_dialogues[Quest::Type::PoisonWater][1].raw_dialogue_text = 
+    "Please, you must hurry. Every hour that passes brings us closer to "
+    "having no water to drink.";
+  d_quest_dialogues[Quest::Type::PoisonWater][2].dialogue_file_name = "/sfx/towners/healer22.wav";
+  d_quest_dialogues[Quest::Type::PoisonWater][2].raw_dialogue_text = 
+    "What's that you say - the mere presence of the demons had caused "
+    "the water to become tainted? Oh, truly a great evil lurks beneath "
+    "our town, but your perseverance and courage gives us hope. Please "
+    "take this ring - perhaps it will aid you in the destruction of such "
+    "vile creatures.";
 
   // King Leoric quest
-  d_quest_dialogues.emplace( Quest::Type::KingLeoricsCurse, 3 );
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].dialogue_file_name = "/sfx/towners/tavown21.wav";
+  d_quest_dialogues.emplace( Quest::Type::KingLeoricsCurse, 1 );
+  d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].dialogue_file_name = "/sfx/towners/healer01.wav";
   d_quest_dialogues[Quest::Type::KingLeoricsCurse][0].raw_dialogue_text = 
-    "The village needs your help, good master! Some months ago King Leoric's "
-    "son, Prince Albrecht, was kidnapped. The King went into a rage and scoured "
-    "the village for his missing child. With each passing day, Leoric seemed to "
-    "slip deeper into madness. He sought to blame innocent townsfolk for the boy's "
-    "disappearance and had them brutally executed. Less than half of us survived his "
-    "insanity... The King's Knights and Priests tried to placate him, but he turned "
-    "against them and sadly, they were forced to kill him. With his dying breath the "
-    "King called down a terrible curse upon his former followers. He vowed that they "
-    "would serve him in darkness forever... This is where things take an even darker "
-    "twist than I thought possible! Our former King has risen from his eternal sleep "
-    "and now commands a legion of undead minions within the Labyrinth. His body was "
-    "buried in a tomb three levels beneath the Cathedral. Please, good master, put his "
-    "soul at ease by destroying his now cursed form...";
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][1].dialogue_file_name = "/sfx/towners/tavown22.wav";
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][1].raw_dialogue_text = 
-    "As I told you, good master, the King was entombed three levels below. He's down "
-    "there, waiting in the putrid darkness for his chance to destroy this land...";
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][2].dialogue_file_name = "/sfx/towners/tavown23.wav";
-  d_quest_dialogues[Quest::Type::KingLeoricsCurse][2].raw_dialogue_text = 
-    "The curse of our King has passed, but I fear that it was only part of a greater "
-    "evil at work. However, we may yet be saved from the darkness that consumes our "
-    "land, for your victory is a good omen. May Light guide you on your way, good master.";
+    "The loss of his son was too much for King Leoric. I did what I could "
+    "to ease his madness, but in the end it overcame him. A black curse has "
+    "hung over this kingdom from that day forward, but perhaps if you were "
+    "to free his spirit from his earthly prison, the curse would be lifted...";
 
   // Ogdens Sign quest
-  d_quest_dialogues.emplace( Quest::Type::OgdensSign, 2 );
-  d_quest_dialogues[Quest::Type::OgdensSign][0].dialogue_file_name = "/sfx/towners/tavown24.wav";
+  d_quest_dialogues.emplace( Quest::Type::OgdensSign, 1 );
+  d_quest_dialogues[Quest::Type::OgdensSign][0].dialogue_file_name = "/sfx/towners/healer02.wav";
   d_quest_dialogues[Quest::Type::OgdensSign][0].raw_dialogue_text = 
-    "Master, I have a strange experience to relate. I know that you have a great knowledge "
-    "of those monstrosities that inhabit the labyrinth, and this is something that I cannot "
-    "understand for the very life of me... I was awakened during the night by a scraping sound "
-    "just outside of my tavern. When I looked out from my bedroom, I saw the shapes of small "
-    "demon-like creatures in the inn yard. After a short time, they ran off, but not before "
-    "stealing the sign to my inn. I don't know why the demons would steal my sign but leave "
-    "my family in peace... 'tis strange, no?";
-  d_quest_dialogues[Quest::Type::OgdensSign][1].dialogue_file_name = "/sfx/towners/tavown25.wav";
-  d_quest_dialogues[Quest::Type::OgdensSign][1].raw_dialogue_text = 
-    "Oh, you didn't have to bring back my sign, but I suppose that it does save me the expense "
-    "of having another one made. Well, let me see, what could I give you as a fee for finding it? "
-    "Hmmm, what have we here... ah, yes! This cap was left in one of the rooms by a magician who "
-    "stayed here some time ago. Perhaps it may be of some value to you.";
+    "My goodness, demons running about the village at night, pillaging "
+    "our homes - is nothing sacred? I hope that Ogden and Garda are all "
+    "right. I suppose that they would come to see me if they were hurt...";
 
   // Magic Rock quest
   d_quest_dialogues.emplace( Quest::Type::TheMagicRock,  1 );
-  d_quest_dialogues[Quest::Type::TheMagicRock][0].dialogue_file_name = "/sfx/towners/tavown18.wav";
+  d_quest_dialogues[Quest::Type::TheMagicRock][0].dialogue_file_name = "/sfx/towners/healer18.wav";
   d_quest_dialogues[Quest::Type::TheMagicRock][0].raw_dialogue_text = 
-    "The caravan stopped here to take on some supplies for "
-    "their journey to the east. I sold them quite an array "
-    "of fresh fruits and some excellent sweetbreads that "
-    "Garda has just finished baking. Shame what happened to them...";
+    "I don't know what it is that they thought they could see with "
+    "that rock, but I will say this. If rocks are falling from the "
+    "sky, you had better be careful!";
 
   // Chamber of Bone quest
   d_quest_dialogues.emplace( Quest::Type::TheChamberOfBone, 1 );
-  d_quest_dialogues[Quest::Type::TheChamberOfBone][0].dialogue_file_name = "/sfx/towners/tavown05.wav";
+  d_quest_dialogues[Quest::Type::TheChamberOfBone][0].dialogue_file_name = "/sfx/towners/healer05.wav";
   d_quest_dialogues[Quest::Type::TheChamberOfBone][0].raw_dialogue_text = 
-    "I am afraid that I don't know anything about that, good "
-    "master. Cain has many books that may be of some help.";
+    "This sounds like a very dangerous place. If you venture "
+    "there, please take great care.";
 
   // Halls of the Blind quest
   d_quest_dialogues.emplace( Quest::Type::HallsOfTheBlind, 1 );
-  d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].dialogue_file_name = "/sfx/towners/tavown10.wav";
+  d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].dialogue_file_name = "/sfx/towners/healer10.wav";
   d_quest_dialogues[Quest::Type::HallsOfTheBlind][0].raw_dialogue_text = 
-    "I never much cared for poetry. Occasionally, I had cause to "
-    "hire minstrels when the inn was doing well, but that seems "
-    "like such a long time ago now. What? Oh, yes... uh, well, I "
-    "suppose you could see what someone else knows.";
+    "This does seem familiar, somehow. I seem to recall reading "
+    "something very much like that poem while researching the "
+    "history of demonic afflictions. It spoke of a place of great "
+    "evil that... wait - you're not going there are you?";
 
   // Black mushroom quest
-  d_quest_dialogues.emplace( Quest::Type::TheBlackMushroom, 1 );
-  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].dialogue_file_name = "/sfx/towners/tavown19.wav";
+  d_quest_dialogues.emplace( Quest::Type::TheBlackMushroom, 2 );
+  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].dialogue_file_name = "/sfx/towners/healer26.wav";
   d_quest_dialogues[Quest::Type::TheBlackMushroom][0].raw_dialogue_text = 
-    "Let me just say this. Both Garda and I would never, EVER "
-    "serve black mushrooms to our honored guests. If Adria wants "
-    "some mushrooms in her stew, then that is her business, but "
-    "I can't help you find any. Black mushrooms... disgusting!";
+    "The witch told me that you were searching for the brain of a "
+    "demon to assist me in creating my elixir. It should be of great "
+    "value to the many who are injured by those foul beasts, if I can "
+    "just unlock the secrets I suspect that its alchemy holds. If you "
+    "can remove the brain of a demon when you kill it, I would be "
+    "grateful if you could bring it to me.";
+  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].dialogue_file_name = "/sfx/towners/healer27.wav";
+  d_quest_dialogues[Quest::Type::TheBlackMushroom][0].raw_dialogue_text = 
+    "Excellent, this is just what I had in mind. I was able to finish "
+    "the elixir without this, but it can't hurt to have this to study. "
+    "Would you please carry this to the witch? I believe that she is "
+    "expecting it.";
 
   // Anvil of Fury quest
   d_quest_dialogues.emplace( Quest::Type::TheAnvilOfFury, 1 );
-  d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].dialogue_file_name = "/sfx/towners/tavown12.wav";
+  d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].dialogue_file_name = "/sfx/towners/healer12.wav";
   d_quest_dialogues[Quest::Type::TheAnvilOfFury][0].raw_dialogue_text = 
-    "Don't you think that Griswold would be a better person to "
-    "ask about this? He's quite handy, you know.";
+    "If you had been looking for information on the Pestle of "
+    "Curing or the Silver Chalice of Purification, I could have "
+    "assisted you, my friend. However, in this matter, you would "
+    "be better served to speak to either Griswold or Cain.";
 
   // Warlord of Blood quest
   d_quest_dialogues.emplace( Quest::Type::TheWarlordOfBlood, 1 );
-  d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].dialogue_file_name = "/sfx/towners/tavown16.wav";
+  d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].dialogue_file_name = "/sfx/towners/healer16.wav";
   d_quest_dialogues[Quest::Type::TheWarlordOfBlood][0].raw_dialogue_text = 
-    "I am afraid that I haven't heard anything about such a "
-    "vicious warrior, good master. I hope that you do not have "
-    "to fight him, for he sounds extremely dangerous.";
+    "Cain would be able to tell you much more about something like this than I would ever wish to know.";
 
   // Archbishop Lazarus quest
   d_quest_dialogues.emplace( Quest::Type::ArchbishopLazarus, 1 );
-  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/witch03.wav";
+  d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].dialogue_file_name = "/sfx/towners/healer03.wav";
   d_quest_dialogues[Quest::Type::ArchbishopLazarus][0].raw_dialogue_text = 
-    "I did not know this Lazarus of whom you speak, but I do sense "
-    "a great conflict within his being. He poses a great danger, "
-    "and will stop at nothing to serve the powers of darkness which "
-    "have claimed him as theirs.";
+    "I was shocked when I heard of what the townspeople were planning "
+    "to do that night. I thought that of all people, Lazarus would have "
+    "had more sense than that. He was an Archbishop, and always seemed "
+    "to care so much for the townsfolk of Tristram. So many were injured, "
+    "I could not save them all...";
 
   // Lachdanan quest
   d_quest_dialogues.emplace( Quest::Type::Lachdanan, 1 );
-  d_quest_dialogues[Quest::Type::Lachdanan][0].dialogue_file_name = "/sfx/towners/tavown11.wav";
+  d_quest_dialogues[Quest::Type::Lachdanan][0].dialogue_file_name = "/sfx/towners/healer11.wav";
   d_quest_dialogues[Quest::Type::Lachdanan][0].raw_dialogue_text = 
-    "You speak of a brave warrior long dead! I'll have no such "
-    "talk of speaking with departed souls in my inn yard, thank "
-    "you very much.";
+    "A golden elixir, you say. I have never concocted a potion "
+    "of that color before, so I can't tell you how it would effect "
+    "you if you were to try to drink it. As your healer, I strongly "
+    "advise that should you find such an elixir, do as Lachdanan "
+    "asks and DO NOT try to use it.";
 
   // Armor of Valor quest
   d_quest_dialogues.emplace( Quest::Type::ArmorOfValor, 1 );
-  d_quest_dialogues[Quest::Type::ArmorOfValor][0].dialogue_file_name = "/sfx/towners/tavown13.wav";
+  d_quest_dialogues[Quest::Type::ArmorOfValor][0].dialogue_file_name = "/sfx/towners/healer13.wav";
   d_quest_dialogues[Quest::Type::ArmorOfValor][0].raw_dialogue_text = 
-    "Every child hears the story of the warrior Arkaine and his "
-    "mystic armor known as Valor. If you could find its resting "
-    "place, you would be well protected against the evil in "
-    "the Labyrinth.";
+    "Hmm... it sounds like something I should remember, but I've "
+    "been so busy learning new cures and creating better elixirs "
+    "that I must have forgotten. Sorry...";
 
   // Load the gossip dialogues
-  d_gossip_dialogues[0].dialogue_file_name = "/sfx/towners/tavown37.wav";
+  d_gossip_dialogues[0].dialogue_file_name = "/sfx/towners/healer38.wav";
   d_gossip_dialogues[0].raw_dialogue_text =
-    "Many adventurers have graced the tables of my tavern, and ten times "
-    "as many stories have been told over as much ale. The only thing that "
-    "I ever heard any of them agree on was this old axiom. Perhaps it will "
-    "help you. You can cut the flesh, but you must crush the bone.";
+    "I have made a very interesting discovery. Unlike us, the creatures "
+    "in the Labyrinth can heal themselves without the aid of potions or "
+    "magic. If you hurt one of the monsters, make sure it is dead or it "
+    "very well may regenerate itself.";
   
-  d_gossip_dialogues[1].dialogue_file_name = "/sfx/towners/tavown38.wav";
+  d_gossip_dialogues[1].dialogue_file_name = "/sfx/towners/healer39.wav";
   d_gossip_dialogues[1].raw_dialogue_text =
-    "Griswold the blacksmith is extremely knowledgeable about weapons and "
-    "armor. If you ever need work done on your gear, he is definitely the "
-    "man to see.";
+    "Before it was taken over by, well, whatever lurks below, the Cathedral "
+    "was a place of great learning. There are many books to be found there. "
+    "If you find any, you should read them all, for some may hold secrets "
+    "to the workings of the Labyrinth.";
   
-  d_gossip_dialogues[2].dialogue_file_name = "/sfx/towners/tavown39.wav";
+  d_gossip_dialogues[2].dialogue_file_name = "/sfx/towners/healer40.wav";
   d_gossip_dialogues[2].raw_dialogue_text =
-    "Farnham spends far too much time here, drowning his sorrows in cheap "
-    "ale. I would make him leave, but he did suffer so during his time in "
-    "the Labyrinth.";
+    "Griswold knows as much about the art of war as I do about the art of "
+    "healing. He is a shrewd merchant, but his work is second to none. Oh, "
+    "I suppose that may be because he is the only blacksmith left here.";
   
-  d_gossip_dialogues[3].dialogue_file_name = "/sfx/towners/tavown40.wav";
+  d_gossip_dialogues[3].dialogue_file_name = "/sfx/towners/healer41.wav";
   d_gossip_dialogues[3].raw_dialogue_text =
-    "Adria is wise beyond her years, but I must admit - she frightens me "
-    "a little. Well, no matter. If you ever have need to trade in items "
-    "of sorcery, she maintains a strangely well-stocked hut just across "
-    "the river.";
+    "Cain is a true friend and a wise sage. He maintains a vast library "
+    "and has an innate ability to discern the true nature of many things. "
+    "If you ever have any questions, he is the person to go to.";
   
-  d_gossip_dialogues[4].dialogue_file_name = "/sfx/towners/tavown41.wav";
+  d_gossip_dialogues[4].dialogue_file_name = "/sfx/towners/healer42.wav";
   d_gossip_dialogues[4].raw_dialogue_text =
-    "If you want to know more about the history of our village, the "
-    "storyteller Cain knows quite a bit about the past.";
+    "Even my skills have been unable to fully heal Farnham. Oh, I have been "
+    "able to mend his body, but his mind and spirit are beyond anything I can do.";
   
-  d_gossip_dialogues[5].dialogue_file_name = "/sfx/towners/tavown43.wav";
+  d_gossip_dialogues[5].dialogue_file_name = "/sfx/towners/healer43.wav";
   d_gossip_dialogues[5].raw_dialogue_text =
-    "Wirt is a rapscallion and a little scoundrel. He was always "
-    "getting into trouble, and it's no surprise what happened to "
-    "him. He probably went fooling about someplace that he shouldn't "
-    "have been. I feel sorry for the boy, but I don't abide the "
-    "company that he keeps.";
+    "While I use some limited forms of magic to create the potions and elixirs "
+    "I store here, Adria is a true sorceress. She never seems to sleep, and "
+    "she always has access to many mystic tomes and artifacts. I believe her "
+    "hut may be much more than the hovel it appears to be, but I can never "
+    "seem to get inside the place.";
   
-  d_gossip_dialogues[6].dialogue_file_name = "/sfx/towners/tavown44.wav";
+  d_gossip_dialogues[6].dialogue_file_name = "/sfx/towners/healer45.wav";
   d_gossip_dialogues[6].raw_dialogue_text =
-    "Pepin is a good man - and certainly the most generous in the "
-    "village. He is always attending to the needs of others, but "
-    "trouble of some sort or another does seem to follow him wherever "
-    "he goes...";
+    "Poor Wirt. I did all that was possible for the child, but I know he "
+    "despises that wooden peg that I was forced to attach to his leg. His "
+    "wounds were hideous. No one - and especially such a young child - should "
+    "have to suffer the way he did.";
   
-  d_gossip_dialogues[7].dialogue_file_name = "/sfx/towners/tavown45.wav";
+  d_gossip_dialogues[7].dialogue_file_name = "/sfx/towners/healer46.wav";
   d_gossip_dialogues[7].raw_dialogue_text =
-    "Gillian, my Barmaid? If it were not for her sense of duty to her "
-    "grand-dam, she would have fled from here long ago. Goodness knows "
-    "I begged her to leave, telling her that I would watch after the "
-    "old woman, but she is too sweet and caring to have done so.";
+    "I really don't understand why Ogden stays here in Tristram. He suffers "
+    "from a slight nervous condition, but he is an intelligent and industrious "
+    "man who would do very well wherever he went. I suppose it may be the fear "
+    "of the many murders that happen in the surrounding countryside, or perhaps "
+    "the wishes of his wife that keep him and his family where they are.";
+
+  d_gossip_dialogues[8].dialogue_file_name = "/sfx/towners/healer47.wav";
+  d_gossip_dialogues[8].raw_dialogue_text =
+    "Ogden's barmaid is a sweet girl. Her grandmother is quite ill, and suffers "
+    "from delusions. She claims that they are visions, but I have no proof of "
+    "that one way or the other.";
 
   // Load the unused dialogues
-  d_unused_dialogues[0].dialogue_file_name = "/sfx/towners/tavown03.wav";
+  d_unused_dialogues[0].dialogue_file_name = "/sfx/towners/healer04.wav";
   d_unused_dialogues[0].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[1].dialogue_file_name = "/sfx/towners/tavown04.wav";
+  d_unused_dialogues[1].dialogue_file_name = "/sfx/towners/healer06.wav";
   d_unused_dialogues[1].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[2].dialogue_file_name = "/sfx/towners/tavown06.wav";
+  d_unused_dialogues[2].dialogue_file_name = "/sfx/towners/healer07.wav";
   d_unused_dialogues[2].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[3].dialogue_file_name = "/sfx/towners/tavown07.wav";
+  d_unused_dialogues[3].dialogue_file_name = "/sfx/towners/healer09.wav";
   d_unused_dialogues[3].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[4].dialogue_file_name = "/sfx/towners/tavown09.wav";
+  d_unused_dialogues[4].dialogue_file_name = "/sfx/towners/healer14.wav";
   d_unused_dialogues[4].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[5].dialogue_file_name = "/sfx/towners/tavown14.wav";
+  d_unused_dialogues[5].dialogue_file_name = "/sfx/towners/healer15.wav";
   d_unused_dialogues[5].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[6].dialogue_file_name = "/sfx/towners/tavown15.wav";
+  d_unused_dialogues[6].dialogue_file_name = "/sfx/towners/healer17.wav";
   d_unused_dialogues[6].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[7].dialogue_file_name = "/sfx/towners/tavown17.wav";
+  d_unused_dialogues[7].dialogue_file_name = "/sfx/towners/healer19.wav";
   d_unused_dialogues[7].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[8].dialogue_file_name = "/sfx/towners/tavown20.wav";
+  d_unused_dialogues[8].dialogue_file_name = "/sfx/towners/healer23.wav";
   d_unused_dialogues[8].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[9].dialogue_file_name = "/sfx/towners/tavown26.wav";
+  d_unused_dialogues[9].dialogue_file_name = "/sfx/towners/healer24.wav";
   d_unused_dialogues[9].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[10].dialogue_file_name = "/sfx/towners/tavown27.wav";
+  d_unused_dialogues[10].dialogue_file_name = "/sfx/towners/healer25.wav";
   d_unused_dialogues[10].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[11].dialogue_file_name = "/sfx/towners/tavown28.wav";
+  d_unused_dialogues[11].dialogue_file_name = "/sfx/towners/healer28.wav";
   d_unused_dialogues[11].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[12].dialogue_file_name = "/sfx/towners/tavown29.wav";
+  d_unused_dialogues[12].dialogue_file_name = "/sfx/towners/healer29.wav";
   d_unused_dialogues[12].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[13].dialogue_file_name = "/sfx/towners/tavown30.wav";
+  d_unused_dialogues[13].dialogue_file_name = "/sfx/towners/healer30.wav";
   d_unused_dialogues[13].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[14].dialogue_file_name = "/sfx/towners/tavown31.wav";
+  d_unused_dialogues[14].dialogue_file_name = "/sfx/towners/healer31.wav";
   d_unused_dialogues[14].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[15].dialogue_file_name = "/sfx/towners/tavown32.wav";
+  d_unused_dialogues[15].dialogue_file_name = "/sfx/towners/healer32.wav";
   d_unused_dialogues[15].raw_dialogue_text = "Test";
   
-  d_unused_dialogues[16].dialogue_file_name = "/sfx/towners/tavown33.wav";
+  d_unused_dialogues[16].dialogue_file_name = "/sfx/towners/healer33.wav";
   d_unused_dialogues[16].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[17].dialogue_file_name = "/sfx/towners/tavown34.wav";
+  d_unused_dialogues[17].dialogue_file_name = "/sfx/towners/healer34.wav";
   d_unused_dialogues[17].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[18].dialogue_file_name = "/sfx/towners/tavown35.wav";
+  d_unused_dialogues[18].dialogue_file_name = "/sfx/towners/healer35.wav";
   d_unused_dialogues[18].raw_dialogue_text = "Test";
 
-  d_unused_dialogues[19].dialogue_file_name = "/sfx/towners/tavown42.wav";
+  d_unused_dialogues[19].dialogue_file_name = "/sfx/towners/healer36.wav";
   d_unused_dialogues[19].raw_dialogue_text = "Test";
+
+  d_unused_dialogues[20].dialogue_file_name = "/sfx/towners/healer44.wav";
+  d_unused_dialogues[20].raw_dialogue_text = "Test";
 }
 
 // Get the warrior description

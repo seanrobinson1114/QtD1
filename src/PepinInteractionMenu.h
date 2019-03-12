@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   PepinInteractionMenu.h
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Pepin interaction menu class declaration
 //!
 //---------------------------------------------------------------------------//

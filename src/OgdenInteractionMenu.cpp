@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   OgdenInteractionMenu.cpp
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Ogden interaction menu class definition
 //!
 //---------------------------------------------------------------------------//

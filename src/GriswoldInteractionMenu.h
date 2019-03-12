@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   GriswoldInteractionMenu.h
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Griswold interaction menu class declaration
 //!
 //---------------------------------------------------------------------------//

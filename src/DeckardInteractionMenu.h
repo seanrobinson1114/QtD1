@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   DeckardInteractionMenu.h
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Deckard interaction menu class declaration
 //!
 //---------------------------------------------------------------------------//

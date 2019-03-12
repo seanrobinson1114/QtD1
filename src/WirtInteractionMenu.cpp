@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   WirtInteractionMenu.cpp
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Wirt interaction menu class definition
 //!
 //---------------------------------------------------------------------------//
@@ -19,24 +19,23 @@ WirtInteractionMenu::WirtInteractionMenu( QWidget* parent )
 {
   // Create the primary interaction submenu
   QList<QString> extra_button_titles;
-  extra_button_titles << "Receive Healing";
-  extra_button_titles << "Buy Items";
+  extra_button_titles << "WHAT HAVE YOU GOT?";
   
   PrimaryNPCInteractionSubmenu* primary_submenu =
-    new PrimaryNPCInteractionSubmenu( "Welcome To The\nHealer's Home",
-                                      "Talk To Pepin",
+    new PrimaryNPCInteractionSubmenu( "WIRT THE PEG-LEGGED BOY",
+                                      "TALK TO WIRT",
                                       extra_button_titles,
-                                      "Leave Healer's Home",
+                                      "SAY GOODBYE",
                                       this );
 
   // Create the discussion interaction submenu
   DiscussionNPCInteractionSubmenu* discussion_submenu =
-    new DiscussionNPCInteractionSubmenu( "Talk To Pepin",
+    new DiscussionNPCInteractionSubmenu( "TALK TO WIRT",
                                          "Back",
                                          this );
 
   // Set the button connections
-  primary_submenu->assignSubmenuToNamedButton( "Talk To Pepin",
+  primary_submenu->assignSubmenuToNamedButton( "TALK TO WIRT",
                                                discussion_submenu );
   discussion_submenu->assignBackSubmenu( primary_submenu );
 

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------//
 //!
 //! \file   GillianInteractionMenu.cpp
-//! \author Alex Robinson
+//! \author Alex Robinson, Sean Robinson
 //! \brief  The Gillian interaction menu class definition
 //!
 //---------------------------------------------------------------------------//

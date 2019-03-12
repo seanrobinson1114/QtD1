@@ -19,24 +19,26 @@ GriswoldInteractionMenu::GriswoldInteractionMenu( QWidget* parent )
 {
   // Create the primary interaction submenu
   QList<QString> extra_button_titles;
-  extra_button_titles << "Receive Healing";
-  extra_button_titles << "Buy Items";
+  extra_button_titles << "Buy Basic Items";
+  extra_button_titles << "Buy Premium Items";
+  extra_button_titles << "Sell Items";
+  extra_button_titles << "Repair Items";
   
   PrimaryNPCInteractionSubmenu* primary_submenu =
-    new PrimaryNPCInteractionSubmenu( "Welcome To The\nHealer's Home",
-                                      "Talk To Pepin",
+    new PrimaryNPCInteractionSubmenu( "Welcome To The\nBlacksmith's Shop",
+                                      "Talk To Griswold",
                                       extra_button_titles,
-                                      "Leave Healer's Home",
+                                      "Leave The Shop",
                                       this );
 
   // Create the discussion interaction submenu
   DiscussionNPCInteractionSubmenu* discussion_submenu =
-    new DiscussionNPCInteractionSubmenu( "Talk To Pepin",
+    new DiscussionNPCInteractionSubmenu( "Talk To Griswold",
                                          "Back",
                                          this );
 
   // Set the button connections
-  primary_submenu->assignSubmenuToNamedButton( "Talk To Pepin",
+  primary_submenu->assignSubmenuToNamedButton( "Talk To Griswold",
                                                discussion_submenu );
   discussion_submenu->assignBackSubmenu( primary_submenu );
 
