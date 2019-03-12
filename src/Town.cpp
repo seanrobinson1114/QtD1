@@ -16,6 +16,9 @@
 #include "Ogden.h"
 #include "Gillian.h"
 #include "Pepin.h"
+#include "Deckard.h"
+#include "Griswold.h"
+#include "Wirt.h"
 
 namespace QtD1{
 
@@ -26,7 +29,10 @@ Town::Town( QObject* parent )
     d_adria( NULL ),
     d_ogden( NULL ),
     d_gillian( NULL ),
-    d_pepin( NULL )
+    d_pepin( NULL ),
+    d_deckard( NULL ),
+    d_griswold( NULL ),
+    d_wirt( NULL )
 { /* ... */ }
 
 // Get the type
@@ -56,18 +62,27 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   d_ogden = new Ogden;
   d_gillian = new Gillian;
   d_pepin = new Pepin;
+  d_deckard = new Deckard;
+  d_griswold = new Griswold;
+  d_wirt = new Wirt;
 
   this->addLevelObject( d_farnham, QPointF( 0, 0 ) );
   this->addLevelObject( d_adria, QPointF( 0, 0 ) );
   this->addLevelObject( d_ogden, QPointF( 0, 0 ) );
   this->addLevelObject( d_gillian, QPointF( 0, 0 ) );
   this->addLevelObject( d_pepin, QPointF( 0, 0 ) );
+  this->addLevelObject( d_deckard, QPointF( 0, 0 ) );
+  this->addLevelObject( d_griswold, QPointF( 0, 0 ) );
+  this->addLevelObject( d_wirt, QPointF( 0, 0 ) );
 
   npcs << d_farnham;
   npcs << d_adria;
   npcs << d_ogden;
   npcs << d_gillian;
   npcs << d_pepin;
+  npcs << d_deckard;
+  npcs << d_griswold;
+  npcs << d_wirt;
 }
 
 // Activate the NPCs and actors
@@ -103,6 +118,24 @@ void Town::activateNPCsAndActors( QWidget* parent_widget,
   d_pepin->activate();
   d_pepin->startStateMachine();
   d_pepin->loadInteractionMenu( parent_widget, character );
+
+  // Activate Deckard and load interactive menu
+  d_deckard->setPos( 2740, 2285 );
+  d_deckard->activate();
+  d_deckard->startStateMachine();
+  d_deckard->loadInteractionMenu( parent_widget, character );
+
+  // Activate Griswold and load interactive menu
+  d_griswold->setPos( 3000, 2165 );
+  d_griswold->activate();
+  d_griswold->startStateMachine();
+  d_griswold->loadInteractionMenu( parent_widget, character );
+
+  // Activate Wirt and load interactive menu
+  d_wirt->setPos( 1675, 1215 );
+  d_wirt->activate();
+  d_wirt->startStateMachine();
+  d_wirt->loadInteractionMenu( parent_widget, character );
 }
 
 // Insert the character

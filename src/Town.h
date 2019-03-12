@@ -73,6 +73,15 @@ private:
 
   // Pepin
   NPC* d_pepin;
+
+  // Deckard
+  NPC* d_deckard;
+
+  // Griswold
+  NPC* d_griswold;
+
+  // Wirt
+  NPC* d_wirt;
 };
   
 } // end QtD1 namespace
