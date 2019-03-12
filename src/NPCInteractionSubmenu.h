@@ -47,6 +47,11 @@ public:
   void assignSubmenuToNamedButton( const QString& button_name,
                                    NPCInteractionSubmenu* submenu );
 
+  //! Assign an action to a named button
+  void assignActionToNamedButton( const QString& button_name,
+                                  QObject* obj,
+                                  const char* action );
+
   //! Assign back submenu
   void assignBackSubmenu( NPCInteractionSubmenu* back_submenu );
 
@@ -88,9 +93,9 @@ protected:
   //! Set the back button
   void setBackButton( QPushButton* back_button );
 
-  //! Set the buttons
+  //! Set the named buttons
   void setNamedButtons( const std::map<QString,QPushButton*>& named_buttons );
-  
+
 private:
 
   // Initialize a submenu frame

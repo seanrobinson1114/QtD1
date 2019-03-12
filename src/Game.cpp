@@ -40,13 +40,12 @@ Game* Game::getInstance()
 }
 
 // Constructor
-  Game::Game()
+Game::Game()
   : QWidget(),
     d_character(),
     d_game_timer_id( -1 ),
     d_game_paused( true ),
     d_loading_screen( new LoadingScreen( this ) ),
-    //d_game_control_panel( new QDeclarativeView( this ) ),
     d_game_control_panel( new ControlPanel( this ) ),
     d_game_menu( new QDeclarativeView( this ) ),
     d_game_options_menu( new QDeclarativeView( this ) ),
@@ -573,7 +572,7 @@ void Game::handleTownAssetLoadFinished()
   this->connectCharacterSignalsToGameSlots();
 
   // Activate the level NPCs and actors
-  d_level->activateNPCsAndActors( this );
+  d_level->activateNPCsAndActors( this, d_character.get() );
 
   // Activate all quests
   QuestManager::getInstance().activateQuest( Quest::Type::TheButcher );
@@ -597,6 +596,8 @@ void Game::handleTownAssetLoadFinished()
   d_character->setPos( 3248, 2444 );
   d_character->activate();
   d_character->startStateMachine();
+  d_character->removeHealth( 10 );
+  d_character->removeMana( 5 );
 
   // Start the game timer
   d_game_timer_id = this->startTimer( s_refresh_delay_time );
@@ -672,6 +673,12 @@ void Game::connectControlPanelSignalsToGameSlots()
 
   QObject::connect( d_game_control_panel, SIGNAL( hideSpellBook() ),
                     this, SLOT( hideCharacterSpellBook() ) );
+
+  QObject::connect( d_character.get(), SIGNAL(healthChanged(const int, const int)),
+                    d_game_control_panel, SLOT(updateCharacterHealth(const int, const int)) );
+  
+  QObject::connect( d_character.get(), SIGNAL(manaChanged(const int, const int)),
+                    d_game_control_panel, SLOT(updateCharacterMana(const int, const int)) );
 }
 
 void Game::connectLevelSignalsToControlPanelSlots()

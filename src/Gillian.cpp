@@ -411,7 +411,7 @@ bool Gillian::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Gillian::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Gillian::createInteractionMenu( QWidget* parent, Character* )
 {
   return new GillianInteractionMenu( parent );
 }

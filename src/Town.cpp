@@ -71,37 +71,38 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
 }
 
 // Activate the NPCs and actors
-void Town::activateNPCsAndActors( QWidget* parent_widget )
+void Town::activateNPCsAndActors( QWidget* parent_widget,
+                                  Character* character  )
 {
   // Activate Farnham and load interactive menu
   d_farnham->setPos( 2600, 2640 );
   d_farnham->activate();
   d_farnham->startStateMachine();
-  d_farnham->loadInteractionMenu( parent_widget );
+  d_farnham->loadInteractionMenu( parent_widget, character );
 
   // Activate Adria and load interactive menu
   d_adria->setPos( 4945, 1760 );
   d_adria->activate();
   d_adria->startStateMachine();
-  d_adria->loadInteractionMenu( parent_widget );
+  d_adria->loadInteractionMenu( parent_widget, character );
 
   // Activate Ogden and load interactive menu
   d_ogden->setPos( 2790, 2025 );
   d_ogden->activate();
   d_ogden->startStateMachine();
-  d_ogden->loadInteractionMenu( parent_widget );
+  d_ogden->loadInteractionMenu( parent_widget, character );
 
   // Activate Gillian and load interactive menu
   d_gillian->setPos( 2288, 1910 );
   d_gillian->activate();
   d_gillian->startStateMachine();
-  d_gillian->loadInteractionMenu( parent_widget );
+  d_gillian->loadInteractionMenu( parent_widget, character );
 
   // Activate Pepin and load interactive menu
   d_pepin->setPos( 2255, 2305 );
   d_pepin->activate();
   d_pepin->startStateMachine();
-  d_pepin->loadInteractionMenu( parent_widget );
+  d_pepin->loadInteractionMenu( parent_widget, character );
 }
 
 // Insert the character

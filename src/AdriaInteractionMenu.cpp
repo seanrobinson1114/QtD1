@@ -10,11 +10,13 @@
 #include "AdriaInteractionMenu.h"
 #include "PrimaryNPCInteractionSubmenu.h"
 #include "DiscussionNPCInteractionSubmenu.h"
+#include "Character.h"
 
 namespace QtD1{
 
 // Constructor
-AdriaInteractionMenu::AdriaInteractionMenu( QWidget* parent )
+AdriaInteractionMenu::AdriaInteractionMenu( Character* character,
+                                            QWidget* parent )
   : NPCInteractionMenu( parent )
 {
   // Create the primary interaction submenu

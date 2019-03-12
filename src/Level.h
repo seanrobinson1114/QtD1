@@ -67,7 +67,8 @@ public:
                                     QVector<Actor*>& special_actors ) = 0;
 
   //! Activate the NPCs and actors
-  virtual void activateNPCsAndActors( QWidget* parent_widget ) = 0;
+  virtual void activateNPCsAndActors( QWidget* parent_widget,
+                                      Character* character ) = 0;
 
   //! Add an actor
   void addActor( Actor* actor,

@@ -411,7 +411,7 @@ bool Ogden::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Ogden::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Ogden::createInteractionMenu( QWidget* parent, Character* )
 {
   return new OgdenInteractionMenu( parent );
 }

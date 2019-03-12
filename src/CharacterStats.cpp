@@ -65,9 +65,9 @@ CharacterStats::CharacterStats( Character* character, QWidget* parent )
   // Connect to the character stats changed signals
   QObject::connect( d_character, SIGNAL( statsChanged() ),
                     this, SLOT( updateLabels() ) );
-  QObject::connect( d_character, SIGNAL( healthChanged(const int) ),
+  QObject::connect( d_character, SIGNAL( healthChanged(const int, const int) ),
                     this, SLOT( updateLabels() ) );
-  QObject::connect( d_character, SIGNAL( manaChanged(const int) ),
+  QObject::connect( d_character, SIGNAL( manaChanged(const int, const int) ),
                     this, SLOT( updateLabels() ) );
 
   // Create the labels

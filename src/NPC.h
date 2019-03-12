@@ -16,6 +16,7 @@
 
 namespace QtD1{
 
+class Character;
 class NPCInteractionMenu;
 class DialogueBox;
 
@@ -41,7 +42,7 @@ public:
   bool canBeAttacked() const final override;
 
   //! Load the interaction menu
-  void loadInteractionMenu( QWidget* parent );
+  void loadInteractionMenu( QWidget* parent, Character* character );
 
 signals:
 
@@ -116,8 +117,8 @@ protected:
   //! Initialize the state machine
   virtual void initializeStateMachine( QStateMachine& state_machine );
 
-  //! Load the interaction menu
-  virtual NPCInteractionMenu* createInteractionMenu( QWidget* parent ) = 0;
+  //! Create the interaction menu
+  virtual NPCInteractionMenu* createInteractionMenu( QWidget* parent, Character* character ) = 0;
 
   //! Greet the character
   virtual void greet() = 0;
@@ -155,9 +156,6 @@ private slots:
   void handleWalkingStateExited();
 
 private:
-
-  // Load the interaction menu
-  void loadInteractionMenu();
 
   // Load the dialogue data (just-in-time)
   void loadDialogueData( DialogueData& data ) const;

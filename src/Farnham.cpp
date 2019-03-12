@@ -345,7 +345,7 @@ bool Farnham::hasDialogue( const Quest::Type quest ) const
 }
 
 // Load the interaction menu
-NPCInteractionMenu* Farnham::createInteractionMenu( QWidget* parent )
+NPCInteractionMenu* Farnham::createInteractionMenu( QWidget* parent, Character* )
 {
   return new FarnhamInteractionMenu( parent );
 }

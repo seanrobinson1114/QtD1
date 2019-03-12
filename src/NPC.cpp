@@ -15,6 +15,7 @@
 // QtD1 Includes
 #include "NPC.h"
 #include "NPCInteractionMenu.h"
+#include "Character.h"
 #include "DialogueBox.h"
 #include "BasicActorStandingByTargetTransition.h"
 #include "QuestManager.h"
@@ -203,12 +204,12 @@ void NPC::handleWalkingStateExited()
 }
 
 // Load the interaction menu
-void NPC::loadInteractionMenu( QWidget* parent )
+void NPC::loadInteractionMenu( QWidget* parent, Character* character )
 {
   // Only load the menu once
   if( !d_interaction_menu )
   {
-    d_interaction_menu = this->createInteractionMenu( parent );
+    d_interaction_menu = this->createInteractionMenu( parent, character );
 
     QObject::connect( d_interaction_menu, SIGNAL(exit()),
                       this, SLOT(hideInteractionMenu()) );

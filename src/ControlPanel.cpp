@@ -16,6 +16,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QImageReader>
+#include <QPainter>
 
 // QtD1 Includes
 #include "ControlPanel.h"
@@ -37,20 +38,107 @@ ControlPanel::ControlPanel( QWidget* parent )
     d_menu_button( NULL ),
     d_inv_button( NULL ),
     d_spell_button( NULL ),
-    d_hover_display( NULL )
+    d_background( NULL ),
+    d_hover_display( NULL ),
+    d_health_bulb_region( NULL ),
+    d_health_bulb( NULL ),
+    d_mana_bulb_region( NULL ),
+    d_mana_bulb( NULL )
 {
-  // Load the control panel image
-  QImage background_image( "/ctrlpan/panel8.cel+levels/towndata/town.pal" );
-  QLabel* control_panel_image = new QLabel( this );
-  control_panel_image->setPixmap( QPixmap::fromImage( background_image ) );
-  control_panel_image->setFixedSize( background_image.size() );
-  this->setFixedSize( control_panel_image->size() );
+  // Load the control panel images
+  QImage background_image, health_bulb_full_image, mana_bulb_full_image;
+  this->loadControlPanelImages( background_image,
+                                health_bulb_full_image,
+                                mana_bulb_full_image );
 
+  // Create the background
+  d_background = new QLabel( this );
+  d_background->setPixmap( QPixmap::fromImage( background_image ) );
+  d_background->setFixedSize( background_image.size() );
+  this->setFixedSize( d_background->size() );
+
+  // Create the full health bulb
+  d_health_bulb_region = new QLabel( d_background );
+  d_health_bulb_region->setStyleSheet( QString( "background: transparent" ) );
+  d_health_bulb_region->setFixedSize( health_bulb_full_image.size() );
+  d_health_bulb_region->move( 97, 0 );
+  //d_health_bulb_region->hide();
+
+  // QLabel* test_region_1 = new QLabel( d_background );
+  // test_region_1->setStyleSheet( QString( "background: blue" ) );
+  // test_region_1->setFixedSize( 84, 88 );
+  // test_region_1->move( 97, 0 );
+
+  {
+    QPixmap health_bulb_full_pixmap =
+      QPixmap::fromImage( health_bulb_full_image );
+  
+    d_health_bulb = new QLabel( d_health_bulb_region );
+    d_health_bulb->setPixmap( health_bulb_full_pixmap );
+  }
+
+  // Create the full mana bulb
+  d_mana_bulb_region = new QLabel( d_background );
+  d_mana_bulb_region->setStyleSheet( QString( "background: transparent" ) );
+  d_mana_bulb_region->setFixedSize( mana_bulb_full_image.size() );
+  d_mana_bulb_region->move( d_background->width()-177, 0 );
+  //d_mana_bulb_region->hide();
+
+  // QLabel* test_region_2 = new QLabel( d_background );
+  // test_region_2->setStyleSheet( QString( "background: blue" ) );
+  // test_region_2->setFixedSize( 81, 88 );
+  // test_region_2->move( d_background->width()-177, 0 );
+  
+  {
+    QPixmap mana_bulb_full_pixmap =
+      QPixmap::fromImage( mana_bulb_full_image );
+  
+    d_mana_bulb = new QLabel( d_mana_bulb_region );
+    d_mana_bulb->setPixmap( mana_bulb_full_pixmap );
+  }
+  
   // Disable focus borders/outlines on push buttons
   this->setStyleSheet( QString( "QPushButton:focus { border: none; outline: none; }" ) );
 
   this->loadControlPanelButtons();
   this->loadHoverDisplay();
+}
+
+// Load the control panel images
+void ControlPanel::loadControlPanelImages( QImage& background,
+                                           QImage& health_bulb_full,
+                                           QImage& mana_bulb_full ) const
+{
+  // Load the control panel image
+  QImage background_image( "/ctrlpan/panel8.cel+levels/towndata/town.pal" );
+
+  // Copy the full bulbs
+  health_bulb_full = background_image.copy( 97, 0, 84, 88 );
+  mana_bulb_full = background_image.copy( background_image.width()-177, 0, 81, 88 );
+
+  // Load the empty bulbs
+  QImageReader raw_bulb_images( "/ctrlpan/p8bulbs.cel+levels/towndata/town.pal" );
+
+  QImage health_bulb_empty = raw_bulb_images.read().copy( 1, 0, 84, 88 );
+
+  raw_bulb_images.jumpToNextImage();
+
+  QImage mana_bulb_empty = raw_bulb_images.read().copy( 0, 0, 81, 88 );
+
+  // Draw the background image and the empty bulbs on the background
+  background = QImage( background_image.size(), QImage::Format_ARGB32 );
+  background.fill( Qt::transparent );
+  
+  QPainter painter( &background );
+  painter.drawImage( QPoint( 0, 16 ),
+                     background_image,
+                     QRect( 0, 16, background_image.width(), background_image.height()-16 ) );
+  painter.drawImage( QPoint( 97, 0 ),
+                     health_bulb_empty,
+                     health_bulb_empty.rect() );
+  painter.drawImage( QPoint( background_image.width()-177, 0 ),
+                     mana_bulb_empty,
+                     mana_bulb_empty.rect() );
 }
 
 // Check status of the char button and emit signal
@@ -173,6 +261,28 @@ void ControlPanel::deactivateFocusShortcuts()
   d_menu_button->setShortcut( tr( "" ) );
   d_inv_button->setShortcut( tr( "" ) );
   d_spell_button->setShortcut( tr( "" ) );
+}
+
+// Update character health
+void ControlPanel::updateCharacterHealth( const int health, const int max_health )
+{
+  double health_fraction = (double)health/max_health;
+  int health_bulb_y_pos = d_health_bulb->height()*(1-health_fraction);
+  
+  d_health_bulb_region->show();
+  d_health_bulb->move( 0, -health_bulb_y_pos );
+  d_health_bulb_region->move( d_health_bulb_region->x(), health_bulb_y_pos );
+}
+
+// Update character mana
+void ControlPanel::updateCharacterMana( const int mana, const int max_mana )
+{
+  double mana_fraction = (double)mana/max_mana;
+  int mana_bulb_y_pos = d_mana_bulb->height()*(1-mana_fraction);
+
+  d_mana_bulb_region->show();
+  d_mana_bulb->move( 0, -mana_bulb_y_pos );
+  d_mana_bulb_region->move( d_mana_bulb_region->x(), mana_bulb_y_pos );
 }
 
 void ControlPanel::loadControlPanelButtons()

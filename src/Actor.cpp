@@ -202,7 +202,7 @@ void Actor::setHealth( const int health )
     else
       d_health = std::min( health, this->getMaxHealth() );
 
-    emit healthChanged( d_health );
+    emit healthChanged( d_health, this->getMaxHealth() );
 
     if( d_health == 0 )
       emit healthDepleted();
@@ -257,7 +257,7 @@ void Actor::setMana( const int mana )
     else
       d_mana = std::min( mana, this->getMaxMana() );
 
-    emit manaChanged( d_mana );
+    emit manaChanged( d_mana, this->getMaxMana() );
   }
 }
 

@@ -38,6 +38,9 @@ public:
   ~ControlPanel()
   { /* ... */ }
 
+  //! Set the y position
+  void setYPosition( const int y_pos );
+
 signals:
 
   void showCharacterStats();
@@ -80,17 +83,28 @@ public slots:
   //! Deactivate the control panel focus shortcuts
   void deactivateFocusShortcuts();
 
+  //! Update character health
+  void updateCharacterHealth( const int health, const int max_health );
+
+  //! Update character mana
+  void updateCharacterMana( const int mana, const int max_mana );
+
 private:
 
-  //! Initialize the control panel buttons
+  // Load the control panel images
+  void loadControlPanelImages( QImage& background,
+                               QImage& health_bulb_full,
+                               QImage& mana_bulb_full ) const;
+
+  // Initialize the control panel buttons
   void loadControlPanelButtons();
 
-  //! Initialize the control panel hover display
+  // Initialize the control panel hover display
   void loadHoverDisplay();
 
   // Initialize tab button
   void initializeControlPanelButton( QPushButton** panel_button,
-                                          const QImage& image );
+                                     const QImage& image );
 
   // Connect the buttons with signals
   void connectButtonsToSignals();
@@ -116,8 +130,23 @@ private:
   // The spell button
   QPushButton* d_spell_button;
 
+  // The background
+  QLabel* d_background;
+
   // The hovered object display
   QLabel* d_hover_display;
+
+  // The health bulb region
+  QLabel* d_health_bulb_region;
+  
+  // The health bulb
+  QLabel* d_health_bulb;
+
+  // The mana bulb region
+  QLabel* d_mana_bulb_region;
+  
+  // The mana bulb
+  QLabel* d_mana_bulb;
 };
 
 } // end QtD1 namespace

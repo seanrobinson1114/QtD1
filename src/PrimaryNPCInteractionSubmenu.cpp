@@ -192,7 +192,6 @@ void PrimaryNPCInteractionSubmenu::createAdvancedTitleRegion(
 
   for( auto&& raw_text : raw_title_text_lines )
   {
-    std::cout << "title line: " << raw_text.toStdString() << std::endl;
     BitmapText title_text;
     title_text.setFontName( "QtD1Gold11" );
     title_text.setContainerWidth( 200 );
