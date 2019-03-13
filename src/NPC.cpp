@@ -41,6 +41,9 @@ NPC::NPC( QGraphicsObject* parent,
                     this, SLOT(activateQuest(const Quest::Type)) );
   QObject::connect( &QuestManager::getInstance(), SIGNAL(questFinished(const Quest::Type) ),
                     this, SLOT(deactivateQuest(const Quest::Type)) );
+
+  // Set the hover outline color
+  this->setHoverOutlineColor( QColor::fromRgb(244, 66, 101) );
 }
 
 // The reserved mixer channel (for playing audio)

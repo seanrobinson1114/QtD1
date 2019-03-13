@@ -18,16 +18,13 @@
 
 namespace QtD1{
 
-// Initialize static member data
-QPen InteractiveLevelObject::s_hover_outline_pen =
-  InteractiveLevelObject::generateHoverOutlinePen();
-
 // Constructor
 InteractiveLevelObject::InteractiveLevelObject( QGraphicsObject* parent )
   : LevelObject( parent ),
     d_paint_with_path( false ),
     d_paint_with_highlight_only( false ),
-    d_highlight_color( "white" )
+    d_highlight_color( "white" ),
+    d_hover_outline_pen()
 { /* ... */ }
 
 // Paint the interactive level object
@@ -41,16 +38,20 @@ void InteractiveLevelObject::paint( QPainter* painter,
   }
   else 
   {
-    this->paintImpl( painter, option, widget );
-
     if( d_paint_with_path )
     {
-      painter->strokePath( this->shape(), s_hover_outline_pen );
-      painter->fillPath( this->shape(), QBrush(QColor("blue")) );
-      // painter->fillRect( this->boundingRect(), QBrush(QColor("red")) );
+      if( d_hover_outline_pen )
+      {
+        painter->strokePath( this->shape(), *d_hover_outline_pen );
+      }
+      else
+      {
+        qWarning( "QPen for interactive level object hover outline is NULL: can't paint" );
+      }
+      // painter->fillPath( this->shape(), QBrush(QColor("blue")) );
     }
 
-    // this->paintImpl( painter, option, widget );
+    this->paintImpl( painter, option, widget );
   }
 }
 
@@ -71,6 +72,14 @@ void InteractiveLevelObject::highlight( const QColor& color )
 void InteractiveLevelObject::unhighlight()
 {
   d_paint_with_highlight_only = false;
+}
+
+// Set the hover outline color
+void InteractiveLevelObject::setHoverOutlineColor( const QColor& outline_color )
+{
+  d_hover_outline_pen.reset( new QPen( outline_color ) );
+  d_hover_outline_pen->setStyle( Qt::SolidLine );
+  d_hover_outline_pen->setWidth( 2 );
 }
 
 // Activate the object
@@ -118,16 +127,6 @@ void InteractiveLevelObject::hoverLeaveEvent( QGraphicsSceneHoverEvent* )
   emit hoveringStopped( QString( "" ) );
 
   this->update();
-}
-
-// Generate the hover outline pen
-QPen InteractiveLevelObject::generateHoverOutlinePen()
-{
-  QPen pen( Qt::yellow );
-  pen.setStyle( Qt::SolidLine );
-  pen.setWidth( 2 );
-
-  return pen;
 }
 
 } // end QtD1 namespace

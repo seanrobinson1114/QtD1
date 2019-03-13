@@ -9,8 +9,12 @@
 #ifndef INTERACTIVE_LEVEL_OBJECT_H
 #define INTERACTIVE_LEVEL_OBJECT_H
 
+// Std Lib Includes
+#include <memory>
+
 // QtD1 Includes
 #include "LevelObject.h"
+
 
 namespace QtD1{
 
@@ -44,6 +48,9 @@ public:
 
   //! Get a description of the object
   virtual QString getDescription() const = 0;
+
+  //! Set the hover outline color
+  void setHoverOutlineColor( const QColor& outline_color );
 
 signals:
 
@@ -87,12 +94,6 @@ protected:
 
 private:
 
-  // Generate the hover outline pen
-  static QPen generateHoverOutlinePen();
-
-  // The hover outline pen
-  static QPen s_hover_outline_pen;
-
   // Records if the object should be painted with its path
   bool d_paint_with_path;
 
@@ -101,6 +102,9 @@ private:
 
   // Record the highlight color
   QColor d_highlight_color;
+
+  // The hover outline pen
+  std::unique_ptr<QPen> d_hover_outline_pen;
 };
 
 } // end QtD1 namespace
