@@ -20,11 +20,28 @@ Ogden::Ogden( QGraphicsObject* parent )
   : NPC( parent, false ),
     d_direction_sprites(),
     d_sprites_loaded( false ),
+    d_intro(),
     d_greeting(),
     d_quest_dialogues(),
     d_gossip_dialogues( 8 ),
     d_unused_dialogues( 20 )
 {
+  // Load the intro
+  d_intro.dialogue_file_name =  "/sfx/towners/tavown00.wav";
+  d_intro.raw_dialogue_text = 
+    "Thank goodness you've returned! Much has changed "
+    "since you lived here, my friend. All was peaceful "
+    "until the dark riders came and destroyed our village. "
+    "Many were cut down where they stood, and those who "
+    "took up arms were slain or dragged away to become "
+    "slaves - or worse. The church at the edge of town "
+    "has been desecrated and is being used for dark rituals. "
+    "The screams that echo in the night are inhuman, but "
+    "some of our townsfolk may yet survive. Follow the path "
+    "that lies between my tavern and the blacksmith shop to "
+    "find the church and save who you can. Perhaps I can tell "
+    "you more if we speak again. Good luck.";
+
   // Load the greeting
   d_greeting.setSource( "/sfx/towners/tavown36.wav" );
 
@@ -396,7 +413,17 @@ void Ogden::gossip()
 // Greet the character
 void Ogden::greet()
 {
-  d_greeting.playSound();
+  static bool first_encounter = true;
+
+  // Check for first encounter
+  if( first_encounter )
+  {
+    this->playAndDisplayDialogue( d_intro );
+    first_encounter = false;
+  }
+  else
+    d_greeting.playSound();
+  
 }
 
 // Get the movement speed (pixels per game tic)

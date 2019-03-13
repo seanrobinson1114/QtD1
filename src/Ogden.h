@@ -89,6 +89,9 @@ private:
   // Records if the sprites have been loaded
   bool d_sprites_loaded;
 
+  // The intro (only played during very first interaction)
+  DialogueData d_intro;
+
   // The greeting
   Sound d_greeting;
 

@@ -81,6 +81,7 @@ void NPC::stopTalking()
 // Show interaction menu
 void NPC::showInteractionMenu()
 {
+  std::cout << "\nshow interaction menu\n" << std::endl;
   emit interactionMenuActivated();
   
   d_interaction_menu->show();
@@ -106,9 +107,9 @@ void NPC::handleBeingTargeted( LevelObject* object )
   {
     emit targetedByCharacter( object );
 
-    this->greet();
-
     this->showInteractionMenu();
+
+    this->greet();
   }
 }
 
@@ -278,6 +279,8 @@ int NPC::getDialogueBoxWidth() const
 // Play and display dialogue
 void NPC::playAndDisplayDialogue( DialogueData& data )
 {
+  std::cout << "\nplay and display dialogue\n" << std::endl;
+
   // Load the dialoge data just-in-time
   this->loadDialogueData( data );
 
