@@ -10,7 +10,12 @@
 #include "MenuPushButton.h"
 #include "BitmapText.h"
 
+// Qt Includes
+#include <QMouseEvent>
+
 namespace QtD1{
+
+std::unique_ptr<Sound> MenuPushButton::s_click_sound;
 
 // Constructor
 MenuPushButton::MenuPushButton( const QString& raw_button_text,
@@ -18,6 +23,8 @@ MenuPushButton::MenuPushButton( const QString& raw_button_text,
                                 QWidget* parent )
   : QPushButton( parent )
 {
+  this->initializeClickSound();
+
   BitmapText button_text;
   button_text.setFontName( bitmap_font_name );
   button_text.setContainerWidth( 300 );
@@ -30,6 +37,23 @@ MenuPushButton::MenuPushButton( const QString& raw_button_text,
   this->setIconSize( button_text.getPixmap().size() );
   this->resize( button_text.getPixmap().size() );
   this->setFocusProxy( parent );
+}
+
+// Mouse click event
+void MenuPushButton::mousePressEvent( QMouseEvent* e )
+{
+  s_click_sound->playSound();
+  QPushButton::mousePressEvent( e );
+}
+
+// Initialize click sound
+void MenuPushButton::initializeClickSound()
+{
+  if( !s_click_sound )
+  {
+    s_click_sound.reset( new Sound );
+    s_click_sound->setSource( "/sfx/items/titlslct.wav" );
+  }
 }
   
 } // end QtD1 namespace
