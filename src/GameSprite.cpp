@@ -6,6 +6,9 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Std Lib Includes
+#include <iostream>
+
 // Qt Includes
 #include <QPainter>
 
@@ -42,7 +45,14 @@ GameSprite::GameSprite( const GameSprite& that )
     d_asset_data( that.d_asset_data ),
     d_elapsed_game_tics( that.d_elapsed_game_tics ),
     d_current_frame( that.d_current_frame )
-{ /* ... */ }
+{
+  if( that.isReady() )
+    this->ready();
+
+  else
+    this->notReady();
+  
+}
 
 // Assignment Operator
 GameSprite& GameSprite::operator=( const GameSprite& that )
@@ -53,6 +63,12 @@ GameSprite& GameSprite::operator=( const GameSprite& that )
     d_asset_data = that.d_asset_data;
     d_elapsed_game_tics = that.d_elapsed_game_tics;
     d_current_frame = that.d_current_frame;
+
+    if( that.isReady() )
+      this->ready();
+
+    else 
+      this->notReady();
   }
 
   return *this;

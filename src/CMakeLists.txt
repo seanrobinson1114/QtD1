@@ -127,6 +127,7 @@ ADD_LIBRARY(qtd1_core
   Deckard.cpp
   Griswold.cpp
   Wirt.cpp
+  Cow.cpp
   LevelPillarData.cpp
   LevelPillar.cpp
   TownLevelPillar.cpp

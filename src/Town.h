@@ -12,6 +12,7 @@
 // QtD1 Includes
 #include "Level.h"
 #include "NPC.h"
+#include "Cow.h"
 
 namespace QtD1{
 
@@ -82,6 +83,9 @@ private:
 
   // Wirt
   NPC* d_wirt;
+
+  // Cows
+  QList<Cow*> d_cows;
 };
   
 } // end QtD1 namespace

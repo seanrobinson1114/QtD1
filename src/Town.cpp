@@ -19,6 +19,7 @@
 #include "Deckard.h"
 #include "Griswold.h"
 #include "Wirt.h"
+#include "Cow.h"
 
 namespace QtD1{
 
@@ -32,7 +33,8 @@ Town::Town( QObject* parent )
     d_pepin( NULL ),
     d_deckard( NULL ),
     d_griswold( NULL ),
-    d_wirt( NULL )
+    d_wirt( NULL ),
+    d_cows()
 { /* ... */ }
 
 // Get the type
@@ -83,6 +85,63 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
   npcs << d_deckard;
   npcs << d_griswold;
   npcs << d_wirt;
+
+  // Add Cows
+  // South
+  {
+    Cow* cow = new Cow( Direction::South );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // Southwest
+  {
+    Cow* cow = new Cow( Direction::Southwest );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // West
+  {
+    Cow* cow = new Cow( Direction::West );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // Northwest
+  {
+    Cow* cow = new Cow( Direction::Northwest );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // North
+  {
+    Cow* cow = new Cow( Direction::North );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // Northeast
+  {
+    Cow* cow = new Cow( Direction::Northeast );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // East
+  {
+    Cow* cow = new Cow( Direction::East );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
+
+  // Southeast
+  {
+    Cow* cow = new Cow( Direction::Southeast );
+    this->addLevelObject( cow, QPointF( 0, 0 ) );
+    d_cows << cow;
+  }
 }
 
 // Activate the NPCs and actors
@@ -136,6 +195,36 @@ void Town::activateNPCsAndActors( QWidget* parent_widget,
   d_wirt->activate();
   d_wirt->startStateMachine();
   d_wirt->loadInteractionMenu( parent_widget, character );
+
+  // Move cows to correct positions
+  for( auto&& cow : d_cows )
+  {
+    if( cow->getDirection() == Direction::Southwest )
+      cow->setPos( 3100, 2165 );
+
+    else if( cow->getDirection() == Direction::East )
+      cow->setPos( 2610, 2240 );
+      
+    else if( cow->getDirection() == Direction::Northeast )
+      cow->setPos( 3800, 1400 );
+
+    else if( cow->getDirection() == Direction::West )
+      cow->setPos( 4450, 1300 );
+
+    else if( cow->getDirection() == Direction::North )
+      cow->setPos( 4100, 1450 );
+
+    else if( cow->getDirection() == Direction::South )
+      cow->setPos( 4250, 1150 );
+
+    else if( cow->getDirection() == Direction::Southeast )
+      cow->setPos( 4080, 1275 );
+
+    else if( cow->getDirection() == Direction::Northwest )
+      cow->setPos( 4450, 1450 );
+
+    cow->activate();
+  }
 }
 
 // Insert the character
