@@ -10,6 +10,7 @@
 #include "PepinInteractionMenu.h"
 #include "PrimaryNPCInteractionSubmenu.h"
 #include "DiscussionNPCInteractionSubmenu.h"
+#include "TradeNPCInteractionSubmenu.h"
 #include "Character.h"
 
 namespace QtD1{
@@ -38,20 +39,38 @@ PepinInteractionMenu::PepinInteractionMenu( Character* character,
                                          "Back",
                                          this );
 
+  // Create the trade interaction submenu
+  TradeNPCInteractionSubmenu* trade_submenu =
+    new TradeNPCInteractionSubmenu( "I have these items for sale :",
+                                    "",
+                                    "Are you sure you want to buy this item?",
+                                    "Back",
+                                    character,
+                                    this );
+
+  // Store the trade submenus in a list
+  QList<NPCInteractionSubmenu*> trade_submenus;
+  trade_submenus << trade_submenu;
+
   // Set the button connections
   primary_submenu->assignSubmenuToNamedButton( "Talk To Pepin",
                                                discussion_submenu );
+  primary_submenu->assignSubmenuToNamedButton( "Buy Items",
+                                               trade_submenu );
+  
   primary_submenu->assignActionToNamedButton( "Receive Healing",
                                               character,
                                               SLOT(restoreHealth()) );
   primary_submenu->assignActionToNamedButton( "Receive Healing",
                                               character,
                                               SLOT(restoreMana()) );
-  
+    
   discussion_submenu->assignBackSubmenu( primary_submenu );
+  trade_submenu->assignBackSubmenu( primary_submenu );
 
   this->setPrimarySubmenu( primary_submenu );
   this->setDiscussionSubmenu( discussion_submenu );
+  this->setExtraSubmenus( trade_submenus );
 }
 
 } // end QtD1 namespace

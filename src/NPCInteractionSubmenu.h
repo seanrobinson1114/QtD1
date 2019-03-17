@@ -88,7 +88,7 @@ protected slots:
 protected:
 
   //! Get the submenu frame
-  static QPixmap getFrame( const NPCInteractionSubmenu::Type type );
+  static const QVector<QPixmap>& getFrames( const NPCInteractionSubmenu::Type type );
 
   //! Set the back button
   void setBackButton( QPushButton* back_button );
@@ -108,7 +108,7 @@ private:
   static void initializeTradeSubmenuFrame();
 
   // The submenu frames
-  static QVector<QPixmap> s_frames;
+  static QVector<QVector<QPixmap> > s_frames;
 
   // The back button
   QPushButton* d_back_button;

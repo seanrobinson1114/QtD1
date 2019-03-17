@@ -108,6 +108,7 @@ ADD_LIBRARY(qtd1_core
   NPCInteractionSubmenu.cpp
   PrimaryNPCInteractionSubmenu.cpp
   DiscussionNPCInteractionSubmenu.cpp
+  TradeNPCInteractionSubmenu.cpp
   NPCInteractionMenu.cpp
   FarnhamInteractionMenu.cpp
   AdriaInteractionMenu.cpp

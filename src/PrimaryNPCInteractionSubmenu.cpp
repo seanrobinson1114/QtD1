@@ -24,7 +24,7 @@ PrimaryNPCInteractionSubmenu::PrimaryNPCInteractionSubmenu(
   : NPCInteractionSubmenu( parent )
 {
   // Create the background
-  QPixmap background_pixmap = this->getFrame( this->getType() );
+  QPixmap background_pixmap = this->getFrames( this->getType() ).front();
   
   QLabel* background = new QLabel( this );
   background->setPixmap( background_pixmap );

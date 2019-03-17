@@ -19,7 +19,7 @@
 namespace QtD1{
 
 // The submenu frames
-QVector<QPixmap> NPCInteractionSubmenu::s_frames;
+QVector<QVector<QPixmap> > NPCInteractionSubmenu::s_frames;
   
 // Constructor
 NPCInteractionSubmenu::NPCInteractionSubmenu( QWidget* parent )
@@ -35,7 +35,7 @@ NPCInteractionSubmenu::NPCInteractionSubmenu( QWidget* parent )
 }
 
 // Get the submenu frame
-QPixmap NPCInteractionSubmenu::getFrame( const NPCInteractionSubmenu::Type type )
+const QVector<QPixmap>& NPCInteractionSubmenu::getFrames( const NPCInteractionSubmenu::Type type )
 {
   // Just-in-time initialization of the frame
   NPCInteractionSubmenu::initializeSubmenuFrame( type );
@@ -49,7 +49,7 @@ void NPCInteractionSubmenu::initializeSubmenuFrame( NPCInteractionSubmenu::Type 
   if( s_frames.empty() )
     s_frames.resize( 3 );
   
-  if( s_frames[type].width() == 0 )
+  if( s_frames[type].size() == 0 )
   {
     switch( type )
     {
@@ -90,7 +90,10 @@ void NPCInteractionSubmenu::initializePrimarySubmenuFrame()
     interaction_menu_border_image.scaled( interaction_menu_border_image.width()*0.85, interaction_menu_border_image.height()*1.5 );
 
   // Initialize the border pixmap
-  QPixmap& border_pixmap = s_frames[NPCInteractionSubmenu::Type::Primary];
+  s_frames[NPCInteractionSubmenu::Type::Primary].resize( 1 );
+  
+  QPixmap& border_pixmap =
+    s_frames[NPCInteractionSubmenu::Type::Primary].front();
   border_pixmap = QPixmap( interaction_menu_border_image.width()-10,
                            interaction_menu_border_image.height()-2 );
   border_pixmap.fill( QColor( 0, 0, 0, 127 ) );
@@ -102,15 +105,60 @@ void NPCInteractionSubmenu::initializePrimarySubmenuFrame()
                      QRect( 3, 0, border_pixmap.width(), border_pixmap.height() ) );
 
   // Copy the pixmap to the discussion pixmap
-  s_frames[NPCInteractionSubmenu::Type::Discussion] = border_pixmap;
+  s_frames[NPCInteractionSubmenu::Type::Discussion] =
+    s_frames[NPCInteractionSubmenu::Type::Primary];
 }
 
 // Initialize the trade submenu frame
 void NPCInteractionSubmenu::initializeTradeSubmenuFrame()
 {
+  // Load the interaction menu image
+  std::unique_ptr<UIArtLoader> ui_art_frame_loader( new UIArtLoader );
+
+  ui_art_frame_loader->setSource( "/ui_art/seldiff.pcx" );
+  ui_art_frame_loader->setTransparentColor( QColor( "black" ) );
+  ui_art_frame_loader->loadFrames();
   
+  QImage trade_menu_border_image =
+    ui_art_frame_loader->getLoadedFrames().front();
   
-  s_frames[NPCInteractionSubmenu::Type::Trade];
+  // Crop the border image
+  trade_menu_border_image =
+    trade_menu_border_image.copy( 274, 55, 351, 215 );
+
+  // Stretch the border image
+  trade_menu_border_image =
+    trade_menu_border_image.scaled( trade_menu_border_image.width()*1.70,
+                                    trade_menu_border_image.height()*1.536 );
+
+  // Initialize the boarder pixmap
+  s_frames[NPCInteractionSubmenu::Type::Trade].resize( 2 );
+
+  QPixmap& border_pixmap = s_frames[NPCInteractionSubmenu::Type::Trade][0];
+  border_pixmap = QPixmap( trade_menu_border_image.width()-23,
+                           trade_menu_border_image.height()-2 );
+  border_pixmap.fill( QColor( 0, 0, 0, 127 ) );
+
+  // Draw the border image on the pixmap
+  {
+    QPainter painter( &border_pixmap );
+    painter.drawImage( QPoint( 0, 0 ),
+                       trade_menu_border_image,
+                       QRect( 6, 0, border_pixmap.width(), border_pixmap.height() ) );
+  }
+
+  // Initialize the divider pixmap
+  QPixmap& divider_pixmap = s_frames[NPCInteractionSubmenu::Type::Trade][1];
+  divider_pixmap = QPixmap( trade_menu_border_image.width()-23, 4 );
+  divider_pixmap.fill( Qt::transparent );
+
+  // Draw the divider image on the pixmap
+  {
+    QPainter painter( &divider_pixmap );
+    painter.drawImage( QPoint( 2, 0 ),
+                       trade_menu_border_image,
+                       QRect( 8, 1, border_pixmap.width()-4, border_pixmap.height() ) );
+  }
 }
 
 // Assign a submenu to a named button
