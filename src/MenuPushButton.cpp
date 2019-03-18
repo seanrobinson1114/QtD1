@@ -6,12 +6,12 @@
 //!
 //---------------------------------------------------------------------------//
 
+// Qt Includes
+#include <QMouseEvent>
+
 // QtD1 Includes
 #include "MenuPushButton.h"
 #include "BitmapText.h"
-
-// Qt Includes
-#include <QMouseEvent>
 
 namespace QtD1{
 

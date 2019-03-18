@@ -42,7 +42,7 @@ public:
   TownLevelPillar* clone() const override;
 
   //! Get a description of the object
-  QString getDescription() const override;
+  QString getDescriptionText() const override;
 
 private:
 

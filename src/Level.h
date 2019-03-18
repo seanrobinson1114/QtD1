@@ -107,10 +107,10 @@ signals:
   void assetLoadingFinished( const int number_of_assets_loaded );
 
   //! Interactive object is being hovered on
-  void interactiveLevelObjectHoveringStarted( QString object_description );
+  void interactiveLevelObjectHoveringStarted( QPixmap object_description );
 
   //! Interactive level object is no longer being hovered on
-  void interactiveLevelObjectHoveringStopped( QString empty_string );
+  void interactiveLevelObjectHoveringStopped( QPixmap empty_string );
 
 public slots:
 

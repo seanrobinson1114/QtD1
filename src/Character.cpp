@@ -129,7 +129,7 @@ QString Character::getName() const
   return d_name;
 }
 
-QString Character::getDescription() const
+QString Character::getDescriptionText() const
 {
   return QString( "Default description for a character" );
 }

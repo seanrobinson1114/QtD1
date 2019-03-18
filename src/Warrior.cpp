@@ -75,7 +75,7 @@ Character::Type Warrior::getType() const
 }
 
 // Get the warrior description
-QString Warrior::getDescription() const
+QString Warrior::getDescriptionText() const
 {
   return QString( "I am a Warrior!" );
 }

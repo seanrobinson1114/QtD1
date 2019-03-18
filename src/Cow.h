@@ -35,7 +35,7 @@ public:
   { /* ... */ }
 
   //! Get a description of the object
-  QString getDescription() const final override;
+  QString getDescriptionText() const final override;
 
   //! Get the direction
   Direction getDirection() const;

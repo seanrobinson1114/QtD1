@@ -237,10 +237,15 @@ void ControlPanel::toggleSpellBook()
 }
 
 // Change object description display
-void ControlPanel::changeObjectDescriptionDisplay( QString objectDescription )
+void ControlPanel::changeObjectDescriptionDisplayText( QString object_description )
 {
-  //std::cout << objectDescription.toUtf8().constData() << std::endl;
-  d_hover_display->setText( objectDescription );
+  d_hover_display->setText( object_description );
+}
+
+// Change object description display
+void ControlPanel::changeObjectDescriptionDisplay( QPixmap object_description )
+{
+  d_hover_display->setPixmap( object_description );
 }
 
 // Activate the control panel focus shortcuts

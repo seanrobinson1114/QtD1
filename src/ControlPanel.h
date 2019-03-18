@@ -75,7 +75,10 @@ public slots:
   void toggleSpellBook();
 
   //! Change object description display
-  void changeObjectDescriptionDisplay( QString objectDescription );
+  void changeObjectDescriptionDisplayText( QString object_description );
+
+  //! Change object description display
+  void changeObjectDescriptionDisplay( QPixmap object_description );
 
   //! Activate the control panel focus shortcuts
   void activateFocusShortcuts();

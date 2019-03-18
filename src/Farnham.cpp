@@ -217,7 +217,7 @@ Farnham::Farnham( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Farnham::getDescription() const
+QString Farnham::getDescriptionText() const
 {
   return QString( "FARNHAM THE DRUNK" );
 }

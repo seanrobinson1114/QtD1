@@ -58,7 +58,7 @@ BasicActor& BasicActor::operator=( const BasicActor& other_actor )
 }
 
 // Get the description of the basic actor
-QString BasicActor::getDescription() const
+QString BasicActor::getDescriptionText() const
 {
   return QString( "No Description Beyond BasicActor Found!" );
 }

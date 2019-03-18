@@ -31,7 +31,7 @@ public:
   { /* ... */ }
 
   //! Get the warrior description
-  QString getDescription() const final override;
+  QString getDescriptionText() const final override;
 
   //! Get the number of image assets used by the object
   int getNumberOfImageAssets() const final override;

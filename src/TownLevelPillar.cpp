@@ -47,7 +47,7 @@ TownLevelPillar* TownLevelPillar::clone() const
 }
 
 // Get a description of the object
-QString TownLevelPillar::getDescription() const
+QString TownLevelPillar::getDescriptionText() const
 {
   return "I am a pillar!";
 }

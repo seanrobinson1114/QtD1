@@ -242,7 +242,7 @@ Gillian::Gillian( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Gillian::getDescription() const
+QString Gillian::getDescriptionText() const
 {
   return QString( "GILLIAN THE BARMAID" );
 }

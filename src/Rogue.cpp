@@ -75,7 +75,7 @@ Character::Type Rogue::getType() const
 }
 
 // Get the rogue description
-QString Rogue::getDescription() const
+QString Rogue::getDescriptionText() const
 {
   return QString( "I am a rogue" );
 }

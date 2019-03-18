@@ -291,7 +291,7 @@ Deckard::Deckard( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Deckard::getDescription() const
+QString Deckard::getDescriptionText() const
 {
   return QString( "CAIN THE ELDER" );
 }

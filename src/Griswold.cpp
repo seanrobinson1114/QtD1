@@ -330,7 +330,7 @@ Griswold::Griswold( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Griswold::getDescription() const
+QString Griswold::getDescriptionText() const
 {
   return QString( "GRISWOLD THE BLACKSMITH" );
 }

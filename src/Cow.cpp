@@ -31,7 +31,7 @@ void Cow::getImageAssetNames( QSet<QString>& image_asset_names ) const
 }
 
 // Get a description of the object
-QString Cow::getDescription() const
+QString Cow::getDescriptionText() const
 {
   return QString( "Cow" );
 }

@@ -15,11 +15,10 @@
 // QtD1 Includes
 #include "LevelObject.h"
 
-
 namespace QtD1{
 
 //! The interactive level object base class
-class InteractiveLevelObject: public LevelObject
+class InteractiveLevelObject : public LevelObject
 {
   Q_OBJECT
 
@@ -47,7 +46,10 @@ public:
   void unhighlight();
 
   //! Get a description of the object
-  virtual QString getDescription() const = 0;
+  virtual QString getDescriptionText() const = 0;
+
+  //! Get a processed description of the object
+  virtual QPixmap getDescription() const;
 
   //! Set the hover outline color
   void setHoverOutlineColor( const QColor& outline_color );
@@ -55,10 +57,10 @@ public:
 signals:
 
   //! Object is being hovered over
-  void hoveringStarted( QString object_description );
+  void hoveringStarted( QPixmap object_description );
 
   //! Object is no longer being hovered over
-  void hoveringStopped( QString empty_string );
+  void hoveringStopped( QPixmap empty_string );
 
   //! The object has been targeted by the character
   void targetedByCharacter( LevelObject* targeter );
@@ -85,6 +87,12 @@ protected:
   virtual void paintImpl( QPainter* painter,
                           const QStyleOptionGraphicsItem* option,
                           QWidget* widget ) = 0;
+
+  //! Process the description text
+  static QPixmap processDescriptionText( const QString& text,
+                                         const QString& font_name,
+                                         const bool add_line_spacing,
+                                         const bool right_tab );
 
   //! Handle hover enter events
   void hoverEnterEvent( QGraphicsSceneHoverEvent* event ) override;

@@ -317,7 +317,7 @@ Adria::Adria( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Adria::getDescription() const
+QString Adria::getDescriptionText() const
 {
   return QString( "ADRIA THE WITCH" );
 }

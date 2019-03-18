@@ -683,11 +683,11 @@ void Game::connectControlPanelSignalsToGameSlots()
 
 void Game::connectLevelSignalsToControlPanelSlots()
 {
-  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ),
-                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QString ) ) );
+  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStarted( QPixmap ) ),
+                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QPixmap ) ) );
 
-  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStopped( QString ) ),
-                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QString ) ) );
+  QObject::connect( d_level, SIGNAL( interactiveLevelObjectHoveringStopped( QPixmap ) ),
+                    d_game_control_panel, SLOT( changeObjectDescriptionDisplay( QPixmap ) ) );
 }
 
 } // end QtD1 namespace

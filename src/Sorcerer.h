@@ -39,7 +39,7 @@ public:
   Character::Type getType() const override;
 
   //! Get the sorcerer description
-  QString getDescription() const override;
+  QString getDescriptionText() const override;
 
   //! Get the max health
   int getBaseHealth() const override;

@@ -68,7 +68,7 @@ Character::Type Sorcerer::getType() const
 }
 
 // Get the sorcerer description
-QString Sorcerer::getDescription() const
+QString Sorcerer::getDescriptionText() const
 {
   return QString( "I am a sorcerer!" );
 }

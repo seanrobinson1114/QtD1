@@ -259,7 +259,7 @@ Wirt::Wirt( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Wirt::getDescription() const
+QString Wirt::getDescriptionText() const
 {
   return QString( "WIRT THE PEG-LEGGED BOY" );
 }

@@ -291,7 +291,7 @@ Pepin::Pepin( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Pepin::getDescription() const
+QString Pepin::getDescriptionText() const
 {
   return QString( "PEPIN THE HEALER" );
 }

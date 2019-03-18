@@ -301,7 +301,7 @@ Ogden::Ogden( QGraphicsObject* parent )
 }
 
 // Get the warrior description
-QString Ogden::getDescription() const
+QString Ogden::getDescriptionText() const
 {
   return QString( "OGDEN THE THE TAVERN OWNER" );
 }

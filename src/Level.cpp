@@ -492,11 +492,11 @@ void Level::disconnectCharacterSignalsFromLevelSlots() const
 
 void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const
 {
-  QObject::connect( level_object, SIGNAL( hoveringStarted( QString ) ),
-                    this, SIGNAL( interactiveLevelObjectHoveringStarted( QString ) ) );
+  QObject::connect( level_object, SIGNAL( hoveringStarted( QPixmap ) ),
+                    this, SIGNAL( interactiveLevelObjectHoveringStarted( QPixmap ) ) );
 
-  QObject::connect( level_object, SIGNAL( hoveringStopped( QString ) ),
-                    this, SIGNAL( interactiveLevelObjectHoveringStopped( QString ) ) );
+  QObject::connect( level_object, SIGNAL( hoveringStopped( QPixmap ) ),
+                    this, SIGNAL( interactiveLevelObjectHoveringStopped( QPixmap ) ) );
 
   QObject::connect( level_object, SIGNAL( yChanged() ),
                     this, SLOT( updateInteractiveLevelObjectZValue() ) );

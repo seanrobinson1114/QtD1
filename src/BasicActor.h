@@ -48,7 +48,7 @@ public:
   { /* ... */ }
 
   //! Get the description of the basic actor
-  virtual QString getDescription() const;
+  virtual QString getDescriptionText() const override;
 
   //! Get the direction of the basic actor
   Direction getDirection() const;
