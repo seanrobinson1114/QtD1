@@ -18,6 +18,7 @@
 namespace QtD1{
 
 class LevelPillarData;
+class LevelSquare;
 
 //! The level pillar class
 class LevelPillar : public InteractiveLevelObject
@@ -127,6 +128,9 @@ private:
   void createPillarColumn( QPainter& pillar_painer,
                            const QVector<QPixmap>& image_asset_frames,
                            const int start_index );
+
+  // Declare the level square class a friend
+  friend class LevelSquare;
 
   // The level pillar data
   std::shared_ptr<LevelPillarData> d_data;

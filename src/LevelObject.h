@@ -23,6 +23,8 @@
 
 namespace QtD1{
 
+class Level;
+
 //! The level object base class
 class LevelObject: public QGraphicsObject
 {
@@ -40,6 +42,25 @@ public:
 
   //! Check if object is interactive
   virtual bool isInteractive() const;
+
+  //! Check if the object can be attacked
+  virtual bool canBeAttacked() const = 0;
+
+  //! Check if it is a pillar
+  virtual bool isPillar() const;
+
+  //! Check if it is a character
+  virtual bool isCharacter() const;
+
+protected slots:
+
+  //! Handle being targeted by another object
+  virtual void handleBeingTargeted( LevelObject* targeter );
+
+protected:
+
+  //! Notify object that it has been targeted
+  void notifyTarget( LevelObject* target );
 
   //! Get the number of image assets used by the object
   virtual int getNumberOfImageAssets() const = 0;
@@ -80,24 +101,10 @@ public:
   //! Dump the image assets
   virtual void dumpImageAssets() = 0;
 
-  //! Check if the object can be attacked
-  virtual bool canBeAttacked() const = 0;
+private:
 
-  //! Check if it is a pillar
-  virtual bool isPillar() const;
-
-  //! Check if it is a character
-  virtual bool isCharacter() const;
-
-protected slots:
-
-  //! Handle being targeted by another object
-  virtual void handleBeingTargeted( LevelObject* targeter );
-
-protected:
-
-  //! Notify object that it has been targeted
-  void notifyTarget( LevelObject* target );
+  // Declare the Level class a friend
+  friend class Level;
 };
 
 } // end QtD1 namespace

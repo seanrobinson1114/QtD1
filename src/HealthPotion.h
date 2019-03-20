@@ -58,6 +58,9 @@ public:
   //! Get the gold value of the object
   int getGoldValue() const final override;
 
+  //! Get the inventory image
+  QPixmap getInventoryPixmap() const final override;
+
   //! Clone the object
   HealthPotion* clone() const final override;
 
@@ -65,6 +68,46 @@ protected:
 
   //! Consume the object (implementation)
   void consumeImpl() final override;
+
+  //! Get the number of image assets used by the object
+  int getNumberOfImageAssets() const final override;
+
+  //! Get the image asset names used by the object
+  void getImageAssetNames( QSet<QString>& image_asset_names ) const final override;
+
+  //! Check if an image asset is used
+  bool isImageAssetUsed( const QString& image_asset_name ) const final override;
+
+  //! Check if the image assets have been loaded
+  bool imageAssetsLoaded() const final override;
+
+  //! Load the raw image asset
+  void loadRawImageAsset( const QString& image_asset_name,
+                          const QVector<QImage>& image_asset_frames ) final override;
+  
+  //! Load the image asset
+  void loadImageAsset( const QString& image_asset_name,
+                       const QVector<QPixmap>& image_asset_frames ) final override;
+
+  //! Finalize image asset loading
+  void finalizeImageAssetLoading() final override;
+  
+  //! Dump the image assets
+  void dumpImageAssets() final override;
+
+private:
+
+  // Get the image asset name
+  static QString getImageAssetName();
+
+  // The health potion state game sprite map
+  static std::unique_ptr<QMap<State,GameSprite> > s_state_game_sprites;
+
+  // The state game sprites
+  std::shared_ptr<StateGameSpriteMap> d_sprites;
+
+  // Record if the image assets have been loaded
+  bool d_sprites_loaded;
 };
   
 } // end QtD1 namespace

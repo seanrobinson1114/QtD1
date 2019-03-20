@@ -225,6 +225,9 @@ public:
   ~CursorDatabase()
   { /* ... */ }
 
+  //! Get the cursor pixmap
+  QPixmap getCursorPixmap( const GameCursor cursor ) const;
+
   //! Set the widget that will be managed
   void setWidgetToManage( QWidget* widget );
 

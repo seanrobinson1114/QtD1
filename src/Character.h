@@ -148,19 +148,6 @@ public:
   //! Get the quest log
   QuestLog& getQuestLog();
 
-  //! Check if the image assets have been loaded
-  bool imageAssetsLoaded() const override;
-
-  //! Load the image asset
-  void loadImageAsset( const QString& image_asset_name,
-                       const QVector<QPixmap>& image_asset_frames ) override;
-
-  //! Finalize image asset loading
-  void finalizeImageAssetLoading() override;
-
-  //! Dump the image assets
-  void dumpImageAssets() override;
-
   //! Check if it is a character
   bool isCharacter() const final override;
 
@@ -209,6 +196,21 @@ public slots:
 
   //! Exit the town
   void exitTown();
+
+protected:
+
+  //! Check if the image assets have been loaded
+  bool imageAssetsLoaded() const override;
+
+  //! Load the image asset
+  void loadImageAsset( const QString& image_asset_name,
+                       const QVector<QPixmap>& image_asset_frames ) override;
+
+  //! Finalize image asset loading
+  void finalizeImageAssetLoading() override;
+
+  //! Dump the image assets
+  void dumpImageAssets() override;
 
 private slots:
 

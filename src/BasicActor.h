@@ -31,9 +31,6 @@ class BasicActor : public InteractiveLevelObject
 
 public:
 
-  //! The directional sprites type
-  typedef QMap<Direction,GameSprite> DirectionGameSpriteMap;
-
   //! Constructor
   BasicActor( QGraphicsObject* parent = 0 );
 
@@ -111,6 +108,9 @@ protected slots:
   void setVelocity( const qreal x_velocity, const qreal y_velocity );
 
 protected:
+
+  //! The directional sprites type
+  typedef QMap<Direction,GameSprite> DirectionGameSpriteMap;
 
   //! Initialize the state machine
   virtual void initializeStateMachine( QStateMachine& state_machine ) = 0;

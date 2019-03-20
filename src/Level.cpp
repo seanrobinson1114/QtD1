@@ -212,9 +212,10 @@ void Level::gatherImageAssetsToLoad( QSet<QString>& assets_to_load )
   // Add the externally added object assets
   QSet<QString> object_assets;
 
-  if( !d_character->imageAssetsLoaded() )
+  LevelObject* character_base = d_character;
+  if( !character_base->imageAssetsLoaded() )
   {
-    d_character->getImageAssetNames( object_assets );
+    character_base->getImageAssetNames( object_assets );
 
     assets_to_load.unite( object_assets );
     object_assets.clear();
@@ -256,10 +257,9 @@ void Level::assignLevelObjectToAssetNames( const QSet<QString>& asset_names,
 // Notify level objects of impending asset load
 void Level::notifyLevelObjectsOfImpendingAssetLoad()
 {
-  if( !d_character->imageAssetsLoaded() )
-  {
-    d_character->getReadyForImageAssetLoading();
-  }
+  LevelObject* character_base = d_character;
+  if( !character_base->imageAssetsLoaded() )
+    character_base->getReadyForImageAssetLoading();
 
   QList<LevelObject*>::const_iterator level_object_it, level_object_end;
   level_object_it = d_level_objects.begin();
@@ -354,10 +354,12 @@ void Level::handleImageAssetLoaded( const int number_of_assets_loaded,
 void Level::handleImageAssetLoadingFinished( const int number_of_assets_loaded )
 {
   // Check if the character needs this asset
-  if( !d_character->imageAssetsLoaded() )
+  LevelObject* character_base = d_character;
+  
+  if( !character_base->imageAssetsLoaded() )
   {
-    d_character->loadRawImageAssets( *d_image_asset_loader->getLoadedAssets() );
-    d_character->finalizeImageAssetLoading();
+    character_base->loadRawImageAssets( *d_image_asset_loader->getLoadedAssets() );
+    character_base->finalizeImageAssetLoading();
   }
 
   QList<LevelSector*>::const_iterator level_sector_it, level_sector_end;

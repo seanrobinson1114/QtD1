@@ -75,6 +75,12 @@ CursorDatabase::CursorDatabase( const bool load_cursors )
   }
 }
 
+// Get the cursor pixmap
+QPixmap CursorDatabase::getCursorPixmap( const GameCursor cursor ) const
+{
+  return d_game_cursors[cursor].pixmap();
+}
+
 // Set the widget that will be managed
 void CursorDatabase::setWidgetToManage( QWidget* widget )
 {

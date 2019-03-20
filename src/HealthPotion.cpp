@@ -11,9 +11,14 @@
 
 namespace QtD1{
 
+// Initialize static member data
+std::unique_ptr<QMap<State,GameSprite> > HealthPotion::s_state_game_sprites;
+
 // Constructor
 HealthPotion::HealthPotion( QGraphicsObject* parent )
-  : ConsumableInteractiveLevelObject( parent )
+  : ConsumableInteractiveLevelObject( parent ),
+    d_sprites(),
+    d_sprites_loaded( false )
 { /* ... */ }
 
 // Check if the object is tradable
@@ -76,18 +81,88 @@ int HealthPotion::getGoldValue() const
   return 50;
 }
 
+// Get the inventory image
+QPixmap HealthPotion::getInventoryPixmap() const
+{
+  return CursorDatabase::getInstance()->getCursorPixmap( this->getClickCursor() );
+}
+
 // Clone the object
 HealthPotion* HealthPotion::clone() const
 {
-  return new HealthPotion( this->getParent() );
-
-  // Set the parent
+  return new HealthPotion( *this );
 }
 
 // Consume the object (implementation)
 void HealthPotion::consumeImpl()
 {
 
+}
+
+// Get the number of image assets used by the object
+int getNumberOfImageAssets() const
+{
+  return 1;
+}
+
+// Get the image asset name
+QString getImageAssetName()
+{
+  return "/items/fbttle.cel+levels/towndata/town.pal";
+}
+
+// Get the image asset names used by the object
+void getImageAssetNames( QSet<QString>& image_asset_names ) const
+{
+  image_asset_names.insert( this->getImageAssetName() );
+}
+
+// Check if an image asset is used
+bool isImageAssetUsed( const QString& image_asset_name ) const
+{
+  return image_asset_name == this->getImageAssetName();
+}
+
+// Check if the image assets have been loaded
+bool imageAssetsLoaded() const
+{
+  return d_sprites_loaded;
+}
+
+// Load the raw image asset
+void loadRawImageAsset( const QString& image_asset_name,
+                        const QVector<QImage>& image_asset_frames )
+{
+  if( !s_direction_game_sprites )
+  {
+    
+  }
+}
+
+// Load the image asset
+void loadImageAsset( const QString& image_asset_name,
+                     const QVector<QPixmap>& image_asset_frames )
+{
+  qWarning( "HealthPotion Warning: Image assets should never be loaded this way!" );
+}
+
+// Finalize image asset loading
+void finalizeImageAssetLoading()
+{
+  d_sprites.reset( new QMap<State,GameSprite>( *s_state_game_sprite ) );
+
+  this->setSprites( d_sprites );
+  
+  d_sprites_loaded = true;
+}
+  
+// Dump the image assets
+void dumpImageAssets()
+{
+  if( s_direction_game_sprites )
+    s_direction_game_sprites.reset();
+  
+  d_sprites_loaded = false;
 }
   
 } // end QtD1 namespace

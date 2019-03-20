@@ -18,6 +18,8 @@
 
 namespace QtD1{
 
+class LevelSector;
+
 //! The level square class
 class LevelSquare : public LevelObject
 {
@@ -33,25 +35,6 @@ public:
   //! Destructor
   ~LevelSquare()
   { /* ... */ }
-
-  //! Get the number of image assets used by the object
-  int getNumberOfImageAssets() const override;
-
-  //! Get the image asset names used by the object
-  void getImageAssetNames( QSet<QString>& image_asset_names ) const override;
-
-  //! Check if the image asset is used by the object
-  bool isImageAssetUsed( const QString& image_asset_name ) const override;
-
-  //! Check if the image assets have been loaded
-  bool imageAssetsLoaded() const override;
-
-  //! Load the image asset
-  void loadImageAsset( const QString& image_asset_name,
-                       const QVector<QPixmap>& image_asset_frames ) override;
-
-  //! Dump the image assets
-  void dumpImageAssets() override;
 
   //! Get the bounding rect of the level square
   QRectF boundingRect() const override;
@@ -73,7 +56,31 @@ public:
   //! Check if it is a pillar
   bool isPillar() const override;
 
+protected:
+
+  //! Get the number of image assets used by the object
+  int getNumberOfImageAssets() const override;
+
+  //! Get the image asset names used by the object
+  void getImageAssetNames( QSet<QString>& image_asset_names ) const override;
+
+  //! Check if the image asset is used by the object
+  bool isImageAssetUsed( const QString& image_asset_name ) const override;
+
+  //! Check if the image assets have been loaded
+  bool imageAssetsLoaded() const override;
+
+  //! Load the image asset
+  void loadImageAsset( const QString& image_asset_name,
+                       const QVector<QPixmap>& image_asset_frames ) override;
+
+  //! Dump the image assets
+  void dumpImageAssets() override;
+
 private:
+
+  // Declare the level sector a friend
+  friend class LevelSector;
 
   // The pillars
   LevelPillar* d_top_pillar;

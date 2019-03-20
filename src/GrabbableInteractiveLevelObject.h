@@ -9,6 +9,9 @@
 #ifndef GRABBABLE_INTERACTIVE_LEVEL_OBJECT_H
 #define GRABBABLE_INTERACTIVE_LEVEL_OBJECT_H
 
+// Std Lib Includes
+#include <memory>
+
 // QtD1 Includes
 #include "InteractiveLevelObject.h"
 #incldue "CursorDatabase.h"
@@ -74,8 +77,31 @@ public:
   //! Get the gold value of the object
   virtual int getGoldValue() const = 0;
 
+  //! Get the inventory image
+  QPixmap getInventoryImage() const = 0;
+
   //! Clone the object
   virtual GrabbableInteractiveLevelObject* clone() const = 0;
+
+  //! Get the bounding rect of the basic actor
+  QRectF boundingRect() const override;
+
+  //! Get the shape of the basic actor
+  QPainterPath shape() const override;
+
+  //! Advance the basic actor state (if time dependent)
+  void advance( int phase ) override;
+
+  //! Start the actor state machine
+  void startStateMachine();
+
+signals:
+
+  //! All of the active sprite frames have been shown
+  void allActiveFramesShown();
+
+  //! No current owner
+  void noCurrentOwner();
 
 public slots:
 
@@ -93,10 +119,49 @@ protected slots:
   //! Handler being targeted by another object
   void handlerBeingTargeted( LevelObject* targeter ) override;
 
+protected:
+
+  //! The grabbable item states
+  enum State{
+    Flipping,
+    OnFloor
+  };
+
+  //! The state game sprite map
+  typedef QMap<State,GameSprite> StateGameSpriteMap;
+
+  //! Set the sprites
+  void setSprites( const std::shared_ptr<StateGameSpriteMap>& sprites );
+
+  //! The paint implementation
+  void paintImpl( QPainter* painter,
+                  const QStyleOptionGraphicsItem* option,
+                  QWidget* widget ) final override;
+
+private slots:
+
+  // Handle standing state entered
+  void handleOnFloorStateEntered();
+
+  // Handle walking state entered
+  void handleFlippingStateEntered();
+
+  // Handle walking state exited
+  void handleFlippingStateExited();
+  
 private:
 
   // The owner
   Character* d_owner;
+
+  // The sprites
+  std::shared_ptr<StateGameSpriteMap> d_sprites;
+
+  // The active sprite
+  GameSprite* d_active_sprite;
+
+  // The grabbable object state machine
+  std::unique_ptr<QStateMachine> d_state_machine;
 };
   
 } // end QtD1 namespace

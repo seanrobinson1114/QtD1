@@ -40,6 +40,25 @@ public:
   //! Get the direction
   Direction getDirection() const;
 
+  //! Check if the object can be attacked
+  bool canBeAttacked() const final override;
+
+  //! Get the bounding rect of the basic actor
+  QRectF boundingRect() const override;
+
+  //! Get the shape of the basic actor
+  QPainterPath shape() const override;
+
+  //! Advance the basic actor state (if time dependent)
+  void advance( int phase ) override;
+
+protected:
+
+  //! The paint implementation
+  virtual void paintImpl( QPainter* painter,
+                          const QStyleOptionGraphicsItem* option,
+                          QWidget* widget ) final override;
+
   //! Check if the image asset is used by the object
   bool isImageAssetUsed( const QString& image_asset_name ) const final override;
 
@@ -65,25 +84,6 @@ public:
 
   //! Dump the image assets
   void dumpImageAssets() final override;
-
-  //! Check if the object can be attacked
-  bool canBeAttacked() const final override;
-
-  //! Get the bounding rect of the basic actor
-  QRectF boundingRect() const override;
-
-  //! Get the shape of the basic actor
-  QPainterPath shape() const override;
-
-  //! Advance the basic actor state (if time dependent)
-  void advance( int phase ) override;
-
-protected:
-
-  //! The paint implementation
-  virtual void paintImpl( QPainter* painter,
-                          const QStyleOptionGraphicsItem* option,
-                          QWidget* widget ) final override;
 
 protected slots:
 

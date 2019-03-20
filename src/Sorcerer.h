@@ -62,6 +62,16 @@ public:
   //! Get the base percent chance to hit with spell
   qreal getBaseChanceToHitWithSpell() const override;
 
+private slots:
+
+  void handleStrengthChange( int total_strength );
+  void handleDexterityChange( int total_dexterity );
+  void handleVitalityChange( int character_vitality, int inventory_vitality );
+  void handleMagicChange( int character_magic, int inventory_magic );
+  void handleLevelUp( const int level );
+
+protected:
+  
   //! Get the number of image assets used by the object
   int getNumberOfImageAssets() const override;
 
@@ -70,14 +80,6 @@ public:
 
   //! Check if an image asset is used
   bool isImageAssetUsed( const QString& image_asset_name ) const override;
-
-private slots:
-
-  void handleStrengthChange( int total_strength );
-  void handleDexterityChange( int total_dexterity );
-  void handleVitalityChange( int character_vitality, int inventory_vitality );
-  void handleMagicChange( int character_magic, int inventory_magic );
-  void handleLevelUp( const int level );
 
 private:
 
