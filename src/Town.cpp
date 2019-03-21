@@ -20,6 +20,7 @@
 #include "Griswold.h"
 #include "Wirt.h"
 #include "Cow.h"
+#include "HealthPotion.h"
 
 namespace QtD1{
 
@@ -142,6 +143,12 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
     this->addLevelObject( cow, QPointF( 0, 0 ) );
     d_cows << cow;
   }
+
+  // Health potion
+  {
+    HealthPotion* potion = new Potion( this );
+    this->addLevelObject( potion, QPointF( 0, 0 ) );
+  }
 }
 
 // Activate the NPCs and actors
@@ -225,6 +232,11 @@ void Town::activateNPCsAndActors( QWidget* parent_widget,
 
     cow->activate();
   }
+
+  // Add a health potion
+  HealthPotion* potion = new HealthPotion( this );
+  this->addLevelObject( potion, QPointF( 0, 0 ) );
+  potion->setPos( 2700, 2285 );
 }
 
 // Insert the character

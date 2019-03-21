@@ -20,6 +20,21 @@ GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( QGraphicsObjec
     d_state_machine()
 { /* ... */ }
 
+// Copy constructor
+GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( const GrabbableInteractiveLevelObject& other )
+  : InteractiveLevelObject( other.parentObject() ),
+    d_owner( other.d_owner ),
+    d_sprites( other.d_sprites ),
+    d_active_sprite( NULL ),
+    d_state_machine()
+{ /* ... */ }
+
+// Check if the object is grabbable
+bool GrabbableInteractiveLevelObject::isGrabbable() const
+{
+  return true;
+}
+
 // Check if the object is owned
 bool GrabbableInteractiveLevelObject::isOwned() const
 {
@@ -71,6 +86,12 @@ QPixmap GrabbableInteractiveLevelObject::getDescription() const
     return this->getUnownedDescription();
 }
 
+// Get the owner
+Character* GrabbableInteractiveLevelObject::getOwner() const
+{
+  return d_owner;
+}
+  
 // Get the bounding rect of the basic actor
 QRectF GrabbableInteractiveLevelObject::boundingRect() const
 {
@@ -146,7 +167,7 @@ void GrabbableInteractiveLevelObject::startStateMachine()
 
     // Set the state transitions
     on_floor_state->addTransition( this,
-                                   SIGNAL(noCurrentOwner()),
+                                   SIGNAL(dropped()),
                                    flipping_state );
 
     flipping_state->addTransition( this,
@@ -182,6 +203,15 @@ void GrabbableInteractiveLevelObject::setSprites( const std::shared_ptr<StateGam
   }
 }
 
+// Check if the state machine is running
+bool GrabbableInteractiveLevelObject::isStateMachineRunning() const
+{
+  if( d_state_machine )
+    return d_state_machine->isRunning();
+  else
+    return false;
+}
+
 // The paint implementation
 void GrabbableInteractiveLevelObject::paintImpl( QPainter* painter,
                                                  const QStyleOptionGraphicsItem* option,
@@ -203,8 +233,12 @@ void GrabbableInteractiveLevelObject::setOwner( Character* character )
 void GrabbableInteractiveLevelObject::setAsUnowned()
 {
   d_owner = NULL;
+}
 
-  emit noCurrentOwner();
+// Drop the item
+void GrabbableInteractiveLevelObject::drop()
+{
+  emit dropped();
 }
 
 // Identify the object
@@ -214,7 +248,7 @@ void GrabbableInteractiveLevelObject::identify()
 // Handler being targeted by another object
 void GrabbableInteractiveLevelObject::handleBeingTargeted( LevelObject* targeter )
 {
-
+  Cursor::getInstance()->takeOwnershipOfObject( this );
 }
 
 // Handle standing state entered
@@ -231,6 +265,8 @@ void GrabbableInteractiveLevelObject::handleFlippingStateEntered()
   d_active_sprite = &(d_active_sprite)[Flipping];
 
   this->update( this->boundingRect() );
+
+  this->playFlippingSound();
 }
 
 // Handle walking state exited

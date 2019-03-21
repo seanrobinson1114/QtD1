@@ -46,6 +46,9 @@ public slots:
 
 protected:
 
+  //! Copy constructor
+  ConsumableInteractiveLevelObject( const ConsumableInteractiveLevelObject& other );
+
   //! Consume the object (implementation)
   virtual void consumeImpl() = 0;
 };

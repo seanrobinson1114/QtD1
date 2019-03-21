@@ -180,6 +180,9 @@ private slots:
   // Handle z value change
   void updateInteractiveLevelObjectZValue();
 
+  // Handle interactive level object parent changed
+  void handleInteractiveLevelObjectParentChanged();
+
 private:
 
   // Reset the asset data
@@ -206,6 +209,9 @@ private:
 
   // Disconnect character signals from level slots
   void disconnectCharacterSignalsFromLevelSlots() const;
+
+  // Disconnect interactiveLevelObject signals to Level signals
+  void disconnectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
   // The character
   Character* d_character;

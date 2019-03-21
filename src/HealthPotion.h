@@ -10,12 +10,12 @@
 #define HEALTH_POTION_H
 
 // QtD1 Includes
-#include "ConsumableInteractiveLevelObject.h"
+#include "Potion.h"
 
 namespace QtD1{
 
 //! The health potion
-class HealthPotion : public ConsumableInteractiveLevelObject
+class HealthPotion : public Potion
 {
   Q_OBJECT
 
@@ -53,7 +53,7 @@ public:
   QPixmap getTradeMenuDescription() const final override;
 
   //! Get the game cursor that is used when the object is clicked
-  CursorDatabase::GameCursor getClickCursor() const final override;
+  Cursor::GameCursor getClickCursor() const final override;
 
   //! Get the gold value of the object
   int getGoldValue() const final override;
@@ -65,6 +65,9 @@ public:
   HealthPotion* clone() const final override;
 
 protected:
+
+  //! Copy constructor
+  HealthPotion( const HealthPotion& other );
 
   //! Consume the object (implementation)
   void consumeImpl() final override;
@@ -103,11 +106,21 @@ private:
   // The health potion state game sprite map
   static std::unique_ptr<QMap<State,GameSprite> > s_state_game_sprites;
 
+  // The unowned description text
+  static std::unique_ptr<QPixmap> s_unowned_description_text;
+
+  // The owned description text
+  static std::unique_ptr<QPixmap> s_owned_description_text;
+
+  // The trade menu description text
+  static std::unique_ptr<QPixmap> s_trade_menu_description_text;
+
   // The state game sprites
   std::shared_ptr<StateGameSpriteMap> d_sprites;
 
   // Record if the image assets have been loaded
   bool d_sprites_loaded;
+  
 };
   
 } // end QtD1 namespace

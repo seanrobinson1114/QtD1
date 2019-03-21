@@ -417,7 +417,22 @@ void Level::updateInteractiveLevelObjectZValue()
   if( level_object_sender )
   {
     d_grid->updateLevelObjectZValue( level_object_sender );
-    // std::cout << "level object z value changed: " << level_object_sender->zValue() << std::endl;
+  }
+}
+
+// Handle interactive level object parent changed
+void handleInteractiveLevelObjectParentChanged()
+{
+  QObject* sender = QObject::sender();
+
+  LevelObject* level_object_sender = dynamic_cast<LevelObject*>( sender );
+  
+  if( level_object_sender )
+  {
+    if( level_object_sender->parent() != this )
+    {
+      this->disconnectInteractiveLevelObjectSignalsToLevelSignals( level_object_sender );
+    }
   }
 }
 
@@ -428,37 +443,53 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
   // Note: This most likely means that there is a problem...
   if( d_character )
   {
-    //std::cout << "character z order: " << d_character->zValue() << std::endl;
-    // Check if there is a level object where the mouse was pressed
-    LevelObject* object = NULL;
-
+    // The cursor does not own an object - go through normal click procedure
+    if( !Cursor::getInstance()->ownsObject() )
     {
-      QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
+      // Check if there is a level object where the mouse was pressed
+      LevelObject* object = NULL;
 
-      if( raw_object )
-        object = dynamic_cast<LevelObject*>( raw_object );
-    }
-
-    if( object )
-    {
-      // Don't to anything if the character is clicked
-      if( object != d_character )
       {
-        if( mouse_event->button() == Qt::LeftButton )
+        QGraphicsItem* raw_object = this->itemAt( mouse_event->scenePos() );
+        
+        if( raw_object )
+          object = dynamic_cast<LevelObject*>( raw_object );
+      }
+
+      if( object )
+      {
+        // Don't to anything if the character is clicked
+        if( object != d_character )
         {
-          d_character->setTarget( object, mouse_event->scenePos() );
-        }
-        else if( mouse_event->button() == Qt::RightButton )
-        {
-          if( d_character->inTown() )
+          if( mouse_event->button() == Qt::LeftButton )
           {
-            //d_character->playICantSound();
-            std::cout << "can't cast a spell in town!" << std::endl;
+            d_character->setTarget( object, mouse_event->scenePos() );
           }
-          else
-            d_character->castSpellAt( object );
+          else if( mouse_event->button() == Qt::RightButton )
+          {
+            if( d_character->inTown() )
+            {
+              //d_character->playICantSound();
+              std::cout << "can't cast a spell in town!" << std::endl;
+            }
+            else
+              d_character->castSpellAt( object );
+          }
         }
       }
+    }
+
+    // The cursor owns an object - determine the click location where the
+    // owned item will be dropped
+    else
+    {
+      GrabbableInteractiveLevelObject* grabbable_object =
+        Cursor::getInstance()->releaseObject( this );
+
+      this->addLevelObject( grabbable_object, QPointF( 0, 0 ) );
+      grabbable_object->move( mouse_event->scenePos() );
+
+      grabbable_object->drop();
     }
   }
 }
@@ -502,6 +533,23 @@ void Level::connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* lev
 
   QObject::connect( level_object, SIGNAL( yChanged() ),
                     this, SLOT( updateInteractiveLevelObjectZValue() ) );
+  QObject::connect( level_object, SIGNAL( parentChanged() ),
+                    this, SLOT( handleInteractiveLevelObjectParentChanged() ) );
+}
+
+// Disconnect interactiveLevelObject signals to Level signals
+void Level::disconnectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const
+{
+  QObject::disconnect( level_object, SIGNAL( hoveringStarted( QPixmap ) ),
+                       this, SIGNAL( interactiveLevelObjectHoveringStarted( QPixmap ) ) );
+
+  QObject::disconnect( level_object, SIGNAL( hoveringStopped( QPixmap ) ),
+                       this, SIGNAL( interactiveLevelObjectHoveringStopped( QPixmap ) ) );
+
+  QObject::disconnect( level_object, SIGNAL( yChanged() ),
+                       this, SLOT( updateInteractiveLevelObjectZValue() ) );
+  QObject::disconnect( level_object, SIGNAL( parentChanged() ),
+                       this, SLOT( handleInteractiveLevelObjectParentChanged() ) );
 }
 
 } // end QtD1 namespace

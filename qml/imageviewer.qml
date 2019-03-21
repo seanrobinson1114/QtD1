@@ -11,8 +11,8 @@ Rectangle {
     border.color: "black"
     border.width: 43
 
-    CursorDatabase {
-        id: cursor_database
+    Cursor {
+        id: cursor
     }
 
     Rectangle {
@@ -55,7 +55,7 @@ Rectangle {
                 image.numCols = source_cols_input.text;
                 image.transColor = source_trans_color_input.text;
                 image.load();
-                cursor_database.activateGameCursor( CursorDatabase.LoadingGameCursor );
+                cursor.activateGameCursor( CursorDatabase.LoadingGameCursor );
             }
         }
         
@@ -453,7 +453,7 @@ Rectangle {
                 image_width_text.load();
                 image_height_text.image_height =image.current_frame_height;
                 image_height_text.load();
-                cursor_database.resetCursor();
+                cursor.resetCursor();
             }
             onCelLoaded: {
                 source_trans_color_text_box.color = "white";
@@ -466,7 +466,7 @@ Rectangle {
                 image_width_text.load();
                 image_height_text.image_height =image.current_frame_height;
                 image_height_text.load();
-                cursor_database.resetCursor();
+                cursor.resetCursor();
             }
             onVideoLoaded: {
                 source_trans_color_text_box.color = "white";
@@ -479,7 +479,7 @@ Rectangle {
                 image_width_text.load();
                 image_height_text.image_height =image.current_frame_height;
                 image_height_text.load();
-                cursor_database.resetCursor();
+                cursor.resetCursor();
             }
             onImageFrameChanged: {
                 image_frame_text.image_frame = image.current_frame;

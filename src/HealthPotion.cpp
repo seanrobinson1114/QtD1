@@ -13,13 +13,32 @@ namespace QtD1{
 
 // Initialize static member data
 std::unique_ptr<QMap<State,GameSprite> > HealthPotion::s_state_game_sprites;
+std::unique_ptr<QPixmap> HealthPotion::s_unowned_description_text;
+std::unique_ptr<QPixmap> HealthPotion::s_owned_description_text;
+std::unique_ptr<QPixmap> HealthPotion::s_trade_menu_description_text;
 
 // Constructor
 HealthPotion::HealthPotion( QGraphicsObject* parent )
-  : ConsumableInteractiveLevelObject( parent ),
+  : Potion( parent ),
     d_sprites(),
     d_sprites_loaded( false )
-{ /* ... */ }
+{ 
+  if( s_state_game_sprites )
+    this->finalizeImageAssetLoading();
+}
+
+// Copy constructor
+HealthPotion::HealthPotion( const HealthPotion& other )
+  : Potion( other )
+    d_sprites( other.d_sprites ),
+    d_sprites_loaded( other.d_sprites_loaded )
+{
+  if( d_sprites_loaded )
+    this->setSprites( d_sprites );
+
+  if( other.isStateMachineRunning() )
+    this->startStateMachine();
+}
 
 // Check if the object is tradable
 bool HealthPotion::isTradable() const
@@ -42,7 +61,17 @@ QString HealthPotion::getUnownedDescriptionText() const
 // Get a processed description of the object when it is not owned
 QPixmap HealthPotion::getUnownedDescription() const
 {
+  if( !s_unowned_description_text )
+  {
+    s_unowned_description_text.reset( new QPixmap );
+    *s_unowned_description_text =
+      this->processDescriptionText( this->getUnownedDescriptionText(),
+                                    "QtD1White11",
+                                    false,
+                                    false );
+  }
 
+  return *s_unowned_description_text;
 }
 
 // Get a description of the object when it is owned
@@ -54,7 +83,17 @@ QString HealthPotion::getOwnedDescriptionText() const
 // Get a processed description of the object when it is not owned
 QPixmap HealthPotion::getOwnedDescription() const
 {
+  if( !s_owned_description_text )
+  {
+    s_owned_description_text.reset( new QPixmap );
+    *s_owned_description_text =
+      this->processDescriptionText( this->getOwnedDescriptionText(),
+                                    "QtD1White11",
+                                    true,
+                                    false );
+  }
 
+  return *s_owned_description_text
 }
 
 // Get a description of the object when shown in a trade menu
@@ -66,13 +105,23 @@ QString HealthPotion::getTradeMenuDescriptionText() const
 // Get a processed description of the object when shown in a trade menu
 QPixmap HealthPotion::getTradeMenuDescription() const
 {
+  if( !s_trade_menu_description_text )
+  {
+    s_trade_menu_description_text.reset( new QPixmap );
+    *s_trade_menu_description_text =
+      this->processDescriptionText( this->getTradeMenuDescriptionText(),
+                                    "QtD1White11",
+                                    false,
+                                    true );
+  }
 
+  return *s_trade_menu_description_text;
 }
 
 // Get the game cursor that is used when the object is clicked
-CursorDatabase::GameCursor HealthPotion::getClickCursor() const
+Cursor::GameCursor HealthPotion::getClickCursor() const
 {
-  return CursorDatabase::GameCursor::SmallHealthPostionGameCursor;
+  return Cursor::GameCursor::SmallHealthPostionGameCursor;
 }
 
 // Get the gold value of the object
@@ -84,7 +133,7 @@ int HealthPotion::getGoldValue() const
 // Get the inventory image
 QPixmap HealthPotion::getInventoryPixmap() const
 {
-  return CursorDatabase::getInstance()->getCursorPixmap( this->getClickCursor() );
+  return Cursor::getInstance()->getCursorPixmap( this->getClickCursor() );
 }
 
 // Clone the object
@@ -96,7 +145,10 @@ HealthPotion* HealthPotion::clone() const
 // Consume the object (implementation)
 void HealthPotion::consumeImpl()
 {
+  Character* owner = this->getOwner();
 
+  if( owner )
+    owner->addHealth( 20 );
 }
 
 // Get the number of image assets used by the object

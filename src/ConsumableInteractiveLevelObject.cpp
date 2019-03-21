@@ -16,6 +16,11 @@ ConsumableInteractiveLevelObject::ConsumableInteractiveLevelObject( QGraphicsObj
   : GrabbableInteractiveLevelObject( parent )
 { /* ... */ }
 
+// Copy constructor
+ConsumableInteractiveLevelObject::ConsumableInteractiveLevelObject( const ConsumableInteractiveLevelObject& other )
+  : GrabbableInteractiveLevelObject( other )
+{ /* ... */ }
+
 // Check if the object is identified
 bool ConsumableInteractiveLevelObject::isIdentified() const
 {

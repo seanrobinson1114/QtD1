@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   CursorDatabase.h
+//! \file   Cursor.h
 //! \author Alex Robinson
 //! \brief  The cursor database class declaration
 //!
@@ -22,11 +22,13 @@
 
 namespace QtD1{
 
+class GrabbableInteractiveLevelObject;
+
 //! The cursor database class
-class CursorDatabase : public QObject
+class Cursor : public QObject
 {
   Q_OBJECT
-  Q_IMPORT_ALIAS( "QtD1", 1, 0, "CursorDatabase" )
+  Q_IMPORT_ALIAS( "QtD1", 1, 0, "Cursor" )
 
 public:
 
@@ -216,13 +218,13 @@ public:
   Q_ENUMS(GameCursor)
 
   //! Get the singleton instance
-  static CursorDatabase* getInstance();
+  static Cursor* getInstance();
 
   //! Default Constructor (this is only included for qml registration)
-  CursorDatabase( QObject* parent = 0 );
+  Cursor( QObject* parent = 0 );
 
   //! Destructor
-  ~CursorDatabase()
+  ~Cursor()
   { /* ... */ }
 
   //! Get the cursor pixmap
@@ -232,30 +234,44 @@ public:
   void setWidgetToManage( QWidget* widget );
 
   //! Reset the cursor on the managed widget
-  void resetCursorOnManagedWidget() const;
-
-  //! Reset the cursor on the managed widget
   Q_INVOKABLE static void resetCursor();
-
-  //! Activate the UI cursor on the managed widget
-  void activateUICursorOnManagedWidget() const;
 
   //! Activate the UI cursor on the managed widget
   Q_INVOKABLE static void activateUICursor();
 
   //! Activate the desired game cursor on the managed widget
-  void activateGameCursorOnManagedWidget( const GameCursor cursor ) const;
+  Q_INVOKABLE static void activateGameCursor( const GameCursor cursor );
+
+  //! Check if a grabbable interactive level object is owned
+  bool ownsObject() const;
+
+  //! Take ownership of the grabbable interactive level object
+  void takeOwnershipOfObject( GrabbableInteractiveLevelObject* object );
+
+  //! Release the grabbable interactive level object
+  GrabbableInteractiveLevelObject* releaseObject();
+
+public slots:
+
+  //! Reset the cursor on the managed widget
+  void resetCursorOnManagedWidget() const;
+
+  //! Activate the UI cursor on the managed widget
+  void activateUICursorOnManagedWidget() const;
 
   //! Activate the desired game cursor on the managed widget
-  Q_INVOKABLE static void activateGameCursor( const GameCursor cursor );
+  void activateGameCursorOnManagedWidget( const GameCursor cursor ) const;
+
+  //! Activate the last game cursor on the managed widget
+  void activateLastGameCursorOnManagedWidget();
 
 private:
 
   // Constructor
-  CursorDatabase( const bool load_cursors );
+  Cursor( const bool load_cursors );
 
   // The singleton instance
-  static std::unique_ptr<CursorDatabase> s_instance;
+  static std::unique_ptr<Cursor> s_instance;
 
   // The ui cursor
   QCursor d_ui_cursor;
@@ -265,6 +281,9 @@ private:
 
   // The parent graphics item
   QWidget* d_managed_widget;
+
+  // The owned object
+  GrabbableInteractiveLevelObject* d_owned_object;
 };
   
 } // end QtD1 namespace
@@ -272,5 +291,5 @@ private:
 #endif // end CURSOR_DATABASE_H
 
 //---------------------------------------------------------------------------//
-// end CursorDatabase.h
+// end Cursor.h
 //---------------------------------------------------------------------------//

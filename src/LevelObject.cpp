@@ -26,6 +26,12 @@ bool LevelObject::isInteractive() const
   return false;
 }
 
+// Check if the object is grabbable
+bool LevelObject::isGrabbable() const
+{
+  return false;
+}
+
 // Load the raw image asset
 void LevelObject::loadRawImageAsset( const QString& image_asset_name,
                                      const QVector<QImage>& image_asset_frames )

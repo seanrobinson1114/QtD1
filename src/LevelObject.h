@@ -43,6 +43,9 @@ public:
   //! Check if object is interactive
   virtual bool isInteractive() const;
 
+  //! Check if the object is grabbable
+  virtual bool isGrabbable() const;
+
   //! Check if the object can be attacked
   virtual bool canBeAttacked() const = 0;
 

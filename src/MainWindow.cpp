@@ -19,7 +19,7 @@
 #include "MPQHandler.h"
 #include "AudioDevice.h"
 #include "BitmapText.h"
-#include "CursorDatabase.h"
+#include "Cursor.h"
 #include "Game.h"
 #include "qtd1_config.h"
 
@@ -61,8 +61,8 @@ MainWindow::MainWindow()
   QtD1::BitmapText::loadStandardFonts();
 
   // Tell the main window to use the custom UI cursor
-  QtD1::CursorDatabase::getInstance()->setWidgetToManage( this );
-  QtD1::CursorDatabase::getInstance()->activateUICursor();
+  QtD1::Cursor::getInstance()->setWidgetToManage( this );
+  QtD1::Cursor::getInstance()->activateUICursor();
 
   // Create the menu item over sound
   d_menu_item_over_sound.setSource( "/sfx/items/titlemov.wav" );

@@ -40,7 +40,7 @@ ADD_LIBRARY(qtd1_core
   SmallPentSpinMenuPushButton.cpp
   LargePentSpinMenuPushButton.cpp
   PentSpinMenuPushButtonBox.cpp
-  CursorDatabase.cpp
+  Cursor.cpp
 
   BitmapFont.cpp
   11BitmapFont.cpp

@@ -14,7 +14,8 @@
 
 // QtD1 Includes
 #include "InteractiveLevelObject.h"
-#incldue "CursorDatabase.h"
+#include "Cursor.h"
+#include "Character.h"
 
 namespace QtD1{
 
@@ -31,6 +32,9 @@ public:
   //! Destructor
   ~GrabbableInteractiveLevelObject()
   { /* ... */ }
+
+  //! Check if the object is grabbable
+  bool isGrabbable() const final override;
 
   //! Check if the object is consumable
   virtual bool isConsumable() const = 0;
@@ -72,13 +76,16 @@ public:
   QPixmap getDescription() const final override;
 
   //! Get the game cursor that is used when the object is clicked
-  virtual CursorDatabase::GameCursor getClickCursor() const = 0;
+  virtual Cursor::GameCursor getClickCursor() const = 0;
 
   //! Get the gold value of the object
   virtual int getGoldValue() const = 0;
 
   //! Get the inventory image
   QPixmap getInventoryImage() const = 0;
+
+  //! Get the owner
+  Character* getOwner() const;
 
   //! Clone the object
   virtual GrabbableInteractiveLevelObject* clone() const = 0;
@@ -101,7 +108,7 @@ signals:
   void allActiveFramesShown();
 
   //! No current owner
-  void noCurrentOwner();
+  void dropped();
 
 public slots:
 
@@ -111,13 +118,16 @@ public slots:
   //! Set as unowned
   void setAsUnowned();
 
+  //! Drop the item
+  void drop();
+
   //! Identify the object
   virtual void identify();
 
 protected slots:
 
   //! Handler being targeted by another object
-  void handlerBeingTargeted( LevelObject* targeter ) override;
+  void handleBeingTargeted( LevelObject* targeter ) override;
 
 protected:
 
@@ -130,13 +140,22 @@ protected:
   //! The state game sprite map
   typedef QMap<State,GameSprite> StateGameSpriteMap;
 
+  //! Copy constructor
+  GrabbableInteractiveLevelObject( const GrabbableInteractiveLevelObject& other );
+
   //! Set the sprites
   void setSprites( const std::shared_ptr<StateGameSpriteMap>& sprites );
+
+  //! Check if the state machine is running
+  bool isStateMachineRunning() const;
 
   //! The paint implementation
   void paintImpl( QPainter* painter,
                   const QStyleOptionGraphicsItem* option,
                   QWidget* widget ) final override;
+
+  //! Play the flipping sound
+  virtual void playFlippingSound() = 0;
 
 private slots:
 

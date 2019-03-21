@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   CursorDatabase.cpp
+//! \file   Cursor.cpp
 //! \author Alex Robinson
 //! \brief  The cursor database class definition
 //!
@@ -10,19 +10,19 @@
 #include <iostream>
 
 // QtD1 Includes
-#include "CursorDatabase.h"
+#include "Cursor.h"
 #include "MenuSprite.h"
 
 namespace QtD1{
 
 // Initialize static member data
-std::unique_ptr<CursorDatabase> CursorDatabase::s_instance;
+std::unique_ptr<Cursor> Cursor::s_instance;
   
 //! Get the singleton instance
-CursorDatabase* CursorDatabase::getInstance()
+Cursor* Cursor::getInstance()
 {
   if( !s_instance )
-    s_instance.reset( new CursorDatabase( true ) );
+    s_instance.reset( new Cursor( true ) );
 
   return s_instance.get();
 }
@@ -30,15 +30,16 @@ CursorDatabase* CursorDatabase::getInstance()
 // Default Constructor (this is only included for qml registration)
 /* \details Never call this constructor directly.
  */
-CursorDatabase::CursorDatabase( QObject* parent )
+Cursor::Cursor( QObject* parent )
   : QObject( parent )
 { /* ... */ }
 
 // Constructor
-CursorDatabase::CursorDatabase( const bool load_cursors )
+Cursor::Cursor( const bool load_cursors )
   : d_ui_cursor(),
     d_game_cursors(),
-    d_managed_widget( NULL )
+    d_managed_widget( NULL ),
+    d_owned_object( NULL )
 {
   if( load_cursors )
   {
@@ -76,44 +77,44 @@ CursorDatabase::CursorDatabase( const bool load_cursors )
 }
 
 // Get the cursor pixmap
-QPixmap CursorDatabase::getCursorPixmap( const GameCursor cursor ) const
+QPixmap Cursor::getCursorPixmap( const GameCursor cursor ) const
 {
   return d_game_cursors[cursor].pixmap();
 }
 
 // Set the widget that will be managed
-void CursorDatabase::setWidgetToManage( QWidget* widget )
+void Cursor::setWidgetToManage( QWidget* widget )
 {
   d_managed_widget = widget;
 }
 
 // Reset the cursor on the managed item
-void CursorDatabase::resetCursorOnManagedWidget() const
+void Cursor::resetCursorOnManagedWidget() const
 {
   this->activateUICursor();
 }
 
 // Reset the cursor on the managed item
-Q_INVOKABLE void CursorDatabase::resetCursor()
+Q_INVOKABLE void Cursor::resetCursor()
 {
-  CursorDatabase::getInstance()->resetCursorOnManagedWidget();
+  Cursor::getInstance()->resetCursorOnManagedWidget();
 }
 
 // Activate the UI cursor on the managed item
-void CursorDatabase::activateUICursorOnManagedWidget() const
+void Cursor::activateUICursorOnManagedWidget() const
 {
   if( d_managed_widget )
     d_managed_widget->setCursor( d_ui_cursor );
 }
 
 // Activate the UI cursor on the managed item
-Q_INVOKABLE void CursorDatabase::activateUICursor()
+Q_INVOKABLE void Cursor::activateUICursor()
 {
-  CursorDatabase::getInstance()->activateUICursorOnManagedWidget();
+  Cursor::getInstance()->activateUICursorOnManagedWidget();
 }
 
 // Activate the desired game cursor on the managed widget
-void CursorDatabase::activateGameCursorOnManagedWidget(
+void Cursor::activateGameCursorOnManagedWidget(
                                                 const GameCursor cursor ) const
 {
   if( d_managed_widget )
@@ -121,15 +122,52 @@ void CursorDatabase::activateGameCursorOnManagedWidget(
 }
 
 // Activate the desired game cursor on the managed item
-Q_INVOKABLE void CursorDatabase::activateGameCursor( const GameCursor cursor )
+Q_INVOKABLE void Cursor::activateGameCursor( const GameCursor cursor )
 {
-  CursorDatabase::getInstance()->activateGameCursorOnManagedWidget( cursor );
+  Cursor::getInstance()->activateGameCursorOnManagedWidget( cursor );
 }
 
-QML_REGISTER_TYPE( CursorDatabase );
+// Activate the last game cursor on the managed widget
+void Cursor::activateLastGameCursorOnManagedWidget()
+{
+  
+}
+
+// Check if a grabbable interactive level object is owned
+bool ownsObject() const
+{
+  return d_owned_object;
+}
+
+// Take ownership of the grabbable interactive level object
+void takeOwnershipOfObject( GrabbableInteractiveLevelObject* object )
+{
+  if( d_owned_object )
+  {
+    qWarning( "The cursor already owns and object - it will now be destroyed" );
+    delete d_owned_object;
+  }
+  
+  d_owned_object = object;
+  d_owned_object->setParent( NULL );
+
+  this->activateGameCursorOnManagedWidget( d_owned_object->getClickCursor() );
+}
+
+// Release the grabbable interactive level object
+GrabbableInteractiveLevelObject* releaseObject()
+{
+  GrabbableInteractiveLevelObject* owned_object = d_owned_object;
+
+  d_owned_object = NULL;
+  
+  return owned_object;
+}
+
+QML_REGISTER_TYPE( Cursor );
   
 } // end QtD1 namespace
 
 //---------------------------------------------------------------------------//
-// end CursorDatabase.cpp
+// end Cursor.cpp
 //---------------------------------------------------------------------------//
