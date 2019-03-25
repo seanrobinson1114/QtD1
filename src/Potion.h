@@ -40,7 +40,7 @@ protected:
 private:
 
   // The potion flip sound
-  std::unique_ptr<Sound> s_flip_sound;
+  static std::unique_ptr<Sound> s_flip_sound;
 };
   
 } // end QtD1 namespace

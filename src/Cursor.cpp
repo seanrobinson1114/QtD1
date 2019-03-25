@@ -12,6 +12,7 @@
 // QtD1 Includes
 #include "Cursor.h"
 #include "MenuSprite.h"
+#include "GrabbableInteractiveLevelObject.h"
 
 namespace QtD1{
 
@@ -76,6 +77,16 @@ Cursor::Cursor( const bool load_cursors )
   }
 }
 
+// Destructor
+Cursor::~Cursor()
+{
+  if( d_owned_object )
+  {
+    if( !d_owned_object->scene() )
+      delete d_owned_object;
+  }
+}
+
 // Get the cursor pixmap
 QPixmap Cursor::getCursorPixmap( const GameCursor cursor ) const
 {
@@ -134,13 +145,13 @@ void Cursor::activateLastGameCursorOnManagedWidget()
 }
 
 // Check if a grabbable interactive level object is owned
-bool ownsObject() const
+bool Cursor::ownsObject() const
 {
   return d_owned_object;
 }
 
 // Take ownership of the grabbable interactive level object
-void takeOwnershipOfObject( GrabbableInteractiveLevelObject* object )
+void Cursor::takeOwnershipOfObject( GrabbableInteractiveLevelObject* object )
 {
   if( d_owned_object )
   {
@@ -149,17 +160,25 @@ void takeOwnershipOfObject( GrabbableInteractiveLevelObject* object )
   }
   
   d_owned_object = object;
+
+  // Pull the item from the scene
+  if( d_owned_object->scene() )
+    d_owned_object->scene()->removeItem( d_owned_object );
+
+  // Pull the item from it parent item
   d_owned_object->setParent( NULL );
 
   this->activateGameCursorOnManagedWidget( d_owned_object->getClickCursor() );
 }
 
 // Release the grabbable interactive level object
-GrabbableInteractiveLevelObject* releaseObject()
+GrabbableInteractiveLevelObject* Cursor::releaseObject()
 {
   GrabbableInteractiveLevelObject* owned_object = d_owned_object;
 
   d_owned_object = NULL;
+
+  this->activateUICursor();
   
   return owned_object;
 }

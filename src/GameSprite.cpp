@@ -250,7 +250,7 @@ QRectF GameSprite::boundingRect() const
 QPainterPath GameSprite::shape() const
 {
   return d_asset_data->getFrameShape( d_current_frame );
-  }
+}
 
 // Paint the current frame
 void GameSprite::paint( QPainter* painter,

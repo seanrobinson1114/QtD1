@@ -15,6 +15,8 @@
 // QtD1 Includes
 #include "Level.h"
 #include "LevelPillarFactory.h"
+#include "Cursor.h"
+#include "GrabbableInteractiveLevelObject.h"
 
 namespace QtD1{
 
@@ -421,7 +423,7 @@ void Level::updateInteractiveLevelObjectZValue()
 }
 
 // Handle interactive level object parent changed
-void handleInteractiveLevelObjectParentChanged()
+void Level::handleInteractiveLevelObjectParentChanged()
 {
   QObject* sender = QObject::sender();
 
@@ -484,10 +486,10 @@ void Level::mousePressEvent( QGraphicsSceneMouseEvent* mouse_event )
     else
     {
       GrabbableInteractiveLevelObject* grabbable_object =
-        Cursor::getInstance()->releaseObject( this );
+        Cursor::getInstance()->releaseObject();
 
       this->addLevelObject( grabbable_object, QPointF( 0, 0 ) );
-      grabbable_object->move( mouse_event->scenePos() );
+      grabbable_object->setPos( mouse_event->scenePos() );
 
       grabbable_object->drop();
     }

@@ -63,6 +63,9 @@ Character::Character( const QString& name,
 
   // Connect to the spell book signals
   this->connectSpellBookSignalsToCharacterSlots();
+
+  // Set the hover outline color
+  this->setHoverOutlineColor( QColor::fromRgb(244, 66, 101) );
 }
 
 // Copy constructor

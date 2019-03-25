@@ -42,14 +42,17 @@ public:
   //! Check if the object is tradable
   virtual bool isTradable() const = 0;
 
+  //! Check if the object can be attacked
+  bool canBeAttacked() const final override;
+
   //! Check if the object can be placed in the belt
   virtual bool canBePlacedInBelt() const = 0;
 
   //! Check if the object is identified
-  bool isIdentified() const = 0;
+  virtual bool isIdentified() const = 0;
   
   //! Check if the object is owned
-  bool isOwned() const;
+  virtual bool isOwned() const;
 
   //! Get a description of the object when it is not owned
   virtual QString getUnownedDescriptionText() const = 0;
@@ -82,7 +85,7 @@ public:
   virtual int getGoldValue() const = 0;
 
   //! Get the inventory image
-  QPixmap getInventoryImage() const = 0;
+  virtual QPixmap getInventoryPixmap() const = 0;
 
   //! Get the owner
   Character* getOwner() const;

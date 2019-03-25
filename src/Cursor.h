@@ -224,9 +224,8 @@ public:
   Cursor( QObject* parent = 0 );
 
   //! Destructor
-  ~Cursor()
-  { /* ... */ }
-
+  ~Cursor();
+  
   //! Get the cursor pixmap
   QPixmap getCursorPixmap( const GameCursor cursor ) const;
 

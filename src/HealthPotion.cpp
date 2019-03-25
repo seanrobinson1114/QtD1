@@ -12,7 +12,7 @@
 namespace QtD1{
 
 // Initialize static member data
-std::unique_ptr<QMap<State,GameSprite> > HealthPotion::s_state_game_sprites;
+std::unique_ptr<QMap<HealthPotion::State,GameSprite> > HealthPotion::s_state_game_sprites;
 std::unique_ptr<QPixmap> HealthPotion::s_unowned_description_text;
 std::unique_ptr<QPixmap> HealthPotion::s_owned_description_text;
 std::unique_ptr<QPixmap> HealthPotion::s_trade_menu_description_text;
@@ -29,7 +29,7 @@ HealthPotion::HealthPotion( QGraphicsObject* parent )
 
 // Copy constructor
 HealthPotion::HealthPotion( const HealthPotion& other )
-  : Potion( other )
+  : Potion( other ),
     d_sprites( other.d_sprites ),
     d_sprites_loaded( other.d_sprites_loaded )
 {
@@ -55,7 +55,7 @@ bool HealthPotion::canBePlacedInBelt() const
 // Get a description of the object when it is not owned
 QString HealthPotion::getUnownedDescriptionText() const
 {
-  return "Potion of Healing"
+  return "Potion of Healing";
 }
 
 // Get a processed description of the object when it is not owned
@@ -93,7 +93,7 @@ QPixmap HealthPotion::getOwnedDescription() const
                                     false );
   }
 
-  return *s_owned_description_text
+  return *s_owned_description_text;
 }
 
 // Get a description of the object when shown in a trade menu
@@ -152,56 +152,85 @@ void HealthPotion::consumeImpl()
 }
 
 // Get the number of image assets used by the object
-int getNumberOfImageAssets() const
+int HealthPotion::getNumberOfImageAssets() const
 {
   return 1;
 }
 
 // Get the image asset name
-QString getImageAssetName()
+QString HealthPotion::getImageAssetName()
 {
   return "/items/fbttle.cel+levels/towndata/town.pal";
 }
 
 // Get the image asset names used by the object
-void getImageAssetNames( QSet<QString>& image_asset_names ) const
+void HealthPotion::getImageAssetNames( QSet<QString>& image_asset_names ) const
 {
   image_asset_names.insert( this->getImageAssetName() );
 }
 
 // Check if an image asset is used
-bool isImageAssetUsed( const QString& image_asset_name ) const
+bool HealthPotion::isImageAssetUsed( const QString& image_asset_name ) const
 {
   return image_asset_name == this->getImageAssetName();
 }
 
 // Check if the image assets have been loaded
-bool imageAssetsLoaded() const
+bool HealthPotion::imageAssetsLoaded() const
 {
   return d_sprites_loaded;
 }
 
 // Load the raw image asset
-void loadRawImageAsset( const QString& image_asset_name,
-                        const QVector<QImage>& image_asset_frames )
+void HealthPotion::loadRawImageAsset( const QString& image_asset_name,
+                                      const QVector<QImage>& image_asset_frames )
 {
-  if( !s_direction_game_sprites )
+  if( !s_state_game_sprites )
   {
-    
+    s_state_game_sprites.reset( new QMap<State,GameSprite> );
+
+    // Pull out the slipping game sprites
+    QVector<int> source_frame_indices( 8 );
+    GameSprite& flipping_game_sprite = (*s_state_game_sprites)[Flipping];
+
+    // This is a new game sprite - initialize it
+    if( flipping_game_sprite.getNumberOfFrames() == 0 )
+    {
+      for( int i = 0; i < source_frame_indices.size(); ++i )
+        source_frame_indices[i] = i + 8;
+
+      flipping_game_sprite = GameSprite( image_asset_name, source_frame_indices );
+    }
+
+    flipping_game_sprite.setAsset( image_asset_name, image_asset_frames );
+    flipping_game_sprite.setFrameDuration( 15 );
+
+    // Pull out the on floor game sprite
+    GameSprite& on_floor_game_sprite = (*s_state_game_sprites)[OnFloor];
+
+    if( on_floor_game_sprite.getNumberOfFrames() == 0 )
+    {
+      source_frame_indices.resize( 1 );
+      source_frame_indices[0] = 0;
+
+      on_floor_game_sprite = GameSprite( image_asset_name, source_frame_indices );
+      on_floor_game_sprite.setAsset( image_asset_name, image_asset_frames );
+      on_floor_game_sprite.setFrameDuration( 15 );
+    }
   }
 }
 
 // Load the image asset
-void loadImageAsset( const QString& image_asset_name,
-                     const QVector<QPixmap>& image_asset_frames )
+void HealthPotion::loadImageAsset( const QString& image_asset_name,
+                                   const QVector<QPixmap>& image_asset_frames )
 {
   qWarning( "HealthPotion Warning: Image assets should never be loaded this way!" );
 }
 
 // Finalize image asset loading
-void finalizeImageAssetLoading()
+void HealthPotion::finalizeImageAssetLoading()
 {
-  d_sprites.reset( new QMap<State,GameSprite>( *s_state_game_sprite ) );
+  d_sprites.reset( new QMap<State,GameSprite>( *s_state_game_sprites ) );
 
   this->setSprites( d_sprites );
   
@@ -209,10 +238,10 @@ void finalizeImageAssetLoading()
 }
   
 // Dump the image assets
-void dumpImageAssets()
+void HealthPotion::dumpImageAssets()
 {
-  if( s_direction_game_sprites )
-    s_direction_game_sprites.reset();
+  if( s_state_game_sprites )
+    s_state_game_sprites.reset();
   
   d_sprites_loaded = false;
 }

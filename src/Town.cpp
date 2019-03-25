@@ -146,7 +146,7 @@ void Town::createNPCsAndActors( QVector<NPC*>& npcs, QVector<Actor*>& )
 
   // Health potion
   {
-    HealthPotion* potion = new Potion( this );
+    HealthPotion* potion = new HealthPotion;
     this->addLevelObject( potion, QPointF( 0, 0 ) );
   }
 }
@@ -234,9 +234,11 @@ void Town::activateNPCsAndActors( QWidget* parent_widget,
   }
 
   // Add a health potion
-  HealthPotion* potion = new HealthPotion( this );
+  HealthPotion* potion = new HealthPotion;
   this->addLevelObject( potion, QPointF( 0, 0 ) );
   potion->setPos( 2700, 2285 );
+  potion->activate();
+  //potion->startStateMachine();
 }
 
 // Insert the character

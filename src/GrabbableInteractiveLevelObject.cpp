@@ -11,6 +11,8 @@
 
 namespace QtD1{
 
+const QColor item_color = QColor::fromRgb(244, 66, 101);
+
 // Constructor
 GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( QGraphicsObject* parent )
   : InteractiveLevelObject( parent ),
@@ -18,7 +20,9 @@ GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( QGraphicsObjec
     d_sprites(),
     d_active_sprite( NULL ),
     d_state_machine()
-{ /* ... */ }
+{ 
+  this->setHoverOutlineColor( item_color );
+}
 
 // Copy constructor
 GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( const GrabbableInteractiveLevelObject& other )
@@ -27,12 +31,20 @@ GrabbableInteractiveLevelObject::GrabbableInteractiveLevelObject( const Grabbabl
     d_sprites( other.d_sprites ),
     d_active_sprite( NULL ),
     d_state_machine()
-{ /* ... */ }
+{
+  this->setHoverOutlineColor( item_color );
+}
 
 // Check if the object is grabbable
 bool GrabbableInteractiveLevelObject::isGrabbable() const
 {
   return true;
+}
+
+// Check if the object can be attacked
+bool GrabbableInteractiveLevelObject::canBeAttacked() const
+{
+  return false;
 }
 
 // Check if the object is owned
@@ -92,7 +104,7 @@ Character* GrabbableInteractiveLevelObject::getOwner() const
   return d_owner;
 }
   
-// Get the bounding rect of the basic actor
+// Get the bounding rect of the object
 QRectF GrabbableInteractiveLevelObject::boundingRect() const
 {
   if( d_active_sprite )
@@ -101,7 +113,7 @@ QRectF GrabbableInteractiveLevelObject::boundingRect() const
     return QRectF();
 }
 
-// Get the shape of the basic actor
+// Get the shape of the object
 QPainterPath GrabbableInteractiveLevelObject::shape() const
 {
   if( d_active_sprite )
@@ -110,7 +122,7 @@ QPainterPath GrabbableInteractiveLevelObject::shape() const
     return QPainterPath();
 }
 
-// Advance the basic actor state (if time dependent)
+// Advance the object state (if time dependent)
 void GrabbableInteractiveLevelObject::advance( int phase )
 {
   // Phase 0: about to advance
@@ -122,7 +134,7 @@ void GrabbableInteractiveLevelObject::advance( int phase )
       bool screen_update_required =
         d_active_sprite->incrementElapsedGameTics();
 
-      if( screen_updated_required )
+      if( screen_update_required )
       {
         if( d_active_sprite->getFrame() == 0 )
           emit allActiveFramesShown();
@@ -174,7 +186,7 @@ void GrabbableInteractiveLevelObject::startStateMachine()
                                    SIGNAL(allActiveFramesShown()),
                                    on_floor_state );
 
-    parent_state->addInitialState( on_floor_state );
+    parent_state->setInitialState( on_floor_state );
 
     // Connect the state signals to grabbable object slots
     QObject::connect( on_floor_state, SIGNAL(entered()),
@@ -185,7 +197,7 @@ void GrabbableInteractiveLevelObject::startStateMachine()
                       this, SLOT(handleFlippingStateExited()) );
 
     // Add the states to the state machines
-    d_state_machine->addSate( parent_state );
+    d_state_machine->addState( parent_state );
     d_state_machine->setInitialState( parent_state );
     
     d_state_machine->start();

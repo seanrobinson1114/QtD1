@@ -95,6 +95,10 @@ ADD_LIBRARY(qtd1_core
   QuestDiablo.cpp
   LevelObject.cpp
   InteractiveLevelObject.cpp
+  GrabbableInteractiveLevelObject.cpp
+  ConsumableInteractiveLevelObject.cpp
+  Potion.cpp
+  HealthPotion.cpp
   ImageAssetLoader.cpp
   BasicActor.cpp
   ActorAttackingTargetTransition.cpp
