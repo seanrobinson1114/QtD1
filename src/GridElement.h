@@ -9,12 +9,16 @@
 #ifndef GRID_ELEMENT_H
 #define GRID_ELEMENT_H
 
+// Std Lib Includes
+#include <set>
+
 // Qt Includes
 #include <QRectF>
 
 // QtD1 Includes
 #include "LevelPillar.h"
 #include "Direction.h"
+#include "LevelObject.h"
 
 namespace QtD1{
 
@@ -61,6 +65,18 @@ public:
   //! Check if painter path contains point
   bool containsPoint( const QPointF& ) const;
 
+  //! Add a blocking Level Object 
+  void addBlockingObject( const LevelObject* );
+
+  //! Remove a blocking level object
+  void removeBlockingObject( const LevelObject* );
+
+  //! Check if this grid element is blocked
+  bool constainsBlockingObject() const;
+
+  //! Check for collisions within grid element
+  bool checkForCollisions( const LevelObject* ) const;
+
 private:
 
   // Initialize the adjascent grid grid elements
@@ -79,6 +95,9 @@ private:
 
   // Map of adjascent grid elements
   std::map<Direction, const GridElement*> d_adjascent_grid_elements;
+
+  // Set of LevelObjects currently on grid element
+  std::set<const LevelObject*> d_blocking_level_objects;
 };
 
 } // end QtD1 namespace

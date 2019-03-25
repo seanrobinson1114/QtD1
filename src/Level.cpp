@@ -31,7 +31,9 @@ Level::Level( QObject* parent )
     d_needs_restore( false ),
     d_ready( false ),
     d_grid()
-{ /* ... */ }
+{
+  
+}
 
 // Constructor
 Level::Level( QObject* parent, const QString& level_music_file_name )
@@ -80,6 +82,8 @@ void Level::addLevelObject( LevelObject* level_object,
   // Set the position after connecting the signals and slots so that the
   // correct z value is calculated
   level_object->setPos( location );
+
+  // TODO have grid find grid element to store new object on
 }
 
 // Add an actor

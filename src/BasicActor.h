@@ -59,8 +59,11 @@ public:
   //! Get the actor y velocity (pixels per game tic)
   qreal getYVelocity() const;
 
-  //! Get the bounding rect of the basic actor
+  //! Get the bounding rect
   QRectF boundingRect() const override;
+
+  //! Get the bounding rect of the collideable area
+  QRectF boundingCollideableRect() const;
 
   //! Get the shape of the basic actor
   QPainterPath shape() const override;

@@ -126,13 +126,24 @@ void BasicActor::setVelocity( const qreal x_velocity, const qreal y_velocity )
   d_y_velocity = y_velocity;
 }
 
-// Get the bounding rect of the basic actor
+// Get the bounding rect of the basic actor's foot area
 QRectF BasicActor::boundingRect() const
 {
   if( d_active_direction_sprite.second )
     return d_active_direction_sprite.second->boundingRect();
   else
     return QRectF();
+}
+
+// Get the bounding rect of the collideable area
+QRectF BasicActor::boundingCollideableRect() const 
+{
+  // Approximate the foot region bounding box
+  QRectF full_bb = d_active_direction_sprite.second->boundingRect();
+  QPointF top_left_feet( full_bb.left(), full_bb.top() - 20 );
+  QPointF bottom_right_feet( full_bb.right(), full_bb.top() );
+
+  return QRectF( top_left_feet, bottom_right_feet );
 }
 
 // Get the shape of the basic actor

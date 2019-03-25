@@ -155,7 +155,7 @@ protected:
   //! Create the level sectors
   virtual void createSectors( QList<LevelSector*>& sectors ) = 0;
 
-  // Connect interactiveLevelObject signals to Level signals
+  //! Connect interactiveLevelObject signals to Level signals
   void connectInteractiveLevelObjectSignalsToLevelSignals( LevelObject* level_object ) const;
 
   //! Add a level object
