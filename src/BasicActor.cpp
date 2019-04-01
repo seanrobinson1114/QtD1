@@ -24,7 +24,8 @@ BasicActor::BasicActor( QGraphicsObject* parent )
     d_path(),
     d_x_velocity( 0.0 ),
     d_y_velocity( 0.0 ),
-    d_target( NULL )
+    d_target( NULL ),
+    d_collideable_region()
 { /* ... */ }
 
 // Copy Constructor
@@ -37,7 +38,8 @@ BasicActor::BasicActor( const BasicActor& other_actor )
     d_path( other_actor.d_path ),
     d_x_velocity( other_actor.d_x_velocity ),
     d_y_velocity( other_actor.d_y_velocity ),
-    d_target( other_actor.d_target )
+    d_target( other_actor.d_target ),
+    d_collideable_region( other_actor.d_collideable_region )
 { /* ... */ }
 
 // Assignment Operator
@@ -141,8 +143,17 @@ QRectF BasicActor::boundingRect() const
     return QRectF();
 }
 
-// Get the bounding rect of the collideable area
-QPainterPath BasicActor::collideableRegion() const 
+// Get the shape of the collideable region
+QPainterPath BasicActor::collideableRegion() const
+{
+  if( d_collideable_region.isEmpty() )
+    const_cast<BasicActor&>(*this).initializeCollideablePath();
+
+  return d_collideable_region;
+}
+
+// Initialize collideable path
+void BasicActor::initializeCollideablePath() 
 {
   // Find center of feet
   QPointF lower_center_point( this->boundingRect().left() + this->boundingRect().width()/2, this->boundingRect().height() - 20 );
@@ -154,11 +165,8 @@ QPainterPath BasicActor::collideableRegion() const
           << QPointF( lower_center_point.x() + 32, lower_center_point.y() ) 
           << QPointF ( lower_center_point.x(), lower_center_point.y() + 16 );
 
-  // Add diamond polygon to path
-  QPainterPath path;
-  path.addPolygon( polygon );
-
-  return path;
+  // Add diamond polygon to collideable region
+  d_collideable_region.addPolygon( polygon );
 }
 
 // Get the shape of the basic actor
@@ -207,6 +215,8 @@ void BasicActor::paintImpl( QPainter* painter,
   if( d_active_direction_sprite.second ) 
   {
     d_active_direction_sprite.second->paint( painter, option, widget );
+    
+    // Collideable Region
     painter->drawPath( this->collideableRegion() );
   }
   else

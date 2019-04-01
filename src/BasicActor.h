@@ -65,7 +65,7 @@ public:
   //! Get the bounding rect
   QRectF boundingRect() const override;
 
-  //! Get the bounding rect of the collideable area
+  //! Get the shape of the collideable region
   virtual QPainterPath collideableRegion() const override;
 
   //! Get the shape of the basic actor
@@ -156,6 +156,9 @@ protected:
 
 private:
 
+  // Initialize collideable path
+  void initializeCollideablePath();
+
   // The active sprites
   std::shared_ptr<DirectionGameSpriteMap> d_active_sprites;
 
@@ -177,6 +180,12 @@ private:
 
   // The target of the actor
   LevelObject* d_target;
+
+  // The collideable shape
+  QPainterPath d_collideable_region;
+
+  // The collideable region center
+  // QPointF( )
 };
 
 } // end QtD1 namespace
