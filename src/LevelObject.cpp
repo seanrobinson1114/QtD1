@@ -120,6 +120,15 @@ bool LevelObject::isCharacter() const
   return false;
 }
 
+// Get the collideable path
+QPainterPath LevelObject::collideableRegion() const
+{
+  qWarning( "Returning empty collideable path!: Either checking "
+            "for collision on non collideable object or subclass "
+            "faild to override!" );
+  return QPainterPath();
+}
+
 // Handle being targeted by another object
 void LevelObject::handleBeingTargeted( LevelObject* )
 { /* ... */ }

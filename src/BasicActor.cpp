@@ -142,17 +142,19 @@ QRectF BasicActor::boundingRect() const
 }
 
 // Get the bounding rect of the collideable area
-QPainterPath BasicActor::boundingCollideablePolygon() const 
+QPainterPath BasicActor::collideableRegion() const 
 {
   // Find center of feet
   QPointF lower_center_point( this->boundingRect().left() + this->boundingRect().width()/2, this->boundingRect().height() - 20 );
 
+  // Create diamond polygon from feet
   QPolygonF polygon;
   polygon << QPointF( lower_center_point.x() - 32, lower_center_point.y() ) 
           << QPointF( lower_center_point.x(), lower_center_point.y() - 16 ) 
           << QPointF( lower_center_point.x() + 32, lower_center_point.y() ) 
           << QPointF ( lower_center_point.x(), lower_center_point.y() + 16 );
 
+  // Add diamond polygon to path
   QPainterPath path;
   path.addPolygon( polygon );
 
@@ -205,7 +207,7 @@ void BasicActor::paintImpl( QPainter* painter,
   if( d_active_direction_sprite.second ) 
   {
     d_active_direction_sprite.second->paint( painter, option, widget );
-    painter->drawPath( this->boundingCollideablePolygon() );
+    painter->drawPath( this->collideableRegion() );
   }
   else
     std::cout << "empty sprite sheet detected!" << std::endl;

@@ -58,6 +58,9 @@ public:
   //! Check if it is a character
   virtual bool isCharacter() const;
 
+  //! Get the collideable path
+  virtual QPainterPath collideableRegion() const;
+
 protected slots:
 
   //! Handle being targeted by another object

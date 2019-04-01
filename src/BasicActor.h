@@ -66,7 +66,7 @@ public:
   QRectF boundingRect() const override;
 
   //! Get the bounding rect of the collideable area
-  QPainterPath boundingCollideablePolygon() const;
+  virtual QPainterPath collideableRegion() const override;
 
   //! Get the shape of the basic actor
   QPainterPath shape() const override;
