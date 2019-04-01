@@ -47,6 +47,9 @@ public:
   //! Get the description of the basic actor
   virtual QString getDescriptionText() const override;
 
+  // ! Check if basic actor is collideable
+  virtual bool isCollideable() const override;
+
   //! Get the direction of the basic actor
   Direction getDirection() const;
 
@@ -63,7 +66,7 @@ public:
   QRectF boundingRect() const override;
 
   //! Get the bounding rect of the collideable area
-  QRectF boundingCollideableRect() const;
+  QPainterPath boundingCollideablePolygon() const;
 
   //! Get the shape of the basic actor
   QPainterPath shape() const override;

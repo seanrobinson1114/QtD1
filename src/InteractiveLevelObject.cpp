@@ -214,7 +214,7 @@ void InteractiveLevelObject::hoverEnterEvent( QGraphicsSceneHoverEvent* )
   // notify level of hover
   emit hoveringStarted( this->getDescription() );
 
-  //this->update();
+  // this->update();
 }
 
 // Handle hover leave events

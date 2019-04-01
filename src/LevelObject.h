@@ -46,6 +46,9 @@ public:
   //! Check if the object is grabbable
   virtual bool isGrabbable() const;
 
+  //! Check if object is collideable
+  virtual bool isCollideable() const;
+
   //! Check if the object can be attacked
   virtual bool canBeAttacked() const = 0;
 
