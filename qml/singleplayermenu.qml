@@ -97,6 +97,11 @@ Rectangle {
             setHeroStats( base_sorcerer.level, base_sorcerer.strength, base_sorcerer.magic, base_sorcerer.dexterity, base_sorcerer.vitality );
         }
 
+        // Clears the Stats when cancel is selected on new character selection
+        function clearBaseStats() {
+            setHeroStats( "-", "-", "-", "-", "-" );
+        }
+
         Rectangle {
             id: hero_level
             anchors.top: hero_stats.top
@@ -486,6 +491,7 @@ Rectangle {
             }
             Keys.onEscapePressed: {
                 ui_backend.playMenuItemClickSound();
+                hero_stats.clearBaseStats();
                 hero_select.showHeroOptions();
             }
             onButtonClicked: {
@@ -551,6 +557,7 @@ Rectangle {
             }
             Keys.onEscapePressed: {
                 ui_backend.playMenuItemClickSound();
+                hero_stats.clearBaseStats();
                 hero_select.showHeroOptions();
             }
             onButtonClicked: {
@@ -616,6 +623,7 @@ Rectangle {
             }
             Keys.onEscapePressed: {
                 ui_backend.playMenuItemClickSound();
+                hero_stats.clearBaseStats();
                 hero_select.showHeroOptions();
             }
             onButtonClicked: {
@@ -657,8 +665,11 @@ Rectangle {
             color: "black"
             visible: false
             Keys.onReturnPressed: {
-                ui_backend.playMenuItemClickSound();
-                hero_select.startGame();
+                // Make sure the character name has at least one isn't null
+                if( character_name_input.text.length > 0 ) {
+                    ui_backend.playMenuItemClickSound();
+                    hero_select.startGame();
+                }
             }
             Keys.onEscapePressed: {
                 ui_backend.playMenuItemClickSound();
@@ -718,34 +729,36 @@ Rectangle {
                 hero_select.showNameInputBox();
             }
             else if( character_name.visible == true ) {
-                ui_backend.playMenuItemClickSound();
-                hero_select.startGame();
+                if( character_name_input.text.length > 0 ) {
+                    ui_backend.playMenuItemClickSound();
+                    hero_select.startGame();
+                }              
             }
         }
     }
 
-    /*Rectangle {
-        id: dlete
-        anchors.top: hero_select.bottom
-        anchors.topMargin: 5
-        anchors.horizontalCenter: hero_select.horizontalCenter
-        width: 90
-        height: 50
-        color: "black"
+    // Rectangle {
+    //     id: dlete
+    //     anchors.top: hero_select.bottom
+    //     anchors.topMargin: 5
+    //     anchors.horizontalCenter: hero_select.horizontalCenter
+    //     width: 90
+    //     height: 50
+    //     color: "black"
 
-        BitmapText {
-            id: dlete_text
-            anchors.horizontalCenter: dlete.horizontalCenter
-            anchors.verticalCenter: dlete.verticalCenter
-            width: 60
-            height: 30
-            font: "QtD1Gold30"
-            text: "DELETE"
-            Component.onCompleted: {
-                dlete_text.load()
-            }
-        }
-    }*/
+    //     BitmapText {
+    //         id: dlete_text
+    //         anchors.horizontalCenter: dlete.horizontalCenter
+    //         anchors.verticalCenter: dlete.verticalCenter
+    //         width: 60
+    //         height: 30
+    //         font: "QtD1Gold30"
+    //         text: "DELETE"
+    //         Component.onCompleted: {
+    //             dlete_text.load()
+    //         }
+    //     }
+    // }
 
     BitmapTextButton {
         id: cancel_button
@@ -767,7 +780,9 @@ Rectangle {
             }
             else if( warrior_class_button.activeFocus | rogue_class_button.activeFocus | sorcerer_class_button.activeFocus ) {
                 ui_backend.playMenuItemClickSound();
+                hero_stats.clearBaseStats();
                 hero_select.showHeroOptions();
+
             }
             else if( character_name.visible == true ) {
                 ui_backend.playMenuItemClickSound();
